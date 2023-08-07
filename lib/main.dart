@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:honest_sign_flutter_app/constants.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,82 +24,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// class InputHistoryWidget extends StatefulWidget {
-//   @override
-//   _InputHistoryWidgetState createState() => _InputHistoryWidgetState();
-// }
-
-// class _InputHistoryWidgetState extends State<InputHistoryWidget> {
-//   final TextEditingController _textEditingController = TextEditingController();
-//   List<String> _history = [];
-//   late FocusNode myFocusNode;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     // Установить фокус на поле ввода при запуске приложения
-//     // FocusScope.of(context).requestFocus(_textEditingController);
-//     myFocusNode = FocusNode();
-//   }
-
-//   void _addToHistory(String text) async {
-//     if (text.length == 13) {
-//       setState(() {
-//         _history.add(text);
-//       });
-//     }
-
-//     _textEditingController.clear(); // Очистка поля ввода
-//     myFocusNode.requestFocus();
-//   }
-
-//   @override
-//   void dispose() {
-//     // Clean up the focus node when the Form is disposed.
-//     myFocusNode.dispose();
-
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Input History Widget'),
-//       ),
-//       body: Column(
-//         children: [
-//           Expanded(
-//             child: ListView.builder(
-//               itemCount: _history.length,
-//               itemBuilder: (context, index) {
-//                 return ListTile(
-//                   title: Text(_history[index]),
-//                 );
-//               },
-//             ),
-//           ),
-//           Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: TextField(
-//               focusNode: myFocusNode,
-//               autofocus: true,
-//               controller: _textEditingController,
-//               onChanged: (text) async {
-//                 await Future.delayed(Duration(milliseconds: 500));
-//                 _addToHistory(text);
-//               },
-//               decoration: InputDecoration(
-//                 labelText: 'Введите текст',
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 class InputWidget extends StatefulWidget {
   @override
   _InputWidgetState createState() => _InputWidgetState();
@@ -106,9 +31,14 @@ class InputWidget extends StatefulWidget {
 
 class _InputWidgetState extends State<InputWidget> {
   late TextEditingController _textEditingController;
+  List<String> allBarcodeHistory = [];
 
-  List<String> _history = [];
-  List<Widget> widgetsHistory = [];
+  List<String> unit = [];
+  Map<String, List<String>> box = {
+    'Группа 1': [' 1', '2', '3', '4', '5', '6'],
+    'Группа 2': [' 1', '2', '3', '4', '5', '6'],
+  };
+
   late InputWithKeyboardControlFocusNode myFocusNode;
 
   @override
@@ -127,8 +57,19 @@ class _InputWidgetState extends State<InputWidget> {
 
   void _sendText(String text) {
     setState(() {
-      _history.add(text);
+      unit.add(text);
+      allBarcodeHistory.add(text);
+
+      for (int i = 0; i < unit.length; i++) {
+        String item = unit[i];
+        if (i != 0 && i % countUnitsPerBox == 0) {
+          box['$item'] = unit.sublist(0, unit.length - 1);
+
+          unit.clear();
+        }
+      }
     });
+
     _textEditingController.clear();
   }
 
@@ -159,16 +100,25 @@ class _InputWidgetState extends State<InputWidget> {
           ),
         ),
         Expanded(
+          child: MapListWidget(
+            data: box,
+          ),
+        ),
+        const Divider(
+          thickness: 5,
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 4,
           child: ListView.builder(
-            reverse: true,
-            itemCount: _history.length,
+            // reverse: true,
+            itemCount: unit.length,
             itemBuilder: (BuildContext context, int index) {
               return ListTile(
-                title: Text(_history.reversed.toList()[index]),
+                title: Text('${index + 1}. ${unit[index]}'),
               );
             },
           ),
-        ),
+        )
       ],
     );
   }
@@ -315,95 +265,35 @@ class InputWithKeyboardControlFocusNode extends FocusNode {
   }
 }
 
-class HistoryWidget extends StatefulWidget {
-  @override
-  _HistoryWidgetState createState() => _HistoryWidgetState();
-}
+class MapListWidget extends StatelessWidget {
+  final Map<String, List<String>> data;
 
-class _HistoryWidgetState extends State<HistoryWidget> {
-  List<String> inputData = [];
-
-  @override
-  void initState() {
-    super.initState();
-    inputData.add("Item 1");
-    inputData.add("Item 2");
-    inputData.add("Item 3");
-    inputData.add("Item 4");
-    inputData.add("Item 5");
-    inputData.add("Item 6");
-    inputData.add("Group 1");
-    inputData.add("Item 7");
-    inputData.add("Item 8");
-    inputData.add("Item 9");
-    inputData.add("Item 10");
-    inputData.add("Item 11");
-    inputData.add("Item 12");
-    inputData.add("Group 2");
-    // Добавьте свои данные и группы здесь
-  }
-
-  List<DropdownMenuItem<String>> generateDropdownItems() {
-    List<DropdownMenuItem<String>> dropdownItems = [];
-    List<String> currentGroup = [];
-    for (int i = 0; i < inputData.length; i++) {
-      String item = inputData[i];
-      if (i != 0 && i % 7 == 0) {
-        DropdownMenuItem<String> dropdownItem = DropdownMenuItem(
-          value: item,
-          child: Text(item),
-        );
-        dropdownItems.add(dropdownItem);
-        for (String historyItem in currentGroup) {
-          DropdownMenuItem<String> dropdownHistoryItem = DropdownMenuItem(
-            value: historyItem,
-            child: Text(historyItem),
-          );
-          dropdownItems.add(dropdownHistoryItem);
-        }
-        currentGroup.clear();
-      } else {
-        currentGroup.add(item);
-      }
-    }
-    if (currentGroup.isNotEmpty) {
-      DropdownMenuItem<String> dropdownItem = DropdownMenuItem(
-        value: inputData.last,
-        child: Text(inputData.last),
-      );
-      dropdownItems.add(dropdownItem);
-      for (String historyItem in currentGroup) {
-        DropdownMenuItem<String> dropdownHistoryItem = DropdownMenuItem(
-          value: historyItem,
-          child: Text(historyItem),
-        );
-        dropdownItems.add(dropdownHistoryItem);
-      }
-    }
-    return dropdownItems;
-  }
-
-  void addItem(String item) {
-    setState(() {
-      inputData.add(item);
-    });
-  }
+  MapListWidget({required this.data});
 
   @override
   Widget build(BuildContext context) {
-    List<DropdownMenuItem<String>> dropdownItems = generateDropdownItems();
-    return Column(
-      children: <Widget>[
-        DropdownButton<String>(
-          items: dropdownItems,
-          onChanged: (String? value) {},
-        ),
-        TextField(
-          onSubmitted: (String value) {
-            addItem(value);
-          },
-        ),
-      ],
+    return ListView.builder(
+      itemCount: data.keys.length,
+      itemBuilder: (context, index) {
+        String key = data.keys.elementAt(index);
+        List<String> values = data[key]!;
+
+        return ExpansionTile(
+          title: Text(key),
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
+              itemCount: values.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(values[index]),
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,0 +1,1 @@
+const countUnitsPerBox = 6;
