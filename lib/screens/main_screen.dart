@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
+import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
+
 import 'package:honest_sign_flutter_app/screens/delete_barcode_sreen.dart';
+import 'package:intl/intl.dart';
 
 class InputWidget extends StatefulWidget {
   const InputWidget({super.key});
@@ -15,25 +18,31 @@ class _InputWidgetState extends State<InputWidget> {
   final TextEditingController _textEditingControllerDeleteDialog =
       TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final List<String> allBarcodeHistory = [];
+  final List<Item> allBarcodeHistory = [];
 
-  final List<String> unit = [];
-  final Map<String, List<String>> box = {
-    'Группа 1': [' 1', '2', '3', '4', '5', '6'],
-    'Группа 2': [' 1', '2', '3', '4', '5', '6'],
-  };
-  final Map<String, dynamic> pallets = {
-    'Палет 1': {
-      'Коробка 1': [' 1', '2', '3', '4', '5', '6'],
-      'Коробка 2': [' 1', '2', '3', '4', '5', '6'],
-      'Коробка 3': [' 1', '2', '3', '4', '5', '6']
-    },
-    'Палет 2': {
-      'Коробка 1': [' 1', '2', '3', '4', '5', '6'],
-      'Коробка 2': [' 1', '2', '3', '4', '5', '6'],
-      'Коробка 3': [' 1', '2', '3', '4', '5', '6']
-    },
-  };
+  final List<Item> unit = [];
+  // final Map<String, List<String>> box = {
+  //   'Группа 1': [' 1', '2', '3', '4', '5', '6'],
+  //   'Группа 2': [' 1', '2', '3', '4', '5', '6'],
+  // };
+  final List<Box> boxes = [];
+
+  final ModelsPallet pallets = ModelsPallet(
+      barcode: 'Будущая палета',
+      date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
+      boxes: []);
+  // final Map<String, dynamic> pallets = {
+  //   'Палет 1': {
+  //     'Коробка 1': [' 1', '2', '3', '4', '5', '6'],
+  //     'Коробка 2': [' 1', '2', '3', '4', '5', '6'],
+  //     'Коробка 3': [' 1', '2', '3', '4', '5', '6']
+  //   },
+  //   'Палет 2': {
+  //     'Коробка 1': [' 1', '2', '3', '4', '5', '6'],
+  //     'Коробка 2': [' 1', '2', '3', '4', '5', '6'],
+  //     'Коробка 3': [' 1', '2', '3', '4', '5', '6']
+  //   },
+  // };
 
   late InputWithKeyboardControlFocusNode myFocusNode;
 
@@ -53,26 +62,32 @@ class _InputWidgetState extends State<InputWidget> {
 
   void _sendText(String text) {
     setState(() {
-      unit.add(text);
-
-      allBarcodeHistory.add(text);
+      DateTime now = DateTime.now();
+      String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
+      unit.add(Item(barcode: text, date: formattedDateTime));
+      allBarcodeHistory.add(Item(barcode: text, date: formattedDateTime));
 
       for (int i = 0; i < unit.length; i++) {
-        String item = unit[i];
+        String item = unit[i].barcode;
         if (i != 0 && i % countUnitsPerBox == 0) {
           // проверка на коробку
+          DateTime now = DateTime.now();
+          String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
+          final List<Item> copyUnits = unit.sublist(0, unit.length - 1);
+          boxes.add(
+              Box(barcode: item, date: formattedDateTime, items: copyUnits));
 
-          box['$item'] = unit.sublist(0, unit.length - 1);
-          pallets[keyFututrePallet] = Map<String, dynamic>.from(box);
+          pallets.boxes = [...boxes];
 
           unit.clear();
-        } else if (item == '4630097264533') {
-          unit.clear();
-          // заглушка на проверку ппалета
-          pallets[item] = Map<String, dynamic>.from(pallets[keyFututrePallet]);
-          pallets.remove(keyFututrePallet);
-          box.clear();
         }
+        // else if (item == '4630097264533') {
+        //   unit.clear();
+        //   // заглушка на проверку ппалета
+        //   pallets[item] = Map<String, dynamic>.from(pallets[keyFututrePallet]);
+        //   pallets.remove(keyFututrePallet);
+        //   box.clear();
+        // }
       }
     });
     // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
@@ -118,17 +133,17 @@ class _InputWidgetState extends State<InputWidget> {
                 onPressed: () async {
                   myFocusNode.nextFocus();
 
-                  final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DeleteScreen(
-                        pallets: pallets,
-                      ),
-                    ),
-                  );
+                  // final result = await Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => DeleteScreen(
+                  //       pallets: pallets,
+                  //     ),
+                  //   ),
+                  // ); /// ВЫЗОВ НОВГО СКРИНА НА УДАЛЕНИЕ
 
                   // Обработка результата с нового экрана
-                  if (result != null) {}
+                  // if (result != null) {}
                   myFocusNode.requestFocus();
                 },
                 icon: const Icon(Icons.delete, color: Colors.red),
@@ -148,8 +163,8 @@ class _InputWidgetState extends State<InputWidget> {
         ),
         Expanded(
           child: SingleChildScrollView(
-            child: DataWidget(
-              data: pallets,
+            child: ModelsPalletWidget(
+              pallet: pallets,
             ),
           ),
         ),
@@ -166,7 +181,7 @@ class _InputWidgetState extends State<InputWidget> {
               _scrollController.jumpTo(_scrollController.position
                   .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
               return ListTile(
-                title: Text('${index + 1}. ${unit[index]}'),
+                title: Text('${index + 1}. ${unit[index].barcode}'),
               );
             },
           ),
@@ -337,52 +352,71 @@ class MapListWidget extends StatelessWidget {
   }
 }
 
-class DataWidget extends StatelessWidget {
-  final Map<String, dynamic> data;
+class ItemWidget extends StatelessWidget {
+  final Item item;
 
-  const DataWidget({super.key, required this.data});
-
-  Widget _buildList(dynamic item) {
-    if (item is Map<String, dynamic>) {
-      return ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: item.keys.length,
-        itemBuilder: (context, index) {
-          String key = item.keys.elementAt(index);
-          dynamic value = item[key];
-          return ExpansionTile(
-            title: Text(key),
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0),
-                child: _buildList(value),
-              ),
-            ],
-          );
-        },
-      );
-    } else if (item is List<String>) {
-      return ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: item.length,
-        itemBuilder: (context, index) {
-          String value = item[index];
-          return ListTile(
-            title: Text(value),
-          );
-        },
-      );
-    } else {
-      return ListTile(
-        title: Text(item),
-      );
-    }
-  }
+  const ItemWidget({
+    super.key,
+    required this.item,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return _buildList(data);
+    return ListTile(
+      title: Text(item.barcode),
+    );
+  }
+}
+
+class BoxWidget extends StatelessWidget {
+  final Box box;
+
+  const BoxWidget({
+    super.key,
+    required this.box,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      title: Text(box.barcode),
+      children: <Widget>[
+        ListTile(
+          title: const Text('Бутылки:'),
+          subtitle: Column(
+            children: box.items
+                .map((item) => ItemWidget(
+                      item: item,
+                    ))
+                .toList(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ModelsPalletWidget extends StatelessWidget {
+  final ModelsPallet pallet;
+
+  const ModelsPalletWidget({super.key, required this.pallet});
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      title: Text(pallet.barcode),
+      children: <Widget>[
+        ListTile(
+          title: const Text('Коробки:'),
+          subtitle: Column(
+            children: pallet.boxes
+                .map((box) => BoxWidget(
+                      box: box,
+                    ))
+                .toList(),
+          ),
+        ),
+      ],
+    );
   }
 }
