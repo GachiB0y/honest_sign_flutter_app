@@ -36,6 +36,7 @@ class _InputWidgetState extends State<InputWidget> {
   late TextEditingController _textEditingController;
   final TextEditingController _textEditingControllerDeleteDialog =
       TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   final List<String> allBarcodeHistory = [];
 
   final List<String> unit = [];
@@ -75,6 +76,7 @@ class _InputWidgetState extends State<InputWidget> {
   void _sendText(String text) {
     setState(() {
       unit.add(text);
+
       allBarcodeHistory.add(text);
 
       for (int i = 0; i < unit.length; i++) {
@@ -95,7 +97,7 @@ class _InputWidgetState extends State<InputWidget> {
         }
       }
     });
-    // myFocusNode.requestFocus();расскоментировать для обычного TExtFormField
+    // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
     _textEditingController.clear();
   }
 
@@ -144,14 +146,13 @@ class _InputWidgetState extends State<InputWidget> {
           child: Padding(
             padding: const EdgeInsets.all(10),
             child:
-                // TextFormField(
+                //  TextFormField(
                 //   focusNode: myFocusNode,
                 //   autofocus: true,
                 //   controller: _textEditingController,
                 //   onFieldSubmitted: (value) {
                 //     _sendText(value);
                 //   },
-
                 // )
                 InputWithKeyboardControl(
               focusNode: myFocusNode,
@@ -183,9 +184,7 @@ class _InputWidgetState extends State<InputWidget> {
                 );
 
                 // Обработка результата с нового экрана
-                if (result != null) {
-                  print(result.toString());
-                }
+                if (result != null) {}
                 myFocusNode.requestFocus();
               },
               icon: const Icon(Icons.delete, color: Colors.red),
@@ -201,12 +200,15 @@ class _InputWidgetState extends State<InputWidget> {
         const Divider(
           thickness: 5,
         ),
+        IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
         SizedBox(
           height: MediaQuery.of(context).size.height / 4,
           child: ListView.builder(
-            // reverse: true,
+            controller: _scrollController,
             itemCount: unit.length,
             itemBuilder: (BuildContext context, int index) {
+              _scrollController.jumpTo(_scrollController.position
+                  .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
               return ListTile(
                 title: Text('${index + 1}. ${unit[index]}'),
               );
