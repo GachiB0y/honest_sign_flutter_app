@@ -8,7 +8,8 @@ class DeleteScreen extends StatelessWidget {
   DeleteScreen({super.key, required this.pallets});
 
   Future<void> _showDeleteDialog(
-      BuildContext context, final Map<String, dynamic> pallets) async {
+      BuildContext context, final Map<String, dynamic> pallets,
+      {required bool isBox}) async {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -32,9 +33,16 @@ class DeleteScreen extends StatelessWidget {
           actions: [
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context); // закрыть Алерт диалог
-                Navigator.pop(context,
-                    'Результат с нового экрана'); // отправить новые данные на предыдущий экран
+                if (!_textNewBarcode.text.isEmpty) {
+                  isBox
+                      ? deleteBarcodeBox(
+                          _textOldBarcode.text, _textNewBarcode.text)
+                      : deleteBarcodeForUnit(
+                          _textOldBarcode.text, _textNewBarcode.text);
+                  Navigator.pop(context); // закрыть Алерт диалог
+                  Navigator.pop(context,
+                      'Результат с нового экрана'); // отправить новые данные на предыдущий экран
+                }
               },
               child: const Text('Да'),
             ),
@@ -49,6 +57,46 @@ class DeleteScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  void deleteBarcodeForUnit(String barcodeForDelete, String newBarcode) {
+    for (final pallet in pallets.entries) {
+      if (pallet.value is Map<String, List<String>>) {
+        pallet.value.forEach((key, box) {
+          if (box is List<String>) {
+            if (box.contains(barcodeForDelete)) {
+              final int index = box.indexOf(barcodeForDelete);
+              box.remove(barcodeForDelete);
+              box.insert(index, newBarcode);
+            }
+          }
+        });
+      }
+    }
+  }
+
+  void deleteBarcodeBox(String barcodeForDelete, String newBarcode) {
+    bool shouldBreak = false;
+    for (final pallet in pallets.entries) {
+      if (shouldBreak) {
+        return; // пропуск оставшихся итераций
+      }
+      if (pallet.value is Map<String, List<String>>) {
+        Map<String, List<String>> copyBoxes = Map.from(pallet.value);
+        copyBoxes.forEach((key, box) {
+          if (key == barcodeForDelete) {
+            pallet.value[newBarcode] =
+                List<String>.from(pallet.value[barcodeForDelete]);
+            pallet.value.remove(barcodeForDelete);
+            shouldBreak = true;
+            return;
+          }
+          if (shouldBreak) {
+            return; // пропуск оставшихся итераций
+          }
+        });
+      }
+    }
   }
 
   @override
@@ -79,10 +127,31 @@ class DeleteScreen extends StatelessWidget {
                     padding: MaterialStatePropertyAll(EdgeInsets.all(26.0))),
                 onPressed: () {
                   if (!_textOldBarcode.text.isEmpty) {
-                    _showDeleteDialog(context, pallets);
+                    _showDeleteDialog(context, pallets, isBox: false);
                   }
                 },
-                child: const Text('Удалть штрихкод'),
+                child: const Text(
+                  'Удалть штрихкод бутылки',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Center(
+              child: ElevatedButton(
+                style: const ButtonStyle(
+                    padding: MaterialStatePropertyAll(EdgeInsets.all(26.0))),
+                onPressed: () {
+                  if (!_textOldBarcode.text.isEmpty) {
+                    _showDeleteDialog(context, pallets, isBox: true);
+                  }
+                },
+                child: const Text(
+                  'Удалть штрихкод коробки',
+                  style: TextStyle(fontSize: 20),
+                ),
               ),
             ),
           ],

@@ -200,9 +200,9 @@ class _InputWidgetState extends State<InputWidget> {
         const Divider(
           thickness: 5,
         ),
-        IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
+        const Text('Текущие штрихкоды бутылок'),
         SizedBox(
-          height: MediaQuery.of(context).size.height / 4,
+          height: MediaQuery.of(context).size.height / 3.5,
           child: ListView.builder(
             controller: _scrollController,
             itemCount: unit.length,
