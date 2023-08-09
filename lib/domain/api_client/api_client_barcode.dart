@@ -15,18 +15,17 @@ class BarcodeService {
     }
   }
 
-  Future<String> postBarcodes({required ModelsPallet pallets}) async {
+  Future<bool> postBarcodes({required ModelsPallet pallets}) async {
     var url = 'http://10.3.50.96:8000/';
     final body = jsonEncode(pallets.toJson());
     final response = await http.post(Uri.parse(url), body: body);
 
-    // if (response.statusCode == 200) {
-    //   return 'резулььтат заглушка';
-    //   // CategoryList.fromJson(json.decode(response.body));
-    // } else {
-    //   throw Exception('Failed to load');
-    // }
-    return 'резулььтат заглушка';
+    if (response.statusCode == 200) {
+      return true;
+      // CategoryList.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Ошибка отправки палеты!');
+    }
   }
 
   const BarcodeService();

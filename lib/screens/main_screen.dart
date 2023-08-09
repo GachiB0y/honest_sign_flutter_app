@@ -16,36 +16,20 @@ class InputWidget extends StatefulWidget {
 
 class _InputWidgetState extends State<InputWidget> {
   late TextEditingController _textEditingController;
-  final TextEditingController _textEditingControllerDeleteDialog =
-      TextEditingController();
+
   final ScrollController _scrollController = ScrollController();
   final List<Item> allBarcodeHistory = [];
   final BarcodeService barcodeService = const BarcodeService();
 
   final List<Item> unit = [];
-  final List<Item> historyForPallet = [];
-  // final Map<String, List<String>> box = {
-  //   'Группа 1': [' 1', '2', '3', '4', '5', '6'],
-  //   'Группа 2': [' 1', '2', '3', '4', '5', '6'],
-  // };
+  int countBarcodes = 0;
+
   final List<Box> boxes = [];
 
   final ModelsPallet pallets = ModelsPallet(
       barcode: 'Будущая палета',
       date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
       boxes: []);
-  // final Map<String, dynamic> pallets = {
-  //   'Палет 1': {
-  //     'Коробка 1': [' 1', '2', '3', '4', '5', '6'],
-  //     'Коробка 2': [' 1', '2', '3', '4', '5', '6'],
-  //     'Коробка 3': [' 1', '2', '3', '4', '5', '6']
-  //   },
-  //   'Палет 2': {
-  //     'Коробка 1': [' 1', '2', '3', '4', '5', '6'],
-  //     'Коробка 2': [' 1', '2', '3', '4', '5', '6'],
-  //     'Коробка 3': [' 1', '2', '3', '4', '5', '6']
-  //   },
-  // };
 
   late InputWithKeyboardControlFocusNode myFocusNode;
 
@@ -63,17 +47,97 @@ class _InputWidgetState extends State<InputWidget> {
     super.dispose();
   }
 
+  Future<void> _showDeleteDialog(
+    BuildContext context,
+  ) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Вы точно хотите удалить все текущие штрихкоды?',
+                  style: TextStyle(fontSize: 18)),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                deleteCurrentUnit(deleteAll: true);
+                Navigator.pop(context); // закрыть Алерт диалог
+              },
+              child: const Text('Да'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Обработка нажатия кнопки "Отмена"
+                Navigator.pop(context);
+              },
+              child: const Text('Отмена'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showSendPalletDialog(
+    BuildContext context,
+    String? message,
+  ) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                message == null
+                    ? 'Палета отправлена успешно!'
+                    : '$message Повторите попытку.',
+                style: const TextStyle(fontSize: 18),
+              ),
+            ],
+          ),
+          actions: [
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _sendText(String text) {
     setState(() {
       DateTime now = DateTime.now();
       String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
       unit.add(Item(barcode: text, date: formattedDateTime));
       allBarcodeHistory.add(Item(barcode: text, date: formattedDateTime));
-
+      countBarcodes += 1;
+      //проверка на палету
+      if (countBarcodes % countBoxesPerPallet == 0) {
+        DateTime now = DateTime.now();
+        String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
+        unit.clear();
+        pallets.barcode = text;
+        pallets.date = formattedDateTime;
+      }
+      // проверка на коробку
       for (int i = 0; i < unit.length; i++) {
         String item = unit[i].barcode;
+
         if (i != 0 && i % countUnitsPerBox == 0) {
-          // проверка на коробку
           DateTime now = DateTime.now();
           String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
           final List<Item> copyUnits = unit.sublist(0, unit.length - 1);
@@ -83,21 +147,36 @@ class _InputWidgetState extends State<InputWidget> {
           pallets.boxes = [...boxes];
 
           unit.clear();
-        } else if (i != 0 && i % countBoxesPerPallet == 0) {
-          DateTime now = DateTime.now();
-          String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
-          unit.clear();
-          pallets.barcode = item;
-          pallets.date = formattedDateTime;
-          // заглушка на проверку ппалета
-          // pallets[item] = Map<String, dynamic>.from(pallets[keyFututrePallet]);
-          // pallets.remove(keyFututrePallet);
-          // box.clear();
         }
+        // else if (i != 0 && i % countBoxesPerPallet == 0) {
+        //   DateTime now = DateTime.now();
+        //   String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
+        //   unit.clear();
+        //   pallets.barcode = item;
+        //   pallets.date = formattedDateTime;
+        //   // заглушка на проверку ппалета
+        //   // pallets[item] = Map<String, dynamic>.from(pallets[keyFututrePallet]);
+        //   // pallets.remove(keyFututrePallet);
+        //   // box.clear();
+        // }
       }
     });
     // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
     _textEditingController.clear();
+  }
+
+  void deleteCurrentUnit({required bool deleteAll}) {
+    setState(() {
+      if (deleteAll) {
+        if (unit.isNotEmpty) {
+          countBarcodes -= unit.length;
+          unit.clear();
+        }
+      } else {
+        countBarcodes -= 1;
+        unit.removeLast();
+      }
+    });
   }
 
   @override
@@ -138,7 +217,8 @@ class _InputWidgetState extends State<InputWidget> {
             ElevatedButton.icon(
                 onPressed: () async {
                   myFocusNode.nextFocus();
-
+                  _showDeleteDialog(context);
+                  // /// ВЫЗОВ НОВГО СКРИНА НА УДАЛЕНИЕ
                   // final result = await Navigator.push(
                   //   context,
                   //   MaterialPageRoute(
@@ -146,10 +226,10 @@ class _InputWidgetState extends State<InputWidget> {
                   //       pallets: pallets,
                   //     ),
                   //   ),
-                  // ); /// ВЫЗОВ НОВГО СКРИНА НА УДАЛЕНИЕ
-
-                  // Обработка результата с нового экрана
+                  // );
+                  // // Обработка результата с нового экрана
                   // if (result != null) {}
+
                   myFocusNode.requestFocus();
                 },
                 icon: const Icon(Icons.delete, color: Colors.red),
@@ -160,7 +240,17 @@ class _InputWidgetState extends State<InputWidget> {
             ElevatedButton.icon(
                 onPressed: () async {
                   myFocusNode.nextFocus();
-                  barcodeService.postBarcodes(pallets: pallets);
+
+                  try {
+                    final response =
+                        await barcodeService.postBarcodes(pallets: pallets);
+                    _showSendPalletDialog(context, null);
+                  } catch (e, stackTrave) {
+                    final String message =
+                        e.toString().replaceAll('Exception: ', '');
+                    _showSendPalletDialog(context, message);
+                  }
+
                   myFocusNode.requestFocus();
                 },
                 icon: const Icon(Icons.call_made, color: Colors.green),
@@ -187,8 +277,16 @@ class _InputWidgetState extends State<InputWidget> {
               _scrollController.jumpTo(_scrollController.position
                   .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
               return ListTile(
-                title: Text('${index + 1}. ${unit[index].barcode}'),
-              );
+                  title: Text('${index + 1}. ${unit[index].barcode}'),
+                  trailing: index + 1 == unit.length
+                      ? IconButton(
+                          onPressed: () {
+                            deleteCurrentUnit(deleteAll: false);
+                          },
+                          icon: const Icon(Icons.close),
+                          color: Colors.red,
+                        )
+                      : null);
             },
           ),
         )
