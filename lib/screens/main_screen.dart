@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
+import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 
 import 'package:honest_sign_flutter_app/screens/delete_barcode_sreen.dart';
@@ -19,8 +20,10 @@ class _InputWidgetState extends State<InputWidget> {
       TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final List<Item> allBarcodeHistory = [];
+  final BarcodeService barcodeService = const BarcodeService();
 
   final List<Item> unit = [];
+  final List<Item> historyForPallet = [];
   // final Map<String, List<String>> box = {
   //   'Группа 1': [' 1', '2', '3', '4', '5', '6'],
   //   'Группа 2': [' 1', '2', '3', '4', '5', '6'],
@@ -80,14 +83,17 @@ class _InputWidgetState extends State<InputWidget> {
           pallets.boxes = [...boxes];
 
           unit.clear();
+        } else if (i != 0 && i % countBoxesPerPallet == 0) {
+          DateTime now = DateTime.now();
+          String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
+          unit.clear();
+          pallets.barcode = item;
+          pallets.date = formattedDateTime;
+          // заглушка на проверку ппалета
+          // pallets[item] = Map<String, dynamic>.from(pallets[keyFututrePallet]);
+          // pallets.remove(keyFututrePallet);
+          // box.clear();
         }
-        // else if (item == '4630097264533') {
-        //   unit.clear();
-        //   // заглушка на проверку ппалета
-        //   pallets[item] = Map<String, dynamic>.from(pallets[keyFututrePallet]);
-        //   pallets.remove(keyFututrePallet);
-        //   box.clear();
-        // }
       }
     });
     // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
@@ -154,7 +160,7 @@ class _InputWidgetState extends State<InputWidget> {
             ElevatedButton.icon(
                 onPressed: () async {
                   myFocusNode.nextFocus();
-
+                  barcodeService.postBarcodes(pallets: pallets);
                   myFocusNode.requestFocus();
                 },
                 icon: const Icon(Icons.call_made, color: Colors.green),
