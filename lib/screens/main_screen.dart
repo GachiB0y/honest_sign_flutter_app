@@ -186,9 +186,9 @@ class _InputWidgetState extends State<InputWidget> {
       allBarcodeHistory.add(Item(barcode: text, date: formattedDateTime));
       countBarcodes += 1;
       //проверка на палету
-      if (countBarcodes % countBoxesPerPallet == 0) {
+      if (countBarcodes % (countBoxesPerPallet + 1) == 0) {
         createPallet(text);
-      } else if (countBarcodes % (countBoxesPerPallet - 1) == 0) {
+      } else if (countBarcodes % (countBoxesPerPallet) == 0) {
         _showDialogChekBarcode(context, false);
       }
       // проверка на коробку
