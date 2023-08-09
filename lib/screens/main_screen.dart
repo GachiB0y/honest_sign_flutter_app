@@ -4,7 +4,6 @@ import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 
-import 'package:honest_sign_flutter_app/screens/delete_barcode_sreen.dart';
 import 'package:intl/intl.dart';
 
 class InputWidget extends StatefulWidget {
@@ -23,6 +22,7 @@ class _InputWidgetState extends State<InputWidget> {
 
   final List<Item> unit = [];
   int countBarcodes = 0;
+  bool isNewRelease = true;
 
   final List<Box> boxes = [];
 
@@ -32,11 +32,13 @@ class _InputWidgetState extends State<InputWidget> {
       boxes: []);
 
   late InputWithKeyboardControlFocusNode myFocusNode;
+  late InputWithKeyboardControlFocusNode myFocusNodeCheckBarcode;
 
   @override
   void initState() {
     super.initState();
     _textEditingController = TextEditingController();
+
     myFocusNode = InputWithKeyboardControlFocusNode();
   }
 
@@ -118,6 +120,64 @@ class _InputWidgetState extends State<InputWidget> {
     );
   }
 
+  Future<void> _showDialogChekBarcode(
+    BuildContext context,
+    bool isBox,
+  ) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                isBox ? 'Отсканируйте коробку!' : 'Отсканируйте палету!',
+                style: const TextStyle(fontSize: 18),
+              ),
+            ],
+          ),
+          actions: [
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void createBox(String item) {
+    setState(() {
+      DateTime now = DateTime.now();
+      String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
+      final List<Item> copyUnits = unit.sublist(0, unit.length - 1);
+      boxes.add(Box(barcode: item, date: formattedDateTime, items: copyUnits));
+
+      pallets.boxes = [...boxes];
+
+      unit.clear();
+      _scrollController.jumpTo(_scrollController.position
+          .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
+    });
+  }
+
+  void createPallet(String text) {
+    setState(() {
+      DateTime now = DateTime.now();
+      String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
+      unit.clear();
+      pallets.barcode = text;
+      pallets.date = formattedDateTime;
+    });
+  }
+
   void _sendText(String text) {
     setState(() {
       DateTime now = DateTime.now();
@@ -127,40 +187,18 @@ class _InputWidgetState extends State<InputWidget> {
       countBarcodes += 1;
       //проверка на палету
       if (countBarcodes % countBoxesPerPallet == 0) {
-        DateTime now = DateTime.now();
-        String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
-        unit.clear();
-        pallets.barcode = text;
-        pallets.date = formattedDateTime;
+        createPallet(text);
+      } else if (countBarcodes % (countBoxesPerPallet - 1) == 0) {
+        _showDialogChekBarcode(context, false);
       }
       // проверка на коробку
-      for (int i = 0; i < unit.length; i++) {
-        String item = unit[i].barcode;
-
-        if (i != 0 && i % countUnitsPerBox == 0) {
-          DateTime now = DateTime.now();
-          String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
-          final List<Item> copyUnits = unit.sublist(0, unit.length - 1);
-          boxes.add(
-              Box(barcode: item, date: formattedDateTime, items: copyUnits));
-
-          pallets.boxes = [...boxes];
-
-          unit.clear();
-        }
-        // else if (i != 0 && i % countBoxesPerPallet == 0) {
-        //   DateTime now = DateTime.now();
-        //   String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
-        //   unit.clear();
-        //   pallets.barcode = item;
-        //   pallets.date = formattedDateTime;
-        //   // заглушка на проверку ппалета
-        //   // pallets[item] = Map<String, dynamic>.from(pallets[keyFututrePallet]);
-        //   // pallets.remove(keyFututrePallet);
-        //   // box.clear();
-        // }
+      if (unit.length == countUnitsPerBox) {
+        _showDialogChekBarcode(context, true);
+      } else if (unit.length == (countUnitsPerBox + 1)) {
+        createBox(text);
       }
     });
+
     // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
     _textEditingController.clear();
   }
@@ -181,117 +219,129 @@ class _InputWidgetState extends State<InputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child:
-                //  TextFormField(
-                //   focusNode: myFocusNode,
-                //   autofocus: true,
-                //   controller: _textEditingController,
-                //   onFieldSubmitted: (value) {
-                //     _sendText(value);
-                //   },
-                // )
-                InputWithKeyboardControl(
-              focusNode: myFocusNode,
-              onSubmitted: (value) {
-                _sendText(value);
-              },
-              autofocus: true,
-              controller: _textEditingController,
-              width: 300,
-              startShowKeyboard: false,
-              buttonColorEnabled: Colors.blue,
-              buttonColorDisabled: Colors.black,
-            ),
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton.icon(
-                onPressed: () async {
-                  myFocusNode.nextFocus();
-                  _showDeleteDialog(context);
-                  // /// ВЫЗОВ НОВГО СКРИНА НА УДАЛЕНИЕ
-                  // final result = await Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => DeleteScreen(
-                  //       pallets: pallets,
-                  //     ),
-                  //   ),
-                  // );
-                  // // Обработка результата с нового экрана
-                  // if (result != null) {}
+    return isNewRelease
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  // focusNode: myFocusNode,
+                  // autofocus: true,
+                  controller: _textEditingController,
+                  onFieldSubmitted: (value) async {
+                    try {
+                      await barcodeService.getInfoForBarcodeRealise(
+                          numberCard: _textEditingController.text);
+                      setState(() {
+                        _textEditingController.clear();
+                        isNewRelease = false;
+                      });
+                    } catch (e) {
+                      final String message =
+                          e.toString().replaceAll('Exception: ', '');
+                      _showSendPalletDialog(context, message);
+                    }
+                  },
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'Введите номер карты, для получения данных!',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ],
+          )
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child:
+                      //  TextFormField(
+                      //   focusNode: myFocusNode,
+                      //   autofocus: true,
+                      //   controller: _textEditingController,
+                      //   onFieldSubmitted: (value) {
+                      //     _sendText(value);
+                      //   },
+                      // )
+                      InputWithKeyboardControl(
+                    focusNode: myFocusNode,
+                    onSubmitted: (value) {
+                      _sendText(value);
+                    },
+                    autofocus: true,
+                    controller: _textEditingController,
+                    width: 300,
+                    startShowKeyboard: false,
+                    buttonColorEnabled: Colors.blue,
+                    buttonColorDisabled: Colors.black,
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                      onPressed: () async {
+                        myFocusNode.nextFocus();
+                        _showDeleteDialog(context);
+                        // /// ВЫЗОВ НОВГО СКРИНА НА УДАЛЕНИЕ
+                        // final result = await Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => DeleteScreen(
+                        //       pallets: pallets,
+                        //     ),
+                        //   ),
+                        // );
+                        // // Обработка результата с нового экрана
+                        // if (result != null) {}
 
-                  myFocusNode.requestFocus();
-                },
-                icon: const Icon(Icons.delete, color: Colors.red),
-                label: const Text('Удалить')),
-            const SizedBox(
-              width: 15,
-            ),
-            ElevatedButton.icon(
-                onPressed: () async {
-                  myFocusNode.nextFocus();
+                        myFocusNode.requestFocus();
+                      },
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      label: const Text('Удалить')),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  ElevatedButton.icon(
+                      onPressed: () async {
+                        myFocusNode.nextFocus();
 
-                  try {
-                    final response =
-                        await barcodeService.postBarcodes(pallets: pallets);
-                    _showSendPalletDialog(context, null);
-                  } catch (e, stackTrave) {
-                    final String message =
-                        e.toString().replaceAll('Exception: ', '');
-                    _showSendPalletDialog(context, message);
-                  }
+                        try {
+                          if (pallets.barcode != 'Будущая палета') {
+                            await barcodeService.postBarcodes(pallets: pallets);
+                            _showSendPalletDialog(context, null);
+                          } else {
+                            _showSendPalletDialog(
+                                context, 'Нет штрихкода для палета!');
+                          }
+                        } catch (e) {
+                          final String message =
+                              e.toString().replaceAll('Exception: ', '');
+                          _showSendPalletDialog(context, message);
+                        }
 
-                  myFocusNode.requestFocus();
-                },
-                icon: const Icon(Icons.call_made, color: Colors.green),
-                label: const Text('Отправить палету')),
-          ],
-        ),
-        Expanded(
-          child: SingleChildScrollView(
-            child: ModelsPalletWidget(
-              pallet: pallets,
-            ),
-          ),
-        ),
-        const Divider(
-          thickness: 5,
-        ),
-        const Text('Текущие штрихкоды бутылок'),
-        SizedBox(
-          height: MediaQuery.of(context).size.height / 3.5,
-          child: ListView.builder(
-            controller: _scrollController,
-            itemCount: unit.length,
-            itemBuilder: (BuildContext context, int index) {
-              _scrollController.jumpTo(_scrollController.position
-                  .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
-              return ListTile(
-                  title: Text('${index + 1}. ${unit[index].barcode}'),
-                  trailing: index + 1 == unit.length
-                      ? IconButton(
-                          onPressed: () {
-                            deleteCurrentUnit(deleteAll: false);
-                          },
-                          icon: const Icon(Icons.close),
-                          color: Colors.red,
-                        )
-                      : null);
-            },
-          ),
-        )
-      ],
-    );
+                        myFocusNode.requestFocus();
+                      },
+                      icon: const Icon(Icons.call_made, color: Colors.green),
+                      label: const Text('Отправить палету')),
+                ],
+              ),
+              TwoTabWidget(
+                pallets: pallets,
+                deleteCurrentUnit: deleteCurrentUnit,
+                scrollController: _scrollController,
+                unit: unit,
+              ),
+            ],
+          );
   }
 }
 
@@ -521,6 +571,74 @@ class ModelsPalletWidget extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class TwoTabWidget extends StatelessWidget {
+  final ModelsPallet pallets;
+  final ScrollController scrollController;
+  final List<Item> unit;
+  final Function({required bool deleteAll}) deleteCurrentUnit;
+
+  const TwoTabWidget(
+      {super.key,
+      required this.pallets,
+      required this.scrollController,
+      required this.unit,
+      required this.deleteCurrentUnit});
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Expanded(
+        child: Column(
+          children: [
+            const TabBar(
+              tabs: [
+                Tab(text: 'Текущие бутылки'),
+                Tab(text: 'История'),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  // Виджеты для первой вкладки
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 3.5,
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: unit.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                            title: Text(
+                              '${index + 1}. Бутылка ${index + 1}.',
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                            trailing: index + 1 == unit.length
+                                ? IconButton(
+                                    onPressed: () {
+                                      deleteCurrentUnit(deleteAll: false);
+                                    },
+                                    icon: const Icon(Icons.close),
+                                    color: Colors.red,
+                                  )
+                                : null);
+                      },
+                    ),
+                  ),
+                  // Виджеты для второй вкладки
+                  SingleChildScrollView(
+                    child: ModelsPalletWidget(
+                      pallet: pallets,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
