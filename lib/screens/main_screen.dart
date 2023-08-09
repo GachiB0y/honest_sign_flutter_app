@@ -604,28 +604,10 @@ class TwoTabWidget extends StatelessWidget {
               child: TabBarView(
                 children: [
                   // Виджеты для первой вкладки
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height / 3.5,
-                    child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: unit.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                            title: Text(
-                              '${index + 1}. Бутылка ${index + 1}.',
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                            trailing: index + 1 == unit.length
-                                ? IconButton(
-                                    onPressed: () {
-                                      deleteCurrentUnit(deleteAll: false);
-                                    },
-                                    icon: const Icon(Icons.close),
-                                    color: Colors.red,
-                                  )
-                                : null);
-                      },
-                    ),
+                  CrrentHistoryWidget(
+                    deleteCurrentUnit: deleteCurrentUnit,
+                    scrollController: scrollController,
+                    unit: unit,
                   ),
                   // Виджеты для второй вкладки
                   SingleChildScrollView(
@@ -638,6 +620,44 @@ class TwoTabWidget extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CrrentHistoryWidget extends StatelessWidget {
+  final ScrollController scrollController;
+  final List<Item> unit;
+  final Function({required bool deleteAll}) deleteCurrentUnit;
+  const CrrentHistoryWidget(
+      {super.key,
+      required this.scrollController,
+      required this.unit,
+      required this.deleteCurrentUnit});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height / 3.5,
+      child: ListView.builder(
+        controller: scrollController,
+        itemCount: unit.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+              title: Text(
+                '${index + 1}. Бутылка ${index + 1}.',
+                style: const TextStyle(fontSize: 18),
+              ),
+              trailing: index + 1 == unit.length
+                  ? IconButton(
+                      onPressed: () {
+                        deleteCurrentUnit(deleteAll: false);
+                      },
+                      icon: const Icon(Icons.close),
+                      color: Colors.red,
+                    )
+                  : null);
+        },
       ),
     );
   }
