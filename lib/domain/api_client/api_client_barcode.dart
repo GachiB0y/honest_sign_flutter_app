@@ -36,8 +36,10 @@ class BarcodeService {
       var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
 
       countUnitsPerBox = jsonResponse['PalletItems'];
+      countBoxesPerPallet = jsonResponse['PalletBox'];
 
-      countBoxesPerPallet = jsonResponse['Pallet'];
+      countAllBarcodesPerPallet =
+          jsonResponse['Pallet'] + countBoxesPerPallet + 1;
       return true;
     } else {
       throw Exception('Ошибка получения данных о разливе!');

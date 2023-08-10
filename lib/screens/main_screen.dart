@@ -6,6 +6,8 @@ import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 
 import 'package:intl/intl.dart';
 
+enum TypeOfBarcode { unit, box, pallet }
+
 class InputWidget extends StatefulWidget {
   const InputWidget({super.key});
 
@@ -22,6 +24,7 @@ class _InputWidgetState extends State<InputWidget> {
 
   final List<Item> unit = [];
   int countBarcodes = 0;
+  int countBox = 0;
   bool isNewRelease = true;
 
   final List<Box> boxes = [];
@@ -121,9 +124,7 @@ class _InputWidgetState extends State<InputWidget> {
   }
 
   Future<void> _showDialogChekBarcode(
-    BuildContext context,
-    bool isBox,
-  ) async {
+      BuildContext context, bool isBox, bool checkValid) async {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -132,10 +133,15 @@ class _InputWidgetState extends State<InputWidget> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                isBox ? 'Отсканируйте коробку!' : 'Отсканируйте палету!',
-                style: const TextStyle(fontSize: 18),
-              ),
+              checkValid
+                  ? const Text(
+                      'Штрих код не найден. Отсканируйте штрихкод!',
+                      style: TextStyle(fontSize: 18),
+                    )
+                  : Text(
+                      isBox ? 'Отсканируйте коробку!' : 'Отсканируйте палету!',
+                      style: const TextStyle(fontSize: 18),
+                    ),
             ],
           ),
           actions: [
@@ -163,8 +169,6 @@ class _InputWidgetState extends State<InputWidget> {
       pallets.boxes = [...boxes];
 
       unit.clear();
-      _scrollController.jumpTo(_scrollController.position
-          .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
     });
   }
 
@@ -179,28 +183,95 @@ class _InputWidgetState extends State<InputWidget> {
   }
 
   void _sendText(String text) {
+    DateTime now = DateTime.now();
+    String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
+    //проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
+    bool isValid = isValidBarcode(text, TypeOfBarcode.unit);
     setState(() {
-      DateTime now = DateTime.now();
-      String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
       unit.add(Item(barcode: text, date: formattedDateTime));
-      allBarcodeHistory.add(Item(barcode: text, date: formattedDateTime));
       countBarcodes += 1;
-      //проверка на палету
-      if (countBarcodes % (countBoxesPerPallet + 1) == 0) {
-        createPallet(text);
-      } else if (countBarcodes % (countBoxesPerPallet) == 0) {
-        _showDialogChekBarcode(context, false);
-      }
-      // проверка на коробку
-      if (unit.length == countUnitsPerBox) {
-        _showDialogChekBarcode(context, true);
-      } else if (unit.length == (countUnitsPerBox + 1)) {
-        createBox(text);
-      }
+      allBarcodeHistory.add(Item(barcode: text, date: formattedDateTime));
     });
+    //проверка на палету
+    countAllBarcodesPerPallet = 19;
+    countBoxesPerPallet = 2;
+    if (countBarcodes % (countAllBarcodesPerPallet) == 0) {
+      isValid = isValidBarcode(text, TypeOfBarcode.pallet);
+      if (isValid) {
+        createPallet(text);
+      } else {
+        unit.removeLast();
+        countBarcodes -= 1;
+        _showDialogChekBarcode(context, false, true);
+      }
+    }
+    // else if (countBarcodes % (countAllBarcodesPerPallet - 1) == 0 &&
+    //     countBoxesPerPallet == countBox) {
+    //   _showDialogChekBarcode(context, false, false);
+    // }
+    // проверка на коробку
+    // else if (unit.length == countUnitsPerBox) {
+    //   _showDialogChekBarcode(context, true, false);
+    // }
+    else if (unit.length == (countUnitsPerBox + 1)) {
+      isValid = isValidBarcode(text, TypeOfBarcode.box);
+      if (isValid) {
+        countBox += 1;
+        createBox(text);
+        if (countBarcodes % (countAllBarcodesPerPallet - 1) == 0 &&
+            countBoxesPerPallet == countBox) {
+          _showDialogChekBarcode(context, false, false);
+        }
+      } else {
+        unit.removeLast();
+        countBarcodes -= 1;
+        _showDialogChekBarcode(context, false, true);
+      }
+      //проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
+    } else {
+      if (isValid) {
+        if (unit.length == countUnitsPerBox) {
+          _showDialogChekBarcode(context, true, false);
+        }
+      } else {
+        unit.removeLast();
+        countBarcodes -= 1;
+        _showDialogChekBarcode(context, false, true);
+      }
+    }
 
-    // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
-    _textEditingController.clear();
+    setState(() {
+      // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
+      _textEditingController.clear();
+    });
+  }
+
+  bool isValidBarcode(String text, TypeOfBarcode barcodeType) {
+    switch (barcodeType) {
+      case TypeOfBarcode.unit:
+        final Set<String> setUnit = {'4630097264533', '99999997688990'};
+        if (setUnit.contains(text)) {
+          return true;
+        } else {
+          return false;
+        }
+
+      case TypeOfBarcode.box:
+        final Set<String> setUnit = {'99999999389957'};
+        if (setUnit.contains(text)) {
+          return true;
+        } else {
+          return false;
+        }
+
+      case TypeOfBarcode.pallet:
+        final Set<String> setUnit = {'99999999389957'};
+        if (setUnit.contains(text)) {
+          return true;
+        } else {
+          return false;
+        }
+    }
   }
 
   void deleteCurrentUnit({required bool deleteAll}) {
@@ -288,26 +359,30 @@ class _InputWidgetState extends State<InputWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton.icon(
-                      onPressed: () async {
-                        myFocusNode.nextFocus();
-                        _showDeleteDialog(context);
-                        // /// ВЫЗОВ НОВГО СКРИНА НА УДАЛЕНИЕ
-                        // final result = await Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => DeleteScreen(
-                        //       pallets: pallets,
-                        //     ),
-                        //   ),
-                        // );
-                        // // Обработка результата с нового экрана
-                        // if (result != null) {}
+                  IconButton(
+                    onPressed: () async {
+                      myFocusNode.nextFocus();
+                      _showDeleteDialog(context);
+                      // /// ВЫЗОВ НОВГО СКРИНА НА УДАЛЕНИЕ
+                      // final result = await Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => DeleteScreen(
+                      //       pallets: pallets,
+                      //     ),
+                      //   ),
+                      // );
+                      // // Обработка результата с нового экрана
+                      // if (result != null) {}
 
-                        myFocusNode.requestFocus();
-                      },
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      label: const Text('Удалить')),
+                      myFocusNode.requestFocus();
+                    },
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                      size: 30,
+                    ),
+                  ),
                   const SizedBox(
                     width: 15,
                   ),
@@ -630,6 +705,7 @@ class CrrentHistoryWidget extends StatelessWidget {
   final ScrollController scrollController;
   final List<Item> unit;
   final Function({required bool deleteAll}) deleteCurrentUnit;
+
   const CrrentHistoryWidget(
       {super.key,
       required this.scrollController,
@@ -644,6 +720,8 @@ class CrrentHistoryWidget extends StatelessWidget {
         controller: scrollController,
         itemCount: unit.length,
         itemBuilder: (BuildContext context, int index) {
+          scrollController.jumpTo(scrollController.position
+              .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
           return ListTile(
               title: Text(
                 '${index + 1}. Бутылка ${index + 1}.',

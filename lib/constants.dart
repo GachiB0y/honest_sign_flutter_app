@@ -1,4 +1,5 @@
 int countUnitsPerBox = 6;
-int countBoxesPerPallet = 15;
+int countAllBarcodesPerPallet = 15;
+int countBoxesPerPallet = 2;
 
 const String keyFututrePallet = 'Будущий палет';
