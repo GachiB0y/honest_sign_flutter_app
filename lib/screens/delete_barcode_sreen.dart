@@ -123,7 +123,7 @@ class DeleteScreen extends StatelessWidget {
                 style: const ButtonStyle(
                     padding: MaterialStatePropertyAll(EdgeInsets.all(26.0))),
                 onPressed: () {
-                  if (!_textOldBarcode.text.isEmpty) {
+                  if (_textOldBarcode.text.isNotEmpty) {
                     _showDeleteDialog(context, pallets);
                   }
                 },

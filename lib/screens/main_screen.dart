@@ -617,39 +617,6 @@ class InputWithKeyboardControlFocusNode extends FocusNode {
   }
 }
 
-// class MapListWidget extends StatelessWidget {
-//   final Map<String, List<String>> data;
-
-//   const MapListWidget({super.key, required this.data});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListView.builder(
-//       itemCount: data.keys.length,
-//       itemBuilder: (context, index) {
-//         String key = data.keys.elementAt(index);
-//         List<String> values = data[key]!;
-
-//         return ExpansionTile(
-//           title: Text(key),
-//           children: [
-//             ListView.builder(
-//               shrinkWrap: true,
-//               physics: const ClampingScrollPhysics(),
-//               itemCount: values.length,
-//               itemBuilder: (context, index) {
-//                 return ListTile(
-//                   title: Text(values[index]),
-//                 );
-//               },
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-// }
-
 class ItemWidget extends StatelessWidget {
   final Item item;
 
@@ -705,7 +672,7 @@ class ModelsPalletWidget extends StatelessWidget {
       title: Text(pallet.barcode),
       children: <Widget>[
         ListTile(
-          title: Text('Коробки:'),
+          title: const Text('Коробки:'),
           subtitle: Column(
             children: pallet.boxes
                 .map((box) => BoxWidget(
