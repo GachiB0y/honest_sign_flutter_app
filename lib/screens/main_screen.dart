@@ -378,6 +378,7 @@ class _InputWidgetState extends State<InputWidget> {
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child:
+
                       //  TextFormField(
                       //   focusNode: myFocusNode,
                       //   autofocus: true,
@@ -385,7 +386,7 @@ class _InputWidgetState extends State<InputWidget> {
                       //   onFieldSubmitted: (value) {
                       //     _sendText(value);
                       //   },
-                      // )
+                      // ) // Для веб браузера, тк неь клавиатуры
                       InputWithKeyboardControl(
                     focusNode: myFocusNode,
                     onSubmitted: (value) {
@@ -435,6 +436,7 @@ class _InputWidgetState extends State<InputWidget> {
                         myFocusNode.nextFocus();
 
                         try {
+                          // Проверка на отправку полной палеты
                           if (pallets.boxes.length == countBoxesPerPallet) {
                             final bool isOk = await barcodeService.postBarcodes(
                                 pallets: pallets);
@@ -715,7 +717,7 @@ class TwoTabWidget extends StatelessWidget {
               child: TabBarView(
                 children: [
                   // Виджеты для первой вкладки
-                  CrrentHistoryWidget(
+                  CurrentHistoryWidget(
                     deleteCurrentUnit: deleteCurrentUnit,
                     scrollController: scrollController,
                     unit: unit,
@@ -736,12 +738,12 @@ class TwoTabWidget extends StatelessWidget {
   }
 }
 
-class CrrentHistoryWidget extends StatelessWidget {
+class CurrentHistoryWidget extends StatelessWidget {
   final ScrollController scrollController;
   final List<Item> unit;
   final Function({required bool deleteAll}) deleteCurrentUnit;
 
-  const CrrentHistoryWidget(
+  const CurrentHistoryWidget(
       {super.key,
       required this.scrollController,
       required this.unit,
