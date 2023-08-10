@@ -26,6 +26,8 @@ class _InputWidgetState extends State<InputWidget> {
   int countBarcodes = 0;
   int countBox = 0;
   bool isNewRelease = true;
+  bool isSendNotColpetePallet = false;
+  bool isErroreSendPallet = false;
 
   final List<Box> boxes = [];
 
@@ -182,7 +184,8 @@ class _InputWidgetState extends State<InputWidget> {
     });
   }
 
-  void _sendText(String text) {
+  void _sendText(String text) async {
+    if (isErroreSendPallet) return;
     DateTime now = DateTime.now();
     String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
     //проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
@@ -192,6 +195,53 @@ class _InputWidgetState extends State<InputWidget> {
       countBarcodes += 1;
       allBarcodeHistory.add(Item(barcode: text, date: formattedDateTime));
     });
+    // проверка на отправку не полной палеты
+    if (isSendNotColpetePallet) {
+      isValid = isValidBarcode(text, TypeOfBarcode.pallet);
+      if (isValid) {
+        createPallet(text);
+        setState(() {
+          isSendNotColpetePallet = false;
+        });
+        try {
+          final bool isOk = await barcodeService.postBarcodes(pallets: pallets);
+          if (isOk) {
+            _showSendPalletDialog(context, null);
+            setState(() {
+              pallets.barcode = 'Будущая палета';
+              pallets.boxes = [];
+              pallets.date = '';
+              countBarcodes = 0;
+              countBox = 0;
+              _textEditingController.clear();
+              isErroreSendPallet = false;
+              boxes.clear();
+            });
+          }
+        } catch (e) {
+          setState(() {
+            isErroreSendPallet = true;
+          });
+          final String message = e.toString().replaceAll('Exception: ', '');
+          _showSendPalletDialog(context, message);
+
+          setState(() {
+            _textEditingController.clear();
+          });
+        }
+      } else {
+        setState(() {
+          unit.removeLast();
+          countBarcodes -= 1;
+        });
+
+        _showDialogChekBarcode(context, false, true);
+      }
+      setState(() {
+        _textEditingController.clear();
+      });
+      return;
+    }
     //проверка на палету
     countAllBarcodesPerPallet = 19;
     countBoxesPerPallet = 2;
@@ -205,14 +255,8 @@ class _InputWidgetState extends State<InputWidget> {
         _showDialogChekBarcode(context, false, true);
       }
     }
-    // else if (countBarcodes % (countAllBarcodesPerPallet - 1) == 0 &&
-    //     countBoxesPerPallet == countBox) {
-    //   _showDialogChekBarcode(context, false, false);
-    // }
+
     // проверка на коробку
-    // else if (unit.length == countUnitsPerBox) {
-    //   _showDialogChekBarcode(context, true, false);
-    // }
     else if (unit.length == (countUnitsPerBox + 1)) {
       isValid = isValidBarcode(text, TypeOfBarcode.box);
       if (isValid) {
@@ -391,14 +435,38 @@ class _InputWidgetState extends State<InputWidget> {
                         myFocusNode.nextFocus();
 
                         try {
-                          if (pallets.barcode != 'Будущая палета') {
-                            await barcodeService.postBarcodes(pallets: pallets);
-                            _showSendPalletDialog(context, null);
+                          if (pallets.boxes.length == countBoxesPerPallet) {
+                            final bool isOk = await barcodeService.postBarcodes(
+                                pallets: pallets);
+                            if (isOk) {
+                              _showSendPalletDialog(context, null);
+                              setState(() {
+                                pallets.barcode = 'Будущая палета';
+                                pallets.boxes = [];
+                                pallets.date = '';
+                                countBarcodes = 0;
+                                countBox = 0;
+                                isErroreSendPallet = false;
+                                boxes.clear();
+                              });
+                            }
+                          } else if (pallets.boxes.isNotEmpty) {
+                            setState(() {
+                              isSendNotColpetePallet = true;
+                            });
+                            if (pallets.barcode == 'Будущая палета') {
+                              _showDialogChekBarcode(context, false, false);
+                            } else {
+                              _sendText(pallets.barcode);
+                            }
                           } else {
-                            _showSendPalletDialog(
-                                context, 'Нет штрихкода для палета!');
+                            _showSendPalletDialog(context,
+                                'Нужна хотябы одна коробка для отправки палеты!');
                           }
                         } catch (e) {
+                          setState(() {
+                            isErroreSendPallet = true;
+                          });
                           final String message =
                               e.toString().replaceAll('Exception: ', '');
                           _showSendPalletDialog(context, message);
@@ -549,38 +617,38 @@ class InputWithKeyboardControlFocusNode extends FocusNode {
   }
 }
 
-class MapListWidget extends StatelessWidget {
-  final Map<String, List<String>> data;
+// class MapListWidget extends StatelessWidget {
+//   final Map<String, List<String>> data;
 
-  const MapListWidget({super.key, required this.data});
+//   const MapListWidget({super.key, required this.data});
 
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: data.keys.length,
-      itemBuilder: (context, index) {
-        String key = data.keys.elementAt(index);
-        List<String> values = data[key]!;
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListView.builder(
+//       itemCount: data.keys.length,
+//       itemBuilder: (context, index) {
+//         String key = data.keys.elementAt(index);
+//         List<String> values = data[key]!;
 
-        return ExpansionTile(
-          title: Text(key),
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const ClampingScrollPhysics(),
-              itemCount: values.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(values[index]),
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
+//         return ExpansionTile(
+//           title: Text(key),
+//           children: [
+//             ListView.builder(
+//               shrinkWrap: true,
+//               physics: const ClampingScrollPhysics(),
+//               itemCount: values.length,
+//               itemBuilder: (context, index) {
+//                 return ListTile(
+//                   title: Text(values[index]),
+//                 );
+//               },
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+// }
 
 class ItemWidget extends StatelessWidget {
   final Item item;
@@ -637,7 +705,7 @@ class ModelsPalletWidget extends StatelessWidget {
       title: Text(pallet.barcode),
       children: <Widget>[
         ListTile(
-          title: const Text('Коробки:'),
+          title: Text('Коробки:'),
           subtitle: Column(
             children: pallet.boxes
                 .map((box) => BoxWidget(
@@ -720,8 +788,8 @@ class CrrentHistoryWidget extends StatelessWidget {
         controller: scrollController,
         itemCount: unit.length,
         itemBuilder: (BuildContext context, int index) {
-          scrollController.jumpTo(scrollController.position
-              .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
+          // scrollController.jumpTo(scrollController.position
+          //     .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
           return ListTile(
               title: Text(
                 '${index + 1}. Бутылка ${index + 1}.',
