@@ -243,8 +243,8 @@ class _InputWidgetState extends State<InputWidget> {
       return;
     }
     //проверка на палету
-    countAllBarcodesPerPallet = 19;
-    countBoxesPerPallet = 2;
+    // countAllBarcodesPerPallet = 19; Заглушка на 19 всего кодов и две коробки
+    // countBoxesPerPallet = 2;
     if (countBarcodes % (countAllBarcodesPerPallet) == 0) {
       isValid = isValidBarcode(text, TypeOfBarcode.pallet);
       if (isValid) {
