@@ -226,6 +226,7 @@ class _InputWidgetState extends State<InputWidget> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  keyboardType: TextInputType.number,
                   // focusNode: myFocusNode,
                   autofocus: true,
                   controller: _textEditingController,
