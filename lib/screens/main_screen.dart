@@ -138,61 +138,67 @@ class _InputWidgetState extends State<InputWidget> {
       // barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  if (isShowError)
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    if (isShowError)
+                      const Text(
+                        'Штрих код не найден. Отсканируйте штрихкод!',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600),
+                      ),
                     const Text(
-                      'Штрих код не найден. Отсканируйте штрихкод!',
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.red,
-                          fontWeight: FontWeight.w600),
+                      'Отсканируйте коробку!',
+                      style: TextStyle(fontSize: 18),
                     ),
-                  Text(
-                    'Отсканируйте коробку!',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  InputWithKeyboardControl(
-                    focusNode: myFocusNodeCheckBarcode,
-                    onSubmitted: (value) async {
-                      final bool isSend = await _sendText(value);
+                    InputWithKeyboardControl(
+                      focusNode: myFocusNodeCheckBarcode,
+                      onSubmitted: (value) async {
+                        final bool isSend = await _sendText(value);
 
-                      if (isSend) {
-                        sendBoxAndOpenPalletDialog(context);
-                      } else {
-                        // setState(() {
-                        //   isShowError = true;
-                        // });
-                      }
-                    },
-                    autofocus: true,
-                    controller: _textEditingController,
-                    width: 300,
-                    startShowKeyboard: false,
-                    buttonColorEnabled: Colors.blue,
-                    buttonColorDisabled: Colors.black,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          actions: [
-            if (checkValid)
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('OK'),
+                        if (isSend) {
+                          sendBoxAndOpenPalletDialog(context);
+                          setState(() {
+                            isShowError = false;
+                          });
+                        } else {
+                          setState(() {
+                            isShowError = true;
+                          });
+                        }
+                      },
+                      autofocus: true,
+                      controller: _textEditingController,
+                      width: 300,
+                      startShowKeyboard: false,
+                      buttonColorEnabled: Colors.blue,
+                      buttonColorDisabled: Colors.black,
+                    ),
+                  ],
                 ),
-              ),
-          ],
-        );
+              ],
+            ),
+            actions: [
+              if (checkValid)
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                  ),
+                ),
+            ],
+          );
+        });
       },
     );
   }
@@ -207,76 +213,79 @@ class _InputWidgetState extends State<InputWidget> {
       // barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  if (isShowError)
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    if (isShowError)
+                      const Text(
+                        'Штрих код не найден. Отсканируйте штрихкод!',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600),
+                      ),
                     const Text(
-                      'Штрих код не найден. Отсканируйте штрихкод!',
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.red,
-                          fontWeight: FontWeight.w600),
+                      'Отсканируйте палету!',
+                      style: TextStyle(fontSize: 18),
                     ),
-                  const Text(
-                    'Отсканируйте палету!',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  InputWithKeyboardControl(
-                    focusNode: myFocusNodeCheckBarcode,
-                    onSubmitted: (value) async {
-                      final bool isSend = await _sendText(value);
+                    InputWithKeyboardControl(
+                      focusNode: myFocusNodeCheckBarcode,
+                      onSubmitted: (value) async {
+                        final bool isSend = await _sendText(value);
 
-                      if (isSend) {
-                        Navigator.pop(context);
-                        setState(() {
-                          isOpenAlertDialog = false;
-                        });
-                        _showSendPalletDialog(context, null);
-                        setState(() {
-                          pallets.barcode = 'Будущая палета';
-                          pallets.boxes = [];
-                          pallets.date = '';
-                          countBarcodes = 0;
-                          countBox = 0;
-                          _textEditingController.clear();
-                          isErroreSendPallet = false;
-                          boxes.clear();
-                          isOpenAlertDialog = false;
-                        });
-                      } else {
-                        // setState(() {
-                        //   isShowError = true;
-                        // }); // ПОКАЗАТЬ ОШИБКУ
-                      }
-                    },
-                    autofocus: true,
-                    controller: _textEditingController,
-                    width: 300,
-                    startShowKeyboard: false,
-                    buttonColorEnabled: Colors.blue,
-                    buttonColorDisabled: Colors.black,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          actions: [
-            if (checkValid)
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('OK'),
+                        if (isSend) {
+                          Navigator.pop(context);
+
+                          _showSendPalletDialog(context, null);
+                          setState(() {
+                            isOpenAlertDialog = false;
+                            pallets.barcode = 'Будущая палета';
+                            pallets.boxes = [];
+                            pallets.date = '';
+                            countBarcodes = 0;
+                            countBox = 0;
+                            _textEditingController.clear();
+                            isErroreSendPallet = false;
+                            boxes.clear();
+                            isOpenAlertDialog = false;
+                            isShowError = false;
+                          });
+                        } else {
+                          setState(() {
+                            isShowError = true;
+                          }); // ПОКАЗАТЬ ОШИБКУ
+                        }
+                      },
+                      autofocus: true,
+                      controller: _textEditingController,
+                      width: 300,
+                      startShowKeyboard: false,
+                      buttonColorEnabled: Colors.blue,
+                      buttonColorDisabled: Colors.black,
+                    ),
+                  ],
                 ),
-              ),
-          ],
-        );
+              ],
+            ),
+            actions: [
+              if (checkValid)
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                  ),
+                ),
+            ],
+          );
+        });
       },
     );
   }
