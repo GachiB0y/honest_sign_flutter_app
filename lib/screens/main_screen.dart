@@ -302,7 +302,7 @@ class _InputWidgetState extends State<InputWidget> {
       // }
 
       case TypeOfBarcode.box:
-        setBoxs = {'99999999389957'};
+        // setBoxs = {'99999999389957'};
         if (setBoxs.contains(text)) {
           return true;
         } else {
@@ -310,7 +310,7 @@ class _InputWidgetState extends State<InputWidget> {
         }
 
       case TypeOfBarcode.pallet:
-        setPallets = {'99999999389957'};
+        // setPallets = {'99999999389957'};
         if (setPallets.contains(text)) {
           return true;
         } else {
