@@ -293,24 +293,25 @@ class _InputWidgetState extends State<InputWidget> {
   bool isValidBarcode(String text, TypeOfBarcode barcodeType) {
     switch (barcodeType) {
       case TypeOfBarcode.unit:
-        final Set<String> setUnit = {'4630097264533', '99999997688990'};
-        if (setUnit.contains(text)) {
-          return true;
-        } else {
-          return false;
-        }
+        return true; // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
+      // final Set<String> setUnit = {'4630097264533', '99999997688990'};
+      // if (setUnit.contains(text)) {
+      //   return true;
+      // } else {
+      //   return false;
+      // }
 
       case TypeOfBarcode.box:
-        final Set<String> setUnit = {'99999999389957'};
-        if (setUnit.contains(text)) {
+        setBoxs = {'99999999389957'};
+        if (setBoxs.contains(text)) {
           return true;
         } else {
           return false;
         }
 
       case TypeOfBarcode.pallet:
-        final Set<String> setUnit = {'99999999389957'};
-        if (setUnit.contains(text)) {
+        setPallets = {'99999999389957'};
+        if (setPallets.contains(text)) {
           return true;
         } else {
           return false;
@@ -349,6 +350,7 @@ class _InputWidgetState extends State<InputWidget> {
                     try {
                       await barcodeService.getInfoForBarcodeRealise(
                           numberCard: _textEditingController.text);
+                      await barcodeService.getBarcodes();
                       setState(() {
                         _textEditingController.clear();
                         isNewRelease = false;
@@ -455,6 +457,7 @@ class _InputWidgetState extends State<InputWidget> {
                           } else if (pallets.boxes.isNotEmpty) {
                             setState(() {
                               isSendNotColpetePallet = true;
+                              isErroreSendPallet = false;
                             });
                             if (pallets.barcode == 'Будущая палета') {
                               _showDialogChekBarcode(context, false, false);

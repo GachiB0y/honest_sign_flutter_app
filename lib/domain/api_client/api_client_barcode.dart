@@ -1,15 +1,26 @@
+import 'dart:io';
+
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 class BarcodeService {
-  Future<String> getBarcodes({query}) async {
-    var url = 'http://10.3.50.96:8000/';
+  Future<bool> getBarcodes() async {
+    var url = 'http://10.3.50.96:8000/get_boxes';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      return 'резулььтат заглушка';
+      // List<String> myList = jsonDecode(response.body);
+      List<String> myList =
+          (jsonDecode(response.body) as List<dynamic>).cast<String>();
+
+      setBoxs = Set.from(myList);
+
+      return true;
     } else {
       throw Exception('Failed to load');
     }
@@ -18,6 +29,7 @@ class BarcodeService {
   Future<bool> postBarcodes({required ModelsPallet pallets}) async {
     var url = 'http://10.3.50.96:8000/';
     final body = jsonEncode(pallets.toJson());
+    saveData(pallets);
     final response = await http.post(Uri.parse(url), body: body);
 
     if (response.statusCode == 200) {
@@ -25,6 +37,24 @@ class BarcodeService {
     } else {
       throw Exception('Ошибка отправки палеты!');
     }
+  }
+
+  void saveData(ModelsPallet pallets) async {
+    if (await Permission.storage.request().isGranted) {
+      final file = await createFile('example.json');
+      final jsonStr = json.encode(pallets.toJson());
+      await file.writeAsString(jsonStr);
+    } else {
+      print('ERROR');
+    }
+  }
+
+  Future<File> createFile(String fileName) async {
+    final directory = await getExternalStorageDirectory();
+    final newPath = '${directory!.path}/Download';
+    await Directory(newPath).create(recursive: true);
+    final newPathWithFile = '$newPath/$fileName';
+    return File(newPathWithFile).create();
   }
 
   Future<bool> getInfoForBarcodeRealise({required String numberCard}) async {
