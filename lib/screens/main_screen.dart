@@ -28,6 +28,8 @@ class _InputWidgetState extends State<InputWidget> {
   bool isNewRelease = true;
   bool isSendNotColpetePallet = false;
   bool isErroreSendPallet = false;
+  bool isOpenAlertDialog = false;
+  bool isShowError = false;
 
   final List<Box> boxes = [];
 
@@ -37,7 +39,8 @@ class _InputWidgetState extends State<InputWidget> {
       boxes: []);
 
   late InputWithKeyboardControlFocusNode myFocusNode;
-  late InputWithKeyboardControlFocusNode myFocusNodeCheckBarcode;
+  late InputWithKeyboardControlFocusNode myFocusNodeCheckBarcode =
+      InputWithKeyboardControlFocusNode();
 
   @override
   void initState() {
@@ -125,9 +128,14 @@ class _InputWidgetState extends State<InputWidget> {
     );
   }
 
-  Future<void> _showDialogChekBarcode(
-      BuildContext context, bool isBox, bool checkValid) async {
+  Future<void> _showDialogChekBarcodeForBox(
+      {required BuildContext context, required bool checkValid}) async {
+    setState(() {
+      isOpenAlertDialog = true;
+    });
+
     await showDialog(
+      // barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -135,30 +143,154 @@ class _InputWidgetState extends State<InputWidget> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              checkValid
-                  ? const Text(
+              Column(
+                children: [
+                  if (isShowError)
+                    const Text(
                       'Штрих код не найден. Отсканируйте штрихкод!',
-                      style: TextStyle(fontSize: 18),
-                    )
-                  : Text(
-                      isBox ? 'Отсканируйте коробку!' : 'Отсканируйте палету!',
-                      style: const TextStyle(fontSize: 18),
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600),
                     ),
+                  Text(
+                    'Отсканируйте коробку!',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  InputWithKeyboardControl(
+                    focusNode: myFocusNodeCheckBarcode,
+                    onSubmitted: (value) async {
+                      final bool isSend = await _sendText(value);
+
+                      if (isSend) {
+                        sendBoxAndOpenPalletDialog(context);
+                      } else {
+                        // setState(() {
+                        //   isShowError = true;
+                        // });
+                      }
+                    },
+                    autofocus: true,
+                    controller: _textEditingController,
+                    width: 300,
+                    startShowKeyboard: false,
+                    buttonColorEnabled: Colors.blue,
+                    buttonColorDisabled: Colors.black,
+                  ),
+                ],
+              ),
             ],
           ),
           actions: [
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
+            if (checkValid)
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
               ),
-            ),
           ],
         );
       },
     );
+  }
+
+  Future<void> _showDialogChekBarcodeForPallets(
+      {required BuildContext context, required bool checkValid}) async {
+    setState(() {
+      isOpenAlertDialog = true;
+    });
+
+    await showDialog(
+      // barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  if (isShowError)
+                    const Text(
+                      'Штрих код не найден. Отсканируйте штрихкод!',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  const Text(
+                    'Отсканируйте палету!',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  InputWithKeyboardControl(
+                    focusNode: myFocusNodeCheckBarcode,
+                    onSubmitted: (value) async {
+                      final bool isSend = await _sendText(value);
+
+                      if (isSend) {
+                        Navigator.pop(context);
+                        setState(() {
+                          isOpenAlertDialog = false;
+                        });
+                        _showSendPalletDialog(context, null);
+                        setState(() {
+                          pallets.barcode = 'Будущая палета';
+                          pallets.boxes = [];
+                          pallets.date = '';
+                          countBarcodes = 0;
+                          countBox = 0;
+                          _textEditingController.clear();
+                          isErroreSendPallet = false;
+                          boxes.clear();
+                          isOpenAlertDialog = false;
+                        });
+                      } else {
+                        // setState(() {
+                        //   isShowError = true;
+                        // }); // ПОКАЗАТЬ ОШИБКУ
+                      }
+                    },
+                    autofocus: true,
+                    controller: _textEditingController,
+                    width: 300,
+                    startShowKeyboard: false,
+                    buttonColorEnabled: Colors.blue,
+                    buttonColorDisabled: Colors.black,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            if (checkValid)
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  void sendBoxAndOpenPalletDialog(BuildContext context) {
+    setState(() {
+      isOpenAlertDialog = false;
+    });
+    Navigator.pop(context);
+    if (countBarcodes % (countAllBarcodesPerPallet - 1) == 0 &&
+        countBoxesPerPallet == countBox) {
+      _showDialogChekBarcodeForPallets(checkValid: false, context: context);
+      // _showDialogChekBarcode(context, false, false);
+    }
   }
 
   void createBox(String item) {
@@ -184,8 +316,11 @@ class _InputWidgetState extends State<InputWidget> {
     });
   }
 
-  void _sendText(String text) async {
-    if (isErroreSendPallet) return;
+  Future<bool> _sendText(String text) async {
+    setState(() {
+      _textEditingController.clear();
+    });
+    if (isErroreSendPallet) return false;
     DateTime now = DateTime.now();
     String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
     //проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
@@ -206,17 +341,9 @@ class _InputWidgetState extends State<InputWidget> {
         try {
           final bool isOk = await barcodeService.postBarcodes(pallets: pallets);
           if (isOk) {
-            _showSendPalletDialog(context, null);
-            setState(() {
-              pallets.barcode = 'Будущая палета';
-              pallets.boxes = [];
-              pallets.date = '';
-              countBarcodes = 0;
-              countBox = 0;
-              _textEditingController.clear();
-              isErroreSendPallet = false;
-              boxes.clear();
-            });
+            return true;
+          } else {
+            return false;
           }
         } catch (e) {
           setState(() {
@@ -225,34 +352,33 @@ class _InputWidgetState extends State<InputWidget> {
           final String message = e.toString().replaceAll('Exception: ', '');
           _showSendPalletDialog(context, message);
 
-          setState(() {
-            _textEditingController.clear();
-          });
+          // setState(() {
+          //   _textEditingController.clear();
+          // });
+          return false;
         }
       } else {
         setState(() {
           unit.removeLast();
           countBarcodes -= 1;
         });
-
-        _showDialogChekBarcode(context, false, true);
+        return false;
+        // _showDialogChekBarcode(context, false, true);
       }
-      setState(() {
-        _textEditingController.clear();
-      });
-      return;
     }
     //проверка на палету
-    // countAllBarcodesPerPallet = 19; Заглушка на 19 всего кодов и две коробки
-    // countBoxesPerPallet = 2;
+    countAllBarcodesPerPallet = 19; // Заглушка на 19 всего кодов и две коробки
+    countBoxesPerPallet = 2;
     if (countBarcodes % (countAllBarcodesPerPallet) == 0) {
       isValid = isValidBarcode(text, TypeOfBarcode.pallet);
       if (isValid) {
         createPallet(text);
+        return true;
       } else {
         unit.removeLast();
         countBarcodes -= 1;
-        _showDialogChekBarcode(context, false, true);
+        return false;
+        // _showDialogChekBarcode(context, false, true);
       }
     }
 
@@ -262,32 +388,33 @@ class _InputWidgetState extends State<InputWidget> {
       if (isValid) {
         countBox += 1;
         createBox(text);
-        if (countBarcodes % (countAllBarcodesPerPallet - 1) == 0 &&
-            countBoxesPerPallet == countBox) {
-          _showDialogChekBarcode(context, false, false);
-        }
+
+        return true;
       } else {
         unit.removeLast();
         countBarcodes -= 1;
-        _showDialogChekBarcode(context, false, true);
+        return false;
+        // _showDialogChekBarcode(context, false, true);
       }
       //проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
     } else {
       if (isValid) {
         if (unit.length == countUnitsPerBox) {
-          _showDialogChekBarcode(context, true, false);
+          _showDialogChekBarcodeForBox(checkValid: false, context: context);
         }
+        return true;
       } else {
         unit.removeLast();
         countBarcodes -= 1;
-        _showDialogChekBarcode(context, false, true);
+        return false;
+        // _showDialogChekBarcode(context, false, true);
       }
     }
 
-    setState(() {
-      // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
-      _textEditingController.clear();
-    });
+    // setState(() {
+    //   // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
+    //   _textEditingController.clear();
+    // });
   }
 
   bool isValidBarcode(String text, TypeOfBarcode barcodeType) {
@@ -302,7 +429,7 @@ class _InputWidgetState extends State<InputWidget> {
       // }
 
       case TypeOfBarcode.box:
-        // setBoxs = {'99999999389957'};
+        setBoxs = {'99999999389957'};
         if (setBoxs.contains(text)) {
           return true;
         } else {
@@ -310,7 +437,7 @@ class _InputWidgetState extends State<InputWidget> {
         }
 
       case TypeOfBarcode.pallet:
-        // setPallets = {'99999999389957'};
+        setPallets = {'99999999389957'};
         if (setPallets.contains(text)) {
           return true;
         } else {
@@ -343,7 +470,6 @@ class _InputWidgetState extends State<InputWidget> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   keyboardType: TextInputType.number,
-                  // focusNode: myFocusNode,
                   autofocus: true,
                   controller: _textEditingController,
                   onFieldSubmitted: (value) async {
@@ -375,40 +501,41 @@ class _InputWidgetState extends State<InputWidget> {
         : Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child:
+              if (!isOpenAlertDialog)
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child:
 
-                      //  TextFormField(
-                      //   focusNode: myFocusNode,
-                      //   autofocus: true,
-                      //   controller: _textEditingController,
-                      //   onFieldSubmitted: (value) {
-                      //     _sendText(value);
-                      //   },
-                      // ) // Для веб браузера, тк неь клавиатуры
-                      InputWithKeyboardControl(
-                    focusNode: myFocusNode,
-                    onSubmitted: (value) {
-                      _sendText(value);
-                    },
-                    autofocus: true,
-                    controller: _textEditingController,
-                    width: 300,
-                    startShowKeyboard: false,
-                    buttonColorEnabled: Colors.blue,
-                    buttonColorDisabled: Colors.black,
+                        //  TextFormField(
+                        //   focusNode: myFocusNode,
+                        //   autofocus: true,
+                        //   controller: _textEditingController,
+                        //   onFieldSubmitted: (value) {
+                        //     _sendText(value);
+                        //   },
+                        // ) // Для веб браузера, тк неь клавиатуры
+                        InputWithKeyboardControl(
+                      focusNode: myFocusNode,
+                      onSubmitted: (value) async {
+                        await _sendText(value);
+                      },
+                      autofocus: true,
+                      controller: _textEditingController,
+                      width: 300,
+                      startShowKeyboard: false,
+                      buttonColorEnabled: Colors.blue,
+                      buttonColorDisabled: Colors.black,
+                    ),
                   ),
                 ),
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   IconButton(
                     onPressed: () async {
-                      myFocusNode.nextFocus();
+                      // myFocusNode.nextFocus();
                       _showDeleteDialog(context);
                       // /// ВЫЗОВ НОВГО СКРИНА НА УДАЛЕНИЕ
                       // final result = await Navigator.push(
@@ -422,7 +549,7 @@ class _InputWidgetState extends State<InputWidget> {
                       // // Обработка результата с нового экрана
                       // if (result != null) {}
 
-                      myFocusNode.requestFocus();
+                      // myFocusNode.requestFocus();
                     },
                     icon: const Icon(
                       Icons.delete,
@@ -435,7 +562,7 @@ class _InputWidgetState extends State<InputWidget> {
                   ),
                   ElevatedButton.icon(
                       onPressed: () async {
-                        myFocusNode.nextFocus();
+                        // myFocusNode.nextFocus();
 
                         try {
                           // Проверка на отправку полной палеты
@@ -460,7 +587,8 @@ class _InputWidgetState extends State<InputWidget> {
                               isErroreSendPallet = false;
                             });
                             if (pallets.barcode == 'Будущая палета') {
-                              _showDialogChekBarcode(context, false, false);
+                              _showDialogChekBarcodeForPallets(
+                                  checkValid: false, context: context);
                             } else {
                               _sendText(pallets.barcode);
                             }
