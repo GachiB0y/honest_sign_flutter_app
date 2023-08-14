@@ -19,7 +19,7 @@ class _InputWidgetState extends State<InputWidget> {
   late TextEditingController _textEditingController;
 
   final ScrollController _scrollController = ScrollController();
-  final List<Item> allBarcodeHistory = [];
+  final Set<String> allBarcodeHistory = {};
   final BarcodeService barcodeService = const BarcodeService();
 
   final List<Item> unit = [];
@@ -27,7 +27,7 @@ class _InputWidgetState extends State<InputWidget> {
   int countBox = 0;
   bool isNewRelease = true;
   bool isSendNotColpetePallet = false;
-  bool isErroreSendPallet = false;
+  bool isErrorSendPallet = false;
   bool isOpenAlertDialog = false;
   bool isShowError = false;
 
@@ -75,7 +75,8 @@ class _InputWidgetState extends State<InputWidget> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                deleteCurrentUnit(deleteAll: true);
+                deleteCurrentUnitOrAllUnitsInBox(
+                    deleteAll: true, lastBarcode: null);
                 Navigator.pop(context); // закрыть Алерт диалог
               },
               child: const Text('Да'),
@@ -128,6 +129,19 @@ class _InputWidgetState extends State<InputWidget> {
     );
   }
 
+  void showSnackBarForDuplicateBarcode(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Штрих код дублируется, отсканируйте другой штрихкод!',
+          style: TextStyle(fontSize: 20, color: Colors.red),
+        ),
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
   Future<void> _showDialogChekBarcodeForBox(
       {required BuildContext context, required bool checkValid}) async {
     setState(() {
@@ -135,7 +149,7 @@ class _InputWidgetState extends State<InputWidget> {
     });
 
     await showDialog(
-      // barrierDismissible: false,
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
@@ -210,7 +224,7 @@ class _InputWidgetState extends State<InputWidget> {
     });
 
     await showDialog(
-      // barrierDismissible: false,
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
@@ -251,7 +265,7 @@ class _InputWidgetState extends State<InputWidget> {
                             countBarcodes = 0;
                             countBox = 0;
                             _textEditingController.clear();
-                            isErroreSendPallet = false;
+                            isErrorSendPallet = false;
                             boxes.clear();
                             isOpenAlertDialog = false;
                             isShowError = false;
@@ -259,7 +273,7 @@ class _InputWidgetState extends State<InputWidget> {
                         } else {
                           setState(() {
                             isShowError = true;
-                          }); // ПОКАЗАТЬ ОШИБКУ
+                          });
                         }
                       },
                       autofocus: true,
@@ -302,10 +316,15 @@ class _InputWidgetState extends State<InputWidget> {
     }
   }
 
+  String createDateNow() {
+    DateTime now = DateTime.now();
+    String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
+    return formattedDateTime;
+  }
+
   void createBox(String item) {
     setState(() {
-      DateTime now = DateTime.now();
-      String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
+      String formattedDateTime = createDateNow();
       final List<Item> copyUnits = unit.sublist(0, unit.length - 1);
       boxes.add(Box(barcode: item, date: formattedDateTime, items: copyUnits));
 
@@ -317,33 +336,33 @@ class _InputWidgetState extends State<InputWidget> {
 
   void createPallet(String text) {
     setState(() {
-      DateTime now = DateTime.now();
-      String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
+      String formattedDateTime = createDateNow();
       unit.clear();
       pallets.barcode = text;
       pallets.date = formattedDateTime;
     });
   }
 
-  Future<bool> _sendText(String text) async {
+  Future<bool> _sendText(String barcode) async {
     setState(() {
+      // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
       _textEditingController.clear();
     });
-    if (isErroreSendPallet) return false;
-    DateTime now = DateTime.now();
-    String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
+    if (isErrorSendPallet) return false;
+
+    String formattedDateTime = createDateNow();
     //проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
-    bool isValid = isValidBarcode(text, TypeOfBarcode.unit);
+    bool isValid = isValidBarcode(barcode, TypeOfBarcode.unit);
     setState(() {
-      unit.add(Item(barcode: text, date: formattedDateTime));
+      unit.add(Item(barcode: barcode, date: formattedDateTime));
       countBarcodes += 1;
-      allBarcodeHistory.add(Item(barcode: text, date: formattedDateTime));
+      allBarcodeHistory.add(barcode);
     });
     // проверка на отправку не полной палеты
     if (isSendNotColpetePallet) {
-      isValid = isValidBarcode(text, TypeOfBarcode.pallet);
+      isValid = isValidBarcode(barcode, TypeOfBarcode.pallet);
       if (isValid) {
-        createPallet(text);
+        createPallet(barcode);
         setState(() {
           isSendNotColpetePallet = false;
         });
@@ -356,21 +375,16 @@ class _InputWidgetState extends State<InputWidget> {
           }
         } catch (e) {
           setState(() {
-            isErroreSendPallet = true;
+            isErrorSendPallet = true;
           });
           final String message = e.toString().replaceAll('Exception: ', '');
           _showSendPalletDialog(context, message);
 
-          // setState(() {
-          //   _textEditingController.clear();
-          // });
           return false;
         }
       } else {
-        setState(() {
-          unit.removeLast();
-          countBarcodes -= 1;
-        });
+        deleteCurrentUnitOrAllUnitsInBox(
+            deleteAll: false, lastBarcode: barcode);
         return false;
         // _showDialogChekBarcode(context, false, true);
       }
@@ -379,13 +393,14 @@ class _InputWidgetState extends State<InputWidget> {
     countAllBarcodesPerPallet = 19; // Заглушка на 19 всего кодов и две коробки
     countBoxesPerPallet = 2;
     if (countBarcodes % (countAllBarcodesPerPallet) == 0) {
-      isValid = isValidBarcode(text, TypeOfBarcode.pallet);
+      isValid = isValidBarcode(barcode, TypeOfBarcode.pallet);
       if (isValid) {
-        createPallet(text);
+        createPallet(barcode);
         return true;
       } else {
-        unit.removeLast();
-        countBarcodes -= 1;
+        deleteCurrentUnitOrAllUnitsInBox(
+            deleteAll: false, lastBarcode: barcode);
+
         return false;
         // _showDialogChekBarcode(context, false, true);
       }
@@ -393,15 +408,16 @@ class _InputWidgetState extends State<InputWidget> {
 
     // проверка на коробку
     else if (unit.length == (countUnitsPerBox + 1)) {
-      isValid = isValidBarcode(text, TypeOfBarcode.box);
+      isValid = isValidBarcode(barcode, TypeOfBarcode.box);
       if (isValid) {
         countBox += 1;
-        createBox(text);
+        createBox(barcode);
 
         return true;
       } else {
-        unit.removeLast();
-        countBarcodes -= 1;
+        deleteCurrentUnitOrAllUnitsInBox(
+            deleteAll: false, lastBarcode: barcode);
+
         return false;
         // _showDialogChekBarcode(context, false, true);
       }
@@ -413,17 +429,12 @@ class _InputWidgetState extends State<InputWidget> {
         }
         return true;
       } else {
-        unit.removeLast();
-        countBarcodes -= 1;
+        deleteCurrentUnitOrAllUnitsInBox(
+            deleteAll: false, lastBarcode: barcode);
         return false;
         // _showDialogChekBarcode(context, false, true);
       }
     }
-
-    // setState(() {
-    //   // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
-    //   _textEditingController.clear();
-    // });
   }
 
   bool isValidBarcode(String text, TypeOfBarcode barcodeType) {
@@ -455,22 +466,37 @@ class _InputWidgetState extends State<InputWidget> {
     }
   }
 
-  void deleteCurrentUnit({required bool deleteAll}) {
+  void deleteCurrentUnitOrAllUnitsInBox(
+      {required bool deleteAll, required String? lastBarcode}) {
     setState(() {
       if (deleteAll) {
         if (unit.isNotEmpty) {
           countBarcodes -= unit.length;
+          for (var element in unit) {
+            allBarcodeHistory.remove(element.barcode);
+          }
           unit.clear();
         }
       } else {
         countBarcodes -= 1;
+        allBarcodeHistory.remove(lastBarcode);
         unit.removeLast();
       }
     });
   }
 
+  bool checkDublicateBarcodeInPalet({required String barcode}) {
+    final bool isDuplicate = allBarcodeHistory.contains(barcode);
+    return isDuplicate;
+  }
+
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      isNewRelease =
+          false; //Заглушка на код карточик разлицва ПОТОМ УБРАТЬ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    });
+
     return isNewRelease
         ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -527,8 +553,17 @@ class _InputWidgetState extends State<InputWidget> {
                         // ) // Для веб браузера, тк неь клавиатуры
                         InputWithKeyboardControl(
                       focusNode: myFocusNode,
-                      onSubmitted: (value) async {
-                        await _sendText(value);
+                      onSubmitted: (String value) async {
+                        final isDuplicate =
+                            checkDublicateBarcodeInPalet(barcode: value);
+                        if (isDuplicate) {
+                          setState(() {
+                            _textEditingController.clear();
+                          });
+                          showSnackBarForDuplicateBarcode(context);
+                        } else {
+                          await _sendText(value);
+                        }
                       },
                       autofocus: true,
                       controller: _textEditingController,
@@ -586,14 +621,14 @@ class _InputWidgetState extends State<InputWidget> {
                                 pallets.date = '';
                                 countBarcodes = 0;
                                 countBox = 0;
-                                isErroreSendPallet = false;
+                                isErrorSendPallet = false;
                                 boxes.clear();
                               });
                             }
                           } else if (pallets.boxes.isNotEmpty) {
                             setState(() {
                               isSendNotColpetePallet = true;
-                              isErroreSendPallet = false;
+                              isErrorSendPallet = false;
                             });
                             if (pallets.barcode == 'Будущая палета') {
                               _showDialogChekBarcodeForPallets(
@@ -607,7 +642,7 @@ class _InputWidgetState extends State<InputWidget> {
                           }
                         } catch (e) {
                           setState(() {
-                            isErroreSendPallet = true;
+                            isErrorSendPallet = true;
                           });
                           final String message =
                               e.toString().replaceAll('Exception: ', '');
@@ -622,7 +657,7 @@ class _InputWidgetState extends State<InputWidget> {
               ),
               TwoTabWidget(
                 pallets: pallets,
-                deleteCurrentUnit: deleteCurrentUnit,
+                deleteCurrentUnit: deleteCurrentUnitOrAllUnitsInBox,
                 scrollController: _scrollController,
                 unit: unit,
               ),
@@ -832,7 +867,8 @@ class TwoTabWidget extends StatelessWidget {
   final ModelsPallet pallets;
   final ScrollController scrollController;
   final List<Item> unit;
-  final Function({required bool deleteAll}) deleteCurrentUnit;
+  final Function({required bool deleteAll, required String lastBarcode})
+      deleteCurrentUnit;
 
   const TwoTabWidget(
       {super.key,
@@ -881,7 +917,8 @@ class TwoTabWidget extends StatelessWidget {
 class CurrentHistoryWidget extends StatelessWidget {
   final ScrollController scrollController;
   final List<Item> unit;
-  final Function({required bool deleteAll}) deleteCurrentUnit;
+  final Function({required bool deleteAll, required String lastBarcode})
+      deleteCurrentUnit;
 
   const CurrentHistoryWidget(
       {super.key,
@@ -907,7 +944,8 @@ class CurrentHistoryWidget extends StatelessWidget {
               trailing: index + 1 == unit.length
                   ? IconButton(
                       onPressed: () {
-                        deleteCurrentUnit(deleteAll: false);
+                        deleteCurrentUnit(
+                            deleteAll: false, lastBarcode: unit[index].barcode);
                       },
                       icon: const Icon(Icons.close),
                       color: Colors.red,
