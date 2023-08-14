@@ -6,7 +6,9 @@ import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 
 import 'package:intl/intl.dart';
 
-enum TypeOfBarcode { unit, box, pallet }
+enum TypeOfBarcode { unit, box, pallet, undefined }
+
+enum TypeOfStateSend { duplicate, send }
 
 class InputWidget extends StatefulWidget {
   const InputWidget({super.key});
@@ -176,13 +178,16 @@ class _InputWidgetState extends State<InputWidget> {
                     InputWithKeyboardControl(
                       focusNode: myFocusNodeCheckBarcode,
                       onSubmitted: (value) async {
-                        final bool isSend = await _sendText(value);
+                        final TypeOfStateSend isSend =
+                            await onSubmittedTextField(
+                                context: context, value: value);
 
-                        if (isSend) {
+                        if (isSend == TypeOfStateSend.send) {
                           sendBoxAndOpenPalletDialog(context);
                           setState(() {
                             isShowError = false;
                           });
+                        } else if (isSend == TypeOfStateSend.duplicate) {
                         } else {
                           setState(() {
                             isShowError = true;
@@ -251,9 +256,11 @@ class _InputWidgetState extends State<InputWidget> {
                     InputWithKeyboardControl(
                       focusNode: myFocusNodeCheckBarcode,
                       onSubmitted: (value) async {
-                        final bool isSend = await _sendText(value);
+                        final TypeOfStateSend isSend =
+                            await onSubmittedTextField(
+                                context: context, value: value);
 
-                        if (isSend) {
+                        if (isSend == TypeOfStateSend.send) {
                           Navigator.pop(context);
 
                           _showSendPalletDialog(context, null);
@@ -270,6 +277,7 @@ class _InputWidgetState extends State<InputWidget> {
                             isOpenAlertDialog = false;
                             isShowError = false;
                           });
+                        } else if (isSend == TypeOfStateSend.duplicate) {
                         } else {
                           setState(() {
                             isShowError = true;
@@ -449,7 +457,7 @@ class _InputWidgetState extends State<InputWidget> {
       // }
 
       case TypeOfBarcode.box:
-        setBoxs = {'99999999389957'};
+        setBoxs = {'99999997688990'};
         if (setBoxs.contains(text)) {
           return true;
         } else {
@@ -463,8 +471,27 @@ class _InputWidgetState extends State<InputWidget> {
         } else {
           return false;
         }
+
+      case TypeOfBarcode.undefined:
+        return false;
     }
   }
+
+  // TypeOfBarcode isValidBarcode(String barcode) {
+  //   if (setPallets.contains(barcode)) {
+  //     return TypeOfBarcode.pallet;
+  //   } else {
+  //     if (setBoxs.contains(barcode)) {
+  //       return TypeOfBarcode.box;
+  //     } else {
+  //       if (setUnit.contains(barcode)) {
+  //         return TypeOfBarcode.unit;
+  //       } else {
+  //         return TypeOfBarcode.undefined;
+  //       }
+  //     }
+  //   }
+  // }
 
   void deleteCurrentUnitOrAllUnitsInBox(
       {required bool deleteAll, required String? lastBarcode}) {
@@ -486,6 +513,7 @@ class _InputWidgetState extends State<InputWidget> {
   }
 
   bool checkDublicateBarcodeInPalet({required String barcode}) {
+    if (barcode == '4630097264533') return false; // ЗАГЛУШКА НА ДУБЛИКАТ ШТУЧКИ
     final bool isDuplicate = allBarcodeHistory.contains(barcode);
     return isDuplicate;
   }
@@ -554,16 +582,8 @@ class _InputWidgetState extends State<InputWidget> {
                         InputWithKeyboardControl(
                       focusNode: myFocusNode,
                       onSubmitted: (String value) async {
-                        final isDuplicate =
-                            checkDublicateBarcodeInPalet(barcode: value);
-                        if (isDuplicate) {
-                          setState(() {
-                            _textEditingController.clear();
-                          });
-                          showSnackBarForDuplicateBarcode(context);
-                        } else {
-                          await _sendText(value);
-                        }
+                        await onSubmittedTextField(
+                            context: context, value: value);
                       },
                       autofocus: true,
                       controller: _textEditingController,
@@ -634,7 +654,9 @@ class _InputWidgetState extends State<InputWidget> {
                               _showDialogChekBarcodeForPallets(
                                   checkValid: false, context: context);
                             } else {
-                              _sendText(pallets.barcode);
+                              // _sendText(pallets.barcode);
+                              await onSubmittedTextField(
+                                  context: context, value: pallets.barcode);
                             }
                           } else {
                             _showSendPalletDialog(context,
@@ -663,6 +685,21 @@ class _InputWidgetState extends State<InputWidget> {
               ),
             ],
           );
+  }
+
+  Future<TypeOfStateSend> onSubmittedTextField(
+      {required String value, required BuildContext context}) async {
+    final isDuplicate = checkDublicateBarcodeInPalet(barcode: value);
+    if (isDuplicate) {
+      setState(() {
+        _textEditingController.clear();
+      });
+      showSnackBarForDuplicateBarcode(context);
+      return TypeOfStateSend.duplicate;
+    } else {
+      await _sendText(value);
+      return TypeOfStateSend.send;
+    }
   }
 }
 
