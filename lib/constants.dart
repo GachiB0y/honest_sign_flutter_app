@@ -1,8 +1,8 @@
-int countUnitsPerBox = 8;
-int countAllBarcodesPerPallet = 19;
+int countUnitsPerBox = 4; // Заглушка на 11 всего кодов и две коробки
+int countAllBarcodesPerPallet = 11;
 int countBoxesPerPallet = 2;
-Set<String> setBoxs = {};
-Set<String> setPallets = {'146070721999308444'};
+Set<String> setBoxs = {'99999997688990', '228'};
+Set<String> setPallets = {'99999999389957'};
 Set<String> setUnit = {};
 
 const String keyFututrePallet = 'Будущий палет';

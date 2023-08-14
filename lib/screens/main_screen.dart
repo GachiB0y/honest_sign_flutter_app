@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 
 enum TypeOfBarcode { unit, box, pallet, undefined }
 
-enum TypeOfStateSend { duplicate, send }
+enum TypeOfStateSend { duplicate, send, notSend, valid, notValid }
 
 class InputWidget extends StatefulWidget {
   const InputWidget({super.key});
@@ -32,8 +32,12 @@ class _InputWidgetState extends State<InputWidget> {
   bool isErrorSendPallet = false;
   bool isOpenAlertDialog = false;
   bool isShowError = false;
+  bool _isLoading = false;
 
   final List<Box> boxes = [];
+
+  final GlobalKey _alertDialogKey = GlobalKey();
+  final GlobalKey _alertDialogKeyTwo = GlobalKey();
 
   final ModelsPallet pallets = ModelsPallet(
       barcode: 'Будущая палета',
@@ -120,6 +124,7 @@ class _InputWidgetState extends State<InputWidget> {
             Center(
               child: ElevatedButton(
                 onPressed: () {
+                  Navigator.of(_alertDialogKeyTwo.currentContext!).pop();
                   Navigator.pop(context);
                 },
                 child: const Text('OK'),
@@ -144,155 +149,130 @@ class _InputWidgetState extends State<InputWidget> {
     );
   }
 
-  Future<void> _showDialogChekBarcodeForBox(
-      {required BuildContext context, required bool checkValid}) async {
+  Future<void> _showDialogChekBarcodeForPalletsOrBox(
+      GlobalKey? keyForAlertDialog,
+      {required BuildContext context,
+      required bool checkValid,
+      required bool isBox}) async {
     setState(() {
       isOpenAlertDialog = true;
     });
 
     await showDialog(
-      barrierDismissible: false,
+      // barrierDismissible: false, РАСКОМЕНТИРОВАТЬ В  РЕЛИЗЕ
+
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return AlertDialog(
+            key: keyForAlertDialog ?? _alertDialogKey,
+            elevation: 0.0,
             content: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  children: [
-                    if (isShowError)
-                      const Text(
-                        'Штрих код не найден. Отсканируйте штрихкод!',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.red,
-                            fontWeight: FontWeight.w600),
+                _isLoading
+                    ? const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text('Идеет отправка, пожалуйста подождите!'),
+                          CircularProgressIndicator(),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          if (isShowError)
+                            const Text(
+                              'Штрих код не найден. Отсканируйте штрихкод!',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          Text(
+                            isBox
+                                ? 'Отсканируйте коробку!'
+                                : 'Отсканируйте палету!',
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                          InputWithKeyboardControl(
+                            focusNode: myFocusNodeCheckBarcode,
+                            onSubmitted: (value) async {
+                              final TypeOfStateSend isSend =
+                                  await onSubmittedTextField(
+                                      context: context, value: value);
+
+                              if (isSend == TypeOfStateSend.send) {
+                                if (isBox) {
+                                  sendBoxAndOpenPalletDialog(context);
+                                  setState(() {
+                                    isShowError = false;
+                                  });
+                                } else {
+                                  try {
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
+
+                                    final bool isSendPallet =
+                                        await barcodeService.postBarcodes(
+                                            pallets: pallets);
+
+                                    if (isSendPallet) {
+                                      Navigator.of(context).pop();
+                                      _showSendPalletDialog(context, null);
+                                      setState(() {
+                                        _isLoading = false;
+                                        isOpenAlertDialog = false;
+                                        pallets.barcode = 'Будущая палета';
+                                        pallets.boxes = [];
+                                        pallets.date = '';
+                                        countBarcodes = 0;
+                                        countBox = 0;
+                                        _textEditingController.clear();
+                                        isErrorSendPallet = false;
+                                        boxes.clear();
+                                        allBarcodeHistory.clear();
+                                        isOpenAlertDialog = false;
+                                        isShowError = false;
+                                      });
+                                    }
+                                  } catch (e) {
+                                    setState(() {
+                                      isErrorSendPallet = true;
+                                      _isLoading = false;
+                                      isOpenAlertDialog = false;
+                                    });
+
+                                    final String message = e
+                                        .toString()
+                                        .replaceAll('Exception: ', '');
+
+                                    _showSendPalletDialog(context, message);
+                                  }
+                                }
+                              } else if (isSend == TypeOfStateSend.duplicate) {
+                                setState(() {
+                                  isShowError = false;
+                                });
+                              } else if (isSend == TypeOfStateSend.notValid ||
+                                  isSend == TypeOfStateSend.notSend) {
+                                setState(() {
+                                  isShowError = true;
+                                });
+                              }
+                            },
+                            autofocus: true,
+                            controller: _textEditingController,
+                            width: 300,
+                            startShowKeyboard: false,
+                            buttonColorEnabled: Colors.blue,
+                            buttonColorDisabled: Colors.black,
+                          ),
+                        ],
                       ),
-                    const Text(
-                      'Отсканируйте коробку!',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    InputWithKeyboardControl(
-                      focusNode: myFocusNodeCheckBarcode,
-                      onSubmitted: (value) async {
-                        final TypeOfStateSend isSend =
-                            await onSubmittedTextField(
-                                context: context, value: value);
-
-                        if (isSend == TypeOfStateSend.send) {
-                          sendBoxAndOpenPalletDialog(context);
-                          setState(() {
-                            isShowError = false;
-                          });
-                        } else if (isSend == TypeOfStateSend.duplicate) {
-                        } else {
-                          setState(() {
-                            isShowError = true;
-                          });
-                        }
-                      },
-                      autofocus: true,
-                      controller: _textEditingController,
-                      width: 300,
-                      startShowKeyboard: false,
-                      buttonColorEnabled: Colors.blue,
-                      buttonColorDisabled: Colors.black,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            actions: [
-              if (checkValid)
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('OK'),
-                  ),
-                ),
-            ],
-          );
-        });
-      },
-    );
-  }
-
-  Future<void> _showDialogChekBarcodeForPallets(
-      {required BuildContext context, required bool checkValid}) async {
-    setState(() {
-      isOpenAlertDialog = true;
-    });
-
-    await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-          return AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    if (isShowError)
-                      const Text(
-                        'Штрих код не найден. Отсканируйте штрихкод!',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.red,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    const Text(
-                      'Отсканируйте палету!',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    InputWithKeyboardControl(
-                      focusNode: myFocusNodeCheckBarcode,
-                      onSubmitted: (value) async {
-                        final TypeOfStateSend isSend =
-                            await onSubmittedTextField(
-                                context: context, value: value);
-
-                        if (isSend == TypeOfStateSend.send) {
-                          Navigator.pop(context);
-
-                          _showSendPalletDialog(context, null);
-                          setState(() {
-                            isOpenAlertDialog = false;
-                            pallets.barcode = 'Будущая палета';
-                            pallets.boxes = [];
-                            pallets.date = '';
-                            countBarcodes = 0;
-                            countBox = 0;
-                            _textEditingController.clear();
-                            isErrorSendPallet = false;
-                            boxes.clear();
-                            isOpenAlertDialog = false;
-                            isShowError = false;
-                          });
-                        } else if (isSend == TypeOfStateSend.duplicate) {
-                        } else {
-                          setState(() {
-                            isShowError = true;
-                          });
-                        }
-                      },
-                      autofocus: true,
-                      controller: _textEditingController,
-                      width: 300,
-                      startShowKeyboard: false,
-                      buttonColorEnabled: Colors.blue,
-                      buttonColorDisabled: Colors.black,
-                    ),
-                  ],
-                ),
               ],
             ),
             actions: [
@@ -319,7 +299,9 @@ class _InputWidgetState extends State<InputWidget> {
     Navigator.pop(context);
     if (countBarcodes % (countAllBarcodesPerPallet - 1) == 0 &&
         countBoxesPerPallet == countBox) {
-      _showDialogChekBarcodeForPallets(checkValid: false, context: context);
+      _showDialogChekBarcodeForPalletsOrBox(_alertDialogKeyTwo,
+          checkValid: false, context: context, isBox: false);
+      // _showDialogChekBarcodeForPallets(checkValid: false, context: context);
       // _showDialogChekBarcode(context, false, false);
     }
   }
@@ -351,73 +333,81 @@ class _InputWidgetState extends State<InputWidget> {
     });
   }
 
-  Future<bool> _sendText(String barcode) async {
-    setState(() {
-      // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
-      _textEditingController.clear();
-    });
+  Future<bool> _sendText(
+      {required String barcode, required TypeOfBarcode typeBarcode}) async {
+    // setState(() {
+    //   // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
+    //   _textEditingController.clear();
+    // });
     if (isErrorSendPallet) return false;
 
     String formattedDateTime = createDateNow();
     //проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
-    bool isValid = isValidBarcode(barcode, TypeOfBarcode.unit);
+    // bool isValid = isValidBarcode(barcode, TypeOfBarcode.unit);
     setState(() {
       unit.add(Item(barcode: barcode, date: formattedDateTime));
       countBarcodes += 1;
       allBarcodeHistory.add(barcode);
     });
     // проверка на отправку не полной палеты
-    if (isSendNotColpetePallet) {
-      isValid = isValidBarcode(barcode, TypeOfBarcode.pallet);
-      if (isValid) {
-        createPallet(barcode);
-        setState(() {
-          isSendNotColpetePallet = false;
-        });
-        try {
-          final bool isOk = await barcodeService.postBarcodes(pallets: pallets);
-          if (isOk) {
-            return true;
-          } else {
-            return false;
-          }
-        } catch (e) {
-          setState(() {
-            isErrorSendPallet = true;
-          });
-          final String message = e.toString().replaceAll('Exception: ', '');
-          _showSendPalletDialog(context, message);
-
+    if (isSendNotColpetePallet && typeBarcode == TypeOfBarcode.pallet) {
+      // isValid = isValidBarcode(barcode, TypeOfBarcode.pallet);
+      // if (isValid) {
+      createPallet(barcode);
+      setState(() {
+        isSendNotColpetePallet = false;
+      });
+      try {
+        final bool isOk = await barcodeService.postBarcodes(pallets: pallets);
+        if (isOk) {
+          return true;
+        } else {
           return false;
         }
-      } else {
-        deleteCurrentUnitOrAllUnitsInBox(
-            deleteAll: false, lastBarcode: barcode);
+      } catch (e) {
+        setState(() {
+          isErrorSendPallet = true;
+        });
+        final String message = e.toString().replaceAll('Exception: ', '');
+        _showSendPalletDialog(context, message);
+
         return false;
-        // _showDialogChekBarcode(context, false, true);
       }
+      // } else {
+      //   deleteCurrentUnitOrAllUnitsInBox(
+      //       deleteAll: false, lastBarcode: barcode);
+      //   return false;
+      //   // _showDialogChekBarcode(context, false, true);
+      // }
     }
-    //проверка на палету
-    countAllBarcodesPerPallet = 19; // Заглушка на 19 всего кодов и две коробки
-    countBoxesPerPallet = 2;
-    if (countBarcodes % (countAllBarcodesPerPallet) == 0) {
-      isValid = isValidBarcode(barcode, TypeOfBarcode.pallet);
-      if (isValid) {
+
+    // Проверка на палету
+    if ((countBarcodes % (countAllBarcodesPerPallet) == 0)) {
+      // isValid = isValidBarcode(barcode, TypeOfBarcode.pallet);
+      // if (isValid) {
+      if (typeBarcode == TypeOfBarcode.pallet) {
         createPallet(barcode);
         return true;
       } else {
         deleteCurrentUnitOrAllUnitsInBox(
             deleteAll: false, lastBarcode: barcode);
-
         return false;
-        // _showDialogChekBarcode(context, false, true);
       }
+
+      // } else {
+      //   deleteCurrentUnitOrAllUnitsInBox(
+      //       deleteAll: false, lastBarcode: barcode);
+
+      //   return false;
+      //   // _showDialogChekBarcode(context, false, true);
+      // }
     }
 
-    // проверка на коробку
-    else if (unit.length == (countUnitsPerBox + 1)) {
-      isValid = isValidBarcode(barcode, TypeOfBarcode.box);
-      if (isValid) {
+    // Проверка на коробку
+    else if ((unit.length == (countUnitsPerBox + 1))) {
+      // isValid = isValidBarcode(barcode, TypeOfBarcode.box);
+      // if (isValid) {
+      if (typeBarcode == TypeOfBarcode.box) {
         countBox += 1;
         createBox(barcode);
 
@@ -425,73 +415,96 @@ class _InputWidgetState extends State<InputWidget> {
       } else {
         deleteCurrentUnitOrAllUnitsInBox(
             deleteAll: false, lastBarcode: barcode);
-
         return false;
-        // _showDialogChekBarcode(context, false, true);
       }
+
+      // } else {
+      //   deleteCurrentUnitOrAllUnitsInBox(
+      //       deleteAll: false, lastBarcode: barcode);
+
+      //   return false;
+      //   // _showDialogChekBarcode(context, false, true);
+      // }
       //проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
     } else {
-      if (isValid) {
+      // if (isValid) {
+      if (typeBarcode == TypeOfBarcode.unit) {
         if (unit.length == countUnitsPerBox) {
-          _showDialogChekBarcodeForBox(checkValid: false, context: context);
+          _showDialogChekBarcodeForPalletsOrBox(null,
+              checkValid: false, context: context, isBox: true);
+          // _showDialogChekBarcodeForBox(
+          //     checkValid: false,
+          //     context:
+          //         context); // Вызов окна скана коробки, сразу после скана последней штучки в коробке
         }
         return true;
       } else {
         deleteCurrentUnitOrAllUnitsInBox(
             deleteAll: false, lastBarcode: barcode);
         return false;
-        // _showDialogChekBarcode(context, false, true);
+      }
+
+      // } else {
+      //   deleteCurrentUnitOrAllUnitsInBox(
+      //       deleteAll: false, lastBarcode: barcode);
+      //   return false;
+      //   // _showDialogChekBarcode(context, false, true);
+      // }
+    }
+  }
+
+  // bool isValidBarcode(String text, TypeOfBarcode barcodeType) {
+  //   switch (barcodeType) {
+  //     case TypeOfBarcode.unit:
+  //       return true; // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
+  //     // final Set<String> setUnit = {'4630097264533', '99999997688990'};
+  //     // if (setUnit.contains(text)) {
+  //     //   return true;
+  //     // } else {
+  //     //   return false;
+  //     // }
+
+  //     case TypeOfBarcode.box:
+  //       setBoxs = {'99999997688990'};
+  //       if (setBoxs.contains(text)) {
+  //         return true;
+  //       } else {
+  //         return false;
+  //       }
+
+  //     case TypeOfBarcode.pallet:
+  //       setPallets = {'99999999389957'};
+  //       if (setPallets.contains(text)) {
+  //         return true;
+  //       } else {
+  //         return false;
+  //       }
+
+  //     case TypeOfBarcode.undefined:
+  //       return false;
+  //   }
+  // }
+
+  TypeOfBarcode isValidBarcode(String barcode) {
+    bool isContains = setPallets.contains(barcode);
+    if (isContains) {
+      return TypeOfBarcode.pallet;
+    } else {
+      isContains = setBoxs.contains(barcode);
+      if (isContains) {
+        return TypeOfBarcode.box;
+      } else {
+        // isContains = setUnit.contains(
+        //     barcode);
+        isContains = true; // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
+        if (isContains) {
+          return TypeOfBarcode.unit;
+        } else {
+          return TypeOfBarcode.undefined;
+        }
       }
     }
   }
-
-  bool isValidBarcode(String text, TypeOfBarcode barcodeType) {
-    switch (barcodeType) {
-      case TypeOfBarcode.unit:
-        return true; // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
-      // final Set<String> setUnit = {'4630097264533', '99999997688990'};
-      // if (setUnit.contains(text)) {
-      //   return true;
-      // } else {
-      //   return false;
-      // }
-
-      case TypeOfBarcode.box:
-        setBoxs = {'99999997688990'};
-        if (setBoxs.contains(text)) {
-          return true;
-        } else {
-          return false;
-        }
-
-      case TypeOfBarcode.pallet:
-        setPallets = {'99999999389957'};
-        if (setPallets.contains(text)) {
-          return true;
-        } else {
-          return false;
-        }
-
-      case TypeOfBarcode.undefined:
-        return false;
-    }
-  }
-
-  // TypeOfBarcode isValidBarcode(String barcode) {
-  //   if (setPallets.contains(barcode)) {
-  //     return TypeOfBarcode.pallet;
-  //   } else {
-  //     if (setBoxs.contains(barcode)) {
-  //       return TypeOfBarcode.box;
-  //     } else {
-  //       if (setUnit.contains(barcode)) {
-  //         return TypeOfBarcode.unit;
-  //       } else {
-  //         return TypeOfBarcode.undefined;
-  //       }
-  //     }
-  //   }
-  // }
 
   void deleteCurrentUnitOrAllUnitsInBox(
       {required bool deleteAll, required String? lastBarcode}) {
@@ -512,10 +525,40 @@ class _InputWidgetState extends State<InputWidget> {
     });
   }
 
-  bool checkDublicateBarcodeInPalet({required String barcode}) {
-    if (barcode == '4630097264533') return false; // ЗАГЛУШКА НА ДУБЛИКАТ ШТУЧКИ
+  bool checkDublicateBarcodeInPallet({required String barcode}) {
+    if (barcode == '4630097264533')
+      return false; // ЗАГЛУШКА НА ДУБЛИКАТ ШТУЧКИ, УБРАТЬ В РЕЛИЗЕ
     final bool isDuplicate = allBarcodeHistory.contains(barcode);
     return isDuplicate;
+  }
+
+  Future<TypeOfStateSend> onSubmittedTextField(
+      {required String value, required BuildContext context}) async {
+    setState(() {
+      // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
+      _textEditingController.clear();
+    });
+    final isDuplicate = checkDublicateBarcodeInPallet(barcode: value);
+    if (isDuplicate) {
+      setState(() {
+        _textEditingController.clear();
+      });
+      showSnackBarForDuplicateBarcode(context);
+      return TypeOfStateSend.duplicate;
+    } else {
+      final TypeOfBarcode typeBarcode = isValidBarcode(value);
+      if (typeBarcode == TypeOfBarcode.undefined) {
+        return TypeOfStateSend.notValid;
+      } else {
+        final bool isSend =
+            await _sendText(barcode: value, typeBarcode: typeBarcode);
+        if (isSend == true) {
+          return TypeOfStateSend.send;
+        } else {
+          return TypeOfStateSend.notSend;
+        }
+      }
+    }
   }
 
   @override
@@ -651,8 +694,12 @@ class _InputWidgetState extends State<InputWidget> {
                               isErrorSendPallet = false;
                             });
                             if (pallets.barcode == 'Будущая палета') {
-                              _showDialogChekBarcodeForPallets(
-                                  checkValid: false, context: context);
+                              _showDialogChekBarcodeForPalletsOrBox(null,
+                                  checkValid: false,
+                                  context: context,
+                                  isBox: false);
+                              // _showDialogChekBarcodeForPallets(
+                              //     checkValid: false, context: context);
                             } else {
                               // _sendText(pallets.barcode);
                               await onSubmittedTextField(
@@ -685,21 +732,6 @@ class _InputWidgetState extends State<InputWidget> {
               ),
             ],
           );
-  }
-
-  Future<TypeOfStateSend> onSubmittedTextField(
-      {required String value, required BuildContext context}) async {
-    final isDuplicate = checkDublicateBarcodeInPalet(barcode: value);
-    if (isDuplicate) {
-      setState(() {
-        _textEditingController.clear();
-      });
-      showSnackBarForDuplicateBarcode(context);
-      return TypeOfStateSend.duplicate;
-    } else {
-      await _sendText(value);
-      return TypeOfStateSend.send;
-    }
   }
 }
 
