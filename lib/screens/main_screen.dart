@@ -124,10 +124,6 @@ class _InputWidgetState extends State<InputWidget> {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  print('isOpenAlertDialog false $isOpenAlertDialog');
-                  print('isErrorSendPallet true $isErrorSendPallet');
-                  print('_isLoading false $_isLoading');
-
                   setState(() {
                     isOpenAlertDialog = false;
                   });
@@ -167,15 +163,15 @@ class _InputWidgetState extends State<InputWidget> {
 
     await showDialog(
       // barrierDismissible: false, РАСКОМЕНТИРОВАТЬ В  РЕЛИЗЕ
-
+      barrierColor: const Color(0x01000000),
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return AlertDialog(
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.grey[200],
             key: keyForAlertDialog ?? _alertDialogKey,
-            elevation: 0.0,
+            elevation: 5.0,
             content: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -358,29 +354,38 @@ class _InputWidgetState extends State<InputWidget> {
       allBarcodeHistory.add(barcode);
     });
     // проверка на отправку не полной палеты
-    if (isSendNotColpetePallet && typeBarcode == TypeOfBarcode.pallet) {
+    if (isSendNotColpetePallet) {
       // isValid = isValidBarcode(barcode, TypeOfBarcode.pallet);
       // if (isValid) {
-      createPallet(barcode);
-      setState(() {
-        isSendNotColpetePallet = false;
-      });
-      try {
-        final bool isOk = await barcodeService.postBarcodes(pallets: pallets);
-        if (isOk) {
-          return true;
-        } else {
-          return false;
-        }
-      } catch (e) {
-        setState(() {
-          isErrorSendPallet = true;
-        });
-        final String message = e.toString().replaceAll('Exception: ', '');
-        _showSendPalletDialog(context, message);
 
+      if (typeBarcode == TypeOfBarcode.pallet) {
+        setState(() {
+          isSendNotColpetePallet = false;
+        });
+        createPallet(barcode);
+        return true;
+      } else {
+        deleteCurrentUnitOrAllUnitsInBox(
+            deleteAll: false, lastBarcode: barcode);
         return false;
       }
+
+      // try {
+      //   final bool isOk = await barcodeService.postBarcodes(pallets: pallets);
+      //   if (isOk) {
+      //     return true;
+      //   } else {
+      //     return false;
+      //   }
+      // } catch (e) {
+      //   setState(() {
+      //     isErrorSendPallet = true;
+      //   });
+      //   final String message = e.toString().replaceAll('Exception: ', '');
+      //   _showSendPalletDialog(context, message);
+
+      //   return false;
+      // }
       // } else {
       //   deleteCurrentUnitOrAllUnitsInBox(
       //       deleteAll: false, lastBarcode: barcode);
@@ -548,9 +553,9 @@ class _InputWidgetState extends State<InputWidget> {
     });
     final isDuplicate = checkDublicateBarcodeInPallet(barcode: value);
     if (isDuplicate) {
-      setState(() {
-        _textEditingController.clear();
-      });
+      // setState(() {
+      //   _textEditingController.clear();
+      // });
       showSnackBarForDuplicateBarcode(context);
       return TypeOfStateSend.duplicate;
     } else {
@@ -681,10 +686,11 @@ class _InputWidgetState extends State<InputWidget> {
 
                         try {
                           // Проверка на отправку полной палеты
-                          if (pallets.boxes.length == countBoxesPerPallet) {
-                            final bool isOk = await barcodeService.postBarcodes(
-                                pallets: pallets);
-                            if (isOk) {
+                          if (pallets.boxes.length == countBoxesPerPallet ||
+                              pallets.barcode != 'Будущая палета') {
+                            final bool isSendPallet = await barcodeService
+                                .postBarcodes(pallets: pallets);
+                            if (isSendPallet) {
                               _showSendPalletDialog(context, null);
                               setState(() {
                                 pallets.barcode = 'Будущая палета';
@@ -694,6 +700,7 @@ class _InputWidgetState extends State<InputWidget> {
                                 countBox = 0;
                                 isErrorSendPallet = false;
                                 boxes.clear();
+                                allBarcodeHistory.clear();
                               });
                             }
                           } else if (pallets.boxes.isNotEmpty) {
@@ -710,8 +717,8 @@ class _InputWidgetState extends State<InputWidget> {
                               //     checkValid: false, context: context);
                             } else {
                               // _sendText(pallets.barcode);
-                              await onSubmittedTextField(
-                                  context: context, value: pallets.barcode);
+                              // await onSubmittedTextField(
+                              //     context: context, value: pallets.barcode);
                             }
                           } else {
                             _showSendPalletDialog(context,
@@ -726,7 +733,7 @@ class _InputWidgetState extends State<InputWidget> {
                           _showSendPalletDialog(context, message);
                         }
 
-                        myFocusNode.requestFocus();
+                        // myFocusNode.requestFocus();
                       },
                       icon: const Icon(Icons.call_made, color: Colors.green),
                       label: const Text('Отправить палету')),
@@ -922,8 +929,12 @@ class ModelsPalletWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String partNamePallet =
+        pallet.boxes.length == countBoxesPerPallet ? '' : '(неполная палета)';
+    final String namePalletInHistory =
+        'Палета $partNamePallet ${pallet.boxes.length}/${countBoxesPerPallet}';
     return ExpansionTile(
-      title: Text(pallet.barcode),
+      title: Text(namePalletInHistory),
       children: <Widget>[
         ListTile(
           title: const Text('Коробки:'),
