@@ -124,7 +124,14 @@ class _InputWidgetState extends State<InputWidget> {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.of(_alertDialogKeyTwo.currentContext!).pop();
+                  print('isOpenAlertDialog false $isOpenAlertDialog');
+                  print('isErrorSendPallet true $isErrorSendPallet');
+                  print('_isLoading false $_isLoading');
+
+                  setState(() {
+                    isOpenAlertDialog = false;
+                  });
+                  // Navigator.of(_alertDialogKeyTwo.currentContext!).pop();
                   Navigator.pop(context);
                 },
                 child: const Text('OK'),
@@ -166,6 +173,7 @@ class _InputWidgetState extends State<InputWidget> {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return AlertDialog(
+            backgroundColor: Colors.transparent,
             key: keyForAlertDialog ?? _alertDialogKey,
             elevation: 0.0,
             content: Column(
@@ -235,7 +243,7 @@ class _InputWidgetState extends State<InputWidget> {
                                         isErrorSendPallet = false;
                                         boxes.clear();
                                         allBarcodeHistory.clear();
-                                        isOpenAlertDialog = false;
+
                                         isShowError = false;
                                       });
                                     }
@@ -249,7 +257,7 @@ class _InputWidgetState extends State<InputWidget> {
                                     final String message = e
                                         .toString()
                                         .replaceAll('Exception: ', '');
-
+                                    Navigator.pop(context);
                                     _showSendPalletDialog(context, message);
                                   }
                                 }
