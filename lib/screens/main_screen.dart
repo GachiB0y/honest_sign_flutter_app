@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
+import 'package:honest_sign_flutter_app/screens/first_screen.dart';
 
 import 'package:intl/intl.dart';
 
@@ -574,49 +575,62 @@ class _InputWidgetState extends State<InputWidget> {
     }
   }
 
+  void chnageStateIsNewRelease() {
+    setState(() {
+      _textEditingController.clear();
+      isNewRelease = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      isNewRelease =
-          false; //Заглушка на код карточик разлицва ПОТОМ УБРАТЬ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    });
+    // setState(() {
+    //   isNewRelease =
+    //       false; //Заглушка на код карточик разлицва ПОТОМ УБРАТЬ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // });
 
     return isNewRelease
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  autofocus: true,
-                  controller: _textEditingController,
-                  onFieldSubmitted: (value) async {
-                    try {
-                      await barcodeService.getInfoForBarcodeRealise(
-                          numberCard: _textEditingController.text);
-                      await barcodeService.getBarcodes();
-                      setState(() {
-                        _textEditingController.clear();
-                        isNewRelease = false;
-                      });
-                    } catch (e) {
-                      final String message =
-                          e.toString().replaceAll('Exception: ', '');
-                      _showSendPalletDialog(context, message);
-                    }
-                  },
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  'Введите номер карты, для получения данных!',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
-            ],
+        ? FirstScreen(
+            textEditingController: _textEditingController,
+            barcodeService: barcodeService,
+            showSendPalletDialog: _showSendPalletDialog,
+            chnageStateIsNewRelease: chnageStateIsNewRelease,
           )
+        // Column(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       Padding(
+        //         padding: const EdgeInsets.all(8.0),
+        //         child: TextFormField(
+        //           keyboardType: TextInputType.number,
+        //           autofocus: true,
+        //           controller: _textEditingController,
+        //           onFieldSubmitted: (value) async {
+        //             try {
+        //               await barcodeService.getInfoForBarcodeRealise(
+        //                   numberCard: _textEditingController.text);
+        //               await barcodeService.getBarcodes();
+        //               setState(() {
+        //                 _textEditingController.clear();
+        //                 isNewRelease = false;
+        //               });
+        //             } catch (e) {
+        //               final String message =
+        //                   e.toString().replaceAll('Exception: ', '');
+        //               _showSendPalletDialog(context, message);
+        //             }
+        //           },
+        //         ),
+        //       ),
+        //       const Padding(
+        //         padding: EdgeInsets.all(8.0),
+        //         child: Text(
+        //           'Введите номер карты, для получения данных!',
+        //           style: TextStyle(fontSize: 20),
+        //         ),
+        //       ),
+        //     ],
+        //   )
         : Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
