@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:honest_sign_flutter_app/components/input_date_widget.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
@@ -309,6 +310,64 @@ class _InputWidgetState extends State<InputWidget> {
       // _showDialogChekBarcodeForPallets(checkValid: false, context: context);
       // _showDialogChekBarcode(context, false, false);
     }
+  }
+
+  Future<void> _showAlertDialogChangeDateRelease(BuildContext context) async {
+    bool _showTextField = false;
+    final TextEditingController _controller = TextEditingController();
+    final String formattedText = dateOfRelease;
+
+    Future<void> changeDateRelease(BuildContext context) async {
+      setState(() {
+        dateOfRelease = _controller.text;
+        _showTextField = false;
+      });
+    }
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: _showTextField
+              ? BaseDateTextFieldWidget(
+                  callBack: changeDateRelease,
+                  controller: _controller,
+                  formattedText: formattedText,
+                )
+              : Text(
+                  'Дата производства $dateOfRelease. Вы уверены?',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 20),
+                ),
+          actions: <Widget>[
+            Center(
+              child: TextButton(
+                child: const Text(
+                  'Нет',
+                  style: TextStyle(fontSize: 20),
+                ),
+                onPressed: () {
+                  setState(() {
+                    _showTextField = true;
+                  });
+                },
+              ),
+            ),
+            Center(
+              child: TextButton(
+                child: const Text(
+                  'Да',
+                  style: TextStyle(fontSize: 20),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   String createDateNow() {
@@ -696,8 +755,9 @@ class _InputWidgetState extends State<InputWidget> {
                   ),
                   ElevatedButton.icon(
                       onPressed: () async {
-                        // myFocusNode.nextFocus();
-
+                        if (pallets.boxes.isNotEmpty) {
+                          await _showAlertDialogChangeDateRelease(context);
+                        }
                         try {
                           // Проверка на отправку полной палеты
                           if (pallets.boxes.length == countBoxesPerPallet ||
@@ -746,8 +806,6 @@ class _InputWidgetState extends State<InputWidget> {
                               e.toString().replaceAll('Exception: ', '');
                           _showSendPalletDialog(context, message);
                         }
-
-                        // myFocusNode.requestFocus();
                       },
                       icon: const Icon(Icons.call_made, color: Colors.green),
                       label: const Text('Отправить палету')),

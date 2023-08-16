@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:honest_sign_flutter_app/components/input_date_widget.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
@@ -52,11 +53,10 @@ class _FirstScreenState extends State<FirstScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: isShowDateInput
-              ? DateTextFieldWidget(
+              ? BaseDateTextFieldWidget(
                   controller: _controller,
                   formattedText: _formattedText,
-                  onSubmitedAnGetInfoForBarcodeRealise:
-                      onSubmitedAnGetInfoForBarcodeRelease,
+                  callBack: onSubmitedAnGetInfoForBarcodeRelease,
                 )
               // TextFormField(
               //     controller: controllerForDateInput,
@@ -100,84 +100,84 @@ class _FirstScreenState extends State<FirstScreen> {
   }
 }
 
-class DateTextFieldWidget extends StatefulWidget {
-  final TextEditingController controller;
-  String formattedText;
-  final Future<void> Function(BuildContext context)
-      onSubmitedAnGetInfoForBarcodeRealise;
+// class DateTextFieldWidget extends StatefulWidget {
+//   final TextEditingController controller;
+//   String formattedText;
+//   final Future<void> Function(BuildContext context)
+//       onSubmitedAnGetInfoForBarcodeRealise;
 
-  DateTextFieldWidget(
-      {super.key,
-      required this.controller,
-      required this.formattedText,
-      required this.onSubmitedAnGetInfoForBarcodeRealise});
-  @override
-  _DateTextFieldWidgetState createState() => _DateTextFieldWidgetState();
-}
+//   DateTextFieldWidget(
+//       {super.key,
+//       required this.controller,
+//       required this.formattedText,
+//       required this.onSubmitedAnGetInfoForBarcodeRealise});
+//   @override
+//   _DateTextFieldWidgetState createState() => _DateTextFieldWidgetState();
+// }
 
-class _DateTextFieldWidgetState extends State<DateTextFieldWidget> {
-  TextEditingController get _controller => widget.controller;
+// class _DateTextFieldWidgetState extends State<DateTextFieldWidget> {
+//   TextEditingController get _controller => widget.controller;
 
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(_formatText);
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller.addListener(_formatText);
+//   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
 
-  void _formatText() {
-    final input = _controller.text.replaceAll('.', '');
-    if (input.length > 8) {
-      _controller.text = input.substring(0, 8);
-    }
-    String formatted = '';
+//   void _formatText() {
+//     final input = _controller.text.replaceAll('.', '');
+//     if (input.length > 8) {
+//       _controller.text = input.substring(0, 8);
+//     }
+//     String formatted = '';
 
-    if (input.isNotEmpty) {
-      formatted = input.substring(0, input.length < 2 ? input.length : 2);
-    }
-    if (input.length > 2) {
-      formatted +=
-          '.' + input.substring(2, input.length < 4 ? input.length : 4);
-    }
-    if (input.length > 4) {
-      formatted +=
-          '.' + input.substring(4, input.length < 8 ? input.length : 8);
-    }
+//     if (input.isNotEmpty) {
+//       formatted = input.substring(0, input.length < 2 ? input.length : 2);
+//     }
+//     if (input.length > 2) {
+//       formatted +=
+//           '.' + input.substring(2, input.length < 4 ? input.length : 4);
+//     }
+//     if (input.length > 4) {
+//       formatted +=
+//           '.' + input.substring(4, input.length < 8 ? input.length : 8);
+//     }
 
-    setState(() {
-      widget.formattedText = formatted;
-    });
-  }
+//     setState(() {
+//       widget.formattedText = formatted;
+//     });
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      autofocus: true,
-      controller: _controller,
-      keyboardType: TextInputType.number,
-      decoration: const InputDecoration(
-        hintText: 'Введите дату (дд.мм.гггг)',
-      ),
-      maxLength: 10,
-      textAlign: TextAlign.center,
-      onChanged: (value) {
-        _formatText();
-        _controller.value = _controller.value.copyWith(
-          text: widget.formattedText,
-          selection: TextSelection.fromPosition(
-            TextPosition(offset: widget.formattedText.length),
-          ),
-        );
-      },
-      onSubmitted: (value) async {
-        await widget.onSubmitedAnGetInfoForBarcodeRealise(context);
-        dateOfRelease = value;
-      },
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return TextField(
+//       autofocus: true,
+//       controller: _controller,
+//       keyboardType: TextInputType.number,
+//       decoration: const InputDecoration(
+//         hintText: 'Введите дату (дд.мм.гггг)',
+//       ),
+//       maxLength: 10,
+//       textAlign: TextAlign.center,
+//       onChanged: (value) {
+//         _formatText();
+//         _controller.value = _controller.value.copyWith(
+//           text: widget.formattedText,
+//           selection: TextSelection.fromPosition(
+//             TextPosition(offset: widget.formattedText.length),
+//           ),
+//         );
+//       },
+//       onSubmitted: (value) async {
+//         await widget.onSubmitedAnGetInfoForBarcodeRealise(context);
+//         dateOfRelease = value;
+//       },
+//     );
+//   }
+// }
