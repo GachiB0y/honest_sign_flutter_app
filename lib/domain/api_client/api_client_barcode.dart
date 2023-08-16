@@ -57,7 +57,7 @@ class BarcodeService {
     return File(newPathWithFile).create();
   }
 
-  Future<bool> getInfoForBarcodeRealise({required String numberCard}) async {
+  Future<bool> getInfoForBarcodeRelease({required String numberCard}) async {
     var url = 'http://10.3.50.96:8000/get_info/$numberCard';
 
     final response = await http.get(Uri.parse(url));

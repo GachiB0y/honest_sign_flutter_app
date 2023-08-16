@@ -6,3 +6,4 @@ Set<String> setPallets = {'99999999389957'};
 Set<String> setUnit = {};
 
 const String keyFututrePallet = 'Будущий палет';
+String dateOfRelease = '';
