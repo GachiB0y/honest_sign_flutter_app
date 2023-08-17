@@ -29,7 +29,7 @@ class BarcodeService {
   Future<bool> postBarcodes({required ModelsPallet pallets}) async {
     var url = 'http://10.3.50.96:8000/';
     final body = jsonEncode(pallets.toJson());
-    saveData(pallets);
+    saveData(fileName: 'pallet', pallets: pallets);
     final response = await http.post(Uri.parse(url), body: body);
 
     if (response.statusCode == 200) {
@@ -39,9 +39,10 @@ class BarcodeService {
     }
   }
 
-  void saveData(ModelsPallet pallets) async {
+  void saveData(
+      {required ModelsPallet pallets, required String fileName}) async {
     if (await Permission.storage.request().isGranted) {
-      final file = await createFile('example.json');
+      final file = await createFile('$fileName.json');
       final jsonStr = json.encode(pallets.toJson());
       await file.writeAsString(jsonStr);
     } else {

@@ -12,23 +12,28 @@ String modelsPalletToJson(ModelsPallet data) => json.encode(data.toJson());
 class ModelsPallet {
   String barcode;
   String date;
+  String dateRelease;
+
   List<Box> boxes;
 
   ModelsPallet({
     required this.barcode,
     required this.date,
+    required this.dateRelease,
     required this.boxes,
   });
 
   factory ModelsPallet.fromJson(Map<String, dynamic> json) => ModelsPallet(
         barcode: json["barcode"],
         date: json["date"],
+        dateRelease: json["dateRelease"],
         boxes: List<Box>.from(json["boxes"].map((x) => Box.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "barcode": barcode,
         "date": date,
+        "dateRelease": dateRelease,
         "boxes": List<dynamic>.from(boxes.map((x) => x.toJson())),
       };
 }
@@ -36,6 +41,7 @@ class ModelsPallet {
 class Box {
   String barcode;
   String date;
+
   List<Item> items;
 
   Box({

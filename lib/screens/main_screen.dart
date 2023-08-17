@@ -21,6 +21,7 @@ class InputWidget extends StatefulWidget {
 
 class _InputWidgetState extends State<InputWidget> {
   late TextEditingController _textEditingController;
+  late TextEditingController _controllerForAlertChangeDateRelease;
 
   final ScrollController _scrollController = ScrollController();
   final Set<String> allBarcodeHistory = {};
@@ -44,7 +45,8 @@ class _InputWidgetState extends State<InputWidget> {
   final ModelsPallet pallets = ModelsPallet(
       barcode: 'Будущая палета',
       date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
-      boxes: []);
+      boxes: [],
+      dateRelease: '');
 
   late InputWithKeyboardControlFocusNode myFocusNode;
   late InputWithKeyboardControlFocusNode myFocusNodeCheckBarcode =
@@ -314,60 +316,87 @@ class _InputWidgetState extends State<InputWidget> {
 
   Future<void> _showAlertDialogChangeDateRelease(BuildContext context) async {
     bool _showTextField = false;
-    final TextEditingController _controller = TextEditingController();
-    final String formattedText = dateOfRelease;
 
-    Future<void> changeDateRelease(BuildContext context) async {
-      setState(() {
-        dateOfRelease = _controller.text;
-        _showTextField = false;
-      });
-    }
+    final String formattedText = dateOfRelease;
 
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          content: _showTextField
-              ? BaseDateTextFieldWidget(
-                  callBack: changeDateRelease,
-                  controller: _controller,
-                  formattedText: formattedText,
-                )
-              : Text(
-                  'Дата производства $dateOfRelease. Вы уверены?',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 20),
-                ),
-          actions: <Widget>[
-            Center(
-              child: TextButton(
-                child: const Text(
-                  'Нет',
-                  style: TextStyle(fontSize: 20),
-                ),
-                onPressed: () {
-                  setState(() {
-                    _showTextField = true;
-                  });
-                },
-              ),
-            ),
-            Center(
-              child: TextButton(
-                child: const Text(
-                  'Да',
-                  style: TextStyle(fontSize: 20),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          ],
-        );
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return AlertDialog(
+            content: _showTextField
+                ? BaseDateTextFieldWidget(
+                    callBack: null,
+                    controller: _controllerForAlertChangeDateRelease,
+                    formattedText: formattedText,
+                  )
+                : Text(
+                    'Дата производства $dateOfRelease. Вы уверены?',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 20),
+                  ),
+            actions: _showTextField
+                ? <Widget>[
+                    Center(
+                      child: TextButton(
+                        child: const Text(
+                          'Подтвердить',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            dateOfRelease =
+                                _controllerForAlertChangeDateRelease.text;
+                            pallets.dateRelease = dateOfRelease;
+
+                            _showTextField = false;
+                            print(' pallets${pallets.dateRelease}');
+                            pallets.boxes.forEach((element) {});
+                          });
+                        },
+                      ),
+                    )
+                  ]
+                : <Widget>[
+                    Center(
+                      child: TextButton(
+                        child: const Text(
+                          'Нет',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _controllerForAlertChangeDateRelease =
+                                TextEditingController();
+                            _showTextField = true;
+                            isOpenAlertDialog = true;
+                          });
+                        },
+                      ),
+                    ),
+                    Center(
+                      child: TextButton(
+                        child: const Text(
+                          'Да',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            isOpenAlertDialog = false;
+                            Navigator.of(context).pop();
+                          });
+                          // Navigator.of(context).maybePop(true);
+                        },
+                      ),
+                    ),
+                  ],
+          );
+        });
       },
-    );
+    ).then((value) => setState(() {
+          isOpenAlertDialog = false;
+        }));
   }
 
   String createDateNow() {
@@ -380,7 +409,13 @@ class _InputWidgetState extends State<InputWidget> {
     setState(() {
       String formattedDateTime = createDateNow();
       final List<Item> copyUnits = unit.sublist(0, unit.length - 1);
-      boxes.add(Box(barcode: item, date: formattedDateTime, items: copyUnits));
+      final Box box = Box(
+        barcode: item,
+        date: formattedDateTime,
+        items: copyUnits,
+      );
+
+      boxes.add(box);
 
       pallets.boxes = [...boxes];
 
@@ -409,7 +444,12 @@ class _InputWidgetState extends State<InputWidget> {
     //проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
     // bool isValid = isValidBarcode(barcode, TypeOfBarcode.unit);
     setState(() {
-      unit.add(Item(barcode: barcode, date: formattedDateTime));
+      final Item item = Item(
+        barcode: barcode,
+        date: formattedDateTime,
+      );
+
+      unit.add(item);
       countBarcodes += 1;
       allBarcodeHistory.add(barcode);
     });
@@ -756,6 +796,9 @@ class _InputWidgetState extends State<InputWidget> {
                   ElevatedButton.icon(
                       onPressed: () async {
                         if (pallets.boxes.isNotEmpty) {
+                          setState(() {
+                            isOpenAlertDialog = true;
+                          });
                           await _showAlertDialogChangeDateRelease(context);
                         }
                         try {
