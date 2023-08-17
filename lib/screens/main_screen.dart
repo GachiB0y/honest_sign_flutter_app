@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:honest_sign_flutter_app/components/input_date_widget.dart';
+import 'package:honest_sign_flutter_app/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 import 'package:honest_sign_flutter_app/screens/first_screen.dart';
+import 'package:honest_sign_flutter_app/screens/refactor_box_screen.dart';
 
 import 'package:intl/intl.dart';
 
@@ -865,134 +867,6 @@ class _InputWidgetState extends State<InputWidget> {
   }
 }
 
-class InputWithKeyboardControl extends EditableText {
-  /// startShowKeyboard is initial value to show or not the keyboard when the widget is created, default value is false
-  final bool startShowKeyboard;
-
-  /// focusNode is responsible for controlling the focus of the field, this parameter is required
-  final InputWithKeyboardControlFocusNode focusNode;
-
-  /// width is responsible for set the widget size, This parameter is required
-  final double width;
-
-  /// buttonColorEnabled is responsible for set color in button when is enabled, default value is Colors.blue
-  final Color buttonColorEnabled;
-
-  /// buttonColorDisabled is responsible for set color in button when is disabled, default value is Colors.black
-  final Color buttonColorDisabled;
-
-  InputWithKeyboardControl({
-    super.key,
-    required TextEditingController controller,
-    TextStyle style = const TextStyle(color: Colors.black, fontSize: 18),
-    Color cursorColor = Colors.black,
-    bool autofocus = false,
-    Color? selectionColor,
-    this.startShowKeyboard = false,
-    void Function(String)? onSubmitted,
-    required this.focusNode,
-    required this.width,
-    this.buttonColorEnabled = Colors.blue,
-    this.buttonColorDisabled = Colors.black,
-  }) : super(
-          controller: controller,
-          focusNode: focusNode,
-          style: style,
-          cursorColor: cursorColor,
-          autofocus: autofocus,
-          selectionColor: selectionColor,
-          backgroundCursorColor: Colors.black,
-          onSubmitted: onSubmitted,
-        );
-
-  @override
-  EditableTextState createState() {
-    return InputWithKeyboardControlState(
-      startShowKeyboard,
-      focusNode,
-      width,
-      buttonColorEnabled,
-      buttonColorDisabled,
-    );
-  }
-}
-
-class InputWithKeyboardControlState extends EditableTextState {
-  /// showKeyboard is initial value to show or not the keyboard when the widget is created, default value is false
-  bool showKeyboard;
-
-  /// focusNode is responsible for controlling the focus of the field, this parameter is required
-  final InputWithKeyboardControlFocusNode focusNode;
-
-  /// width is responsible for set the widget size, This parameter is required
-  final double width;
-
-  /// buttonColorEnabled is responsible for set color in button when is enabled, default value is Colors.blue
-  final Color buttonColorEnabled;
-
-  /// buttonColorDisabled is responsible for set color in button when is disabled, default value is Colors.black
-  final Color buttonColorDisabled;
-
-  // funcionListener is responsible for controller focusNode listener
-  late Function funcionListener;
-
-  @override
-  void initState() {
-    funcionListener = () {
-      requestKeyboard();
-    };
-
-    focusNode.addListener(funcionListener as void Function());
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    focusNode.removeListener(funcionListener as void Function());
-    super.dispose();
-  }
-
-  InputWithKeyboardControlState(
-    this.showKeyboard,
-    this.focusNode,
-    this.width,
-    this.buttonColorEnabled,
-    this.buttonColorDisabled,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    Widget widget = super.build(context);
-    return SizedBox(
-      width: width,
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Container(child: widget),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  void requestKeyboard() {
-    super.requestKeyboard();
-
-    SystemChannels.textInput.invokeMethod('TextInput.hide');
-  }
-}
-
-class InputWithKeyboardControlFocusNode extends FocusNode {
-  @override
-  bool consumeKeyboardToken() {
-    return false;
-  }
-}
-
 class ItemWidget extends StatelessWidget {
   final Item item;
 
@@ -1011,29 +885,59 @@ class ItemWidget extends StatelessWidget {
 
 class BoxWidget extends StatelessWidget {
   final Box box;
+  final ModelsPallet pallet;
 
   const BoxWidget({
     super.key,
     required this.box,
+    required this.pallet,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      title: Text(box.barcode),
-      children: <Widget>[
-        ListTile(
-          title: const Text('Бутылки:'),
-          subtitle: Column(
-            children: box.items
-                .map((item) => ItemWidget(
-                      item: item,
-                    ))
-                .toList(),
-          ),
+    return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+      return ExpansionTile(
+        title: Row(
+          children: [
+            Text(box.barcode),
+            const Spacer(),
+            IconButton(
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RefactorBoxScreen(
+                        pallets: pallet,
+                        box: box,
+                      ),
+                    ),
+                  );
+                  // Обработка результата с нового экрана
+                  if (result != null) {
+                    setState(() {
+                      if (result['isDeleteBox'] == true) {}
+                    });
+                    print(result);
+                  }
+                },
+                icon: const Icon(Icons.edit)),
+          ],
         ),
-      ],
-    );
+        children: <Widget>[
+          ListTile(
+            title: const Text('Бутылки:'),
+            subtitle: Column(
+              children: box.items
+                  .map((item) => ItemWidget(
+                        item: item,
+                      ))
+                  .toList(),
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -1057,6 +961,7 @@ class ModelsPalletWidget extends StatelessWidget {
             children: pallet.boxes
                 .map((box) => BoxWidget(
                       box: box,
+                      pallet: pallet,
                     ))
                 .toList(),
           ),
