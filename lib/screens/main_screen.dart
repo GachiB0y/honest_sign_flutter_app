@@ -26,10 +26,12 @@ class _InputWidgetState extends State<InputWidget> {
   late TextEditingController _controllerForAlertChangeDateRelease;
 
   final ScrollController _scrollController = ScrollController();
-  final Set<String> allBarcodeHistory = {};
+
   final BarcodeService barcodeService = const BarcodeService();
 
+  final Set<String> allBarcodeHistory = {};
   final List<Item> unit = [];
+  final List<Box> boxes = [];
   int countBarcodes = 0;
   int countBox = 0;
   bool isNewRelease = true;
@@ -38,8 +40,6 @@ class _InputWidgetState extends State<InputWidget> {
   bool isOpenAlertDialog = false;
   bool isShowError = false;
   bool _isLoading = false;
-
-  final List<Box> boxes = [];
 
   final GlobalKey _alertDialogKey = GlobalKey();
   final GlobalKey _alertDialogKeyTwo = GlobalKey();
@@ -640,6 +640,14 @@ class _InputWidgetState extends State<InputWidget> {
     });
   }
 
+  void deleteBox(int indexBox) {
+    setState(() {
+      boxes.removeAt(indexBox);
+      countBarcodes -= countUnitsPerBox + 1;
+      countBox -= 1;
+    });
+  }
+
   bool checkDublicateBarcodeInPallet({required String barcode}) {
     if (barcode == '4630097264533')
       return false; // ЗАГЛУШКА НА ДУБЛИКАТ ШТУЧКИ, УБРАТЬ В РЕЛИЗЕ
@@ -861,6 +869,8 @@ class _InputWidgetState extends State<InputWidget> {
                 deleteCurrentUnit: deleteCurrentUnitOrAllUnitsInBox,
                 scrollController: _scrollController,
                 unit: unit,
+                allBarcodeHistory: allBarcodeHistory,
+                deleteBox: deleteBox,
               ),
             ],
           );
@@ -883,16 +893,26 @@ class ItemWidget extends StatelessWidget {
   }
 }
 
-class BoxWidget extends StatelessWidget {
+class BoxWidget extends StatefulWidget {
   final Box box;
+
   final ModelsPallet pallet;
+  final Set<String> allBarcodeHistory;
+  final void Function(int indexBox) deleteBox;
 
   const BoxWidget({
     super.key,
     required this.box,
     required this.pallet,
+    required this.allBarcodeHistory,
+    required this.deleteBox,
   });
 
+  @override
+  State<BoxWidget> createState() => _BoxWidgetState();
+}
+
+class _BoxWidgetState extends State<BoxWidget> {
   @override
   Widget build(BuildContext context) {
     return StatefulBuilder(
@@ -900,7 +920,7 @@ class BoxWidget extends StatelessWidget {
       return ExpansionTile(
         title: Row(
           children: [
-            Text(box.barcode),
+            Text(widget.box.barcode),
             const Spacer(),
             IconButton(
                 onPressed: () async {
@@ -908,16 +928,21 @@ class BoxWidget extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => RefactorBoxScreen(
-                        pallets: pallet,
-                        box: box,
+                        pallets: widget.pallet,
+                        box: widget.box,
+                        allBarcodeHistory: widget.allBarcodeHistory,
                       ),
                     ),
                   );
                   // Обработка результата с нового экрана
                   if (result != null) {
-                    setState(() {
-                      if (result['isDeleteBox'] == true) {}
-                    });
+                    final res = result['isDeleteBox'];
+                    final int indexBox = int.parse(result['indexBox']);
+
+                    if (result['isDeleteBox'] == "true") {
+                      widget.deleteBox(indexBox);
+                    }
+
                     print(result);
                   }
                 },
@@ -928,7 +953,7 @@ class BoxWidget extends StatelessWidget {
           ListTile(
             title: const Text('Бутылки:'),
             subtitle: Column(
-              children: box.items
+              children: widget.box.items
                   .map((item) => ItemWidget(
                         item: item,
                       ))
@@ -943,8 +968,15 @@ class BoxWidget extends StatelessWidget {
 
 class ModelsPalletWidget extends StatelessWidget {
   final ModelsPallet pallet;
+  final Set<String> allBarcodeHistory;
 
-  const ModelsPalletWidget({super.key, required this.pallet});
+  final void Function(int indexBox) deleteBox;
+
+  const ModelsPalletWidget(
+      {super.key,
+      required this.pallet,
+      required this.allBarcodeHistory,
+      required this.deleteBox});
 
   @override
   Widget build(BuildContext context) {
@@ -962,6 +994,8 @@ class ModelsPalletWidget extends StatelessWidget {
                 .map((box) => BoxWidget(
                       box: box,
                       pallet: pallet,
+                      allBarcodeHistory: allBarcodeHistory,
+                      deleteBox: deleteBox,
                     ))
                 .toList(),
           ),
@@ -973,6 +1007,10 @@ class ModelsPalletWidget extends StatelessWidget {
 
 class TwoTabWidget extends StatelessWidget {
   final ModelsPallet pallets;
+  final Set<String> allBarcodeHistory;
+
+  final void Function(int indexBox) deleteBox;
+
   final ScrollController scrollController;
   final List<Item> unit;
   final Function({required bool deleteAll, required String lastBarcode})
@@ -983,7 +1021,9 @@ class TwoTabWidget extends StatelessWidget {
       required this.pallets,
       required this.scrollController,
       required this.unit,
-      required this.deleteCurrentUnit});
+      required this.deleteCurrentUnit,
+      required this.allBarcodeHistory,
+      required this.deleteBox});
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -1010,6 +1050,8 @@ class TwoTabWidget extends StatelessWidget {
                   SingleChildScrollView(
                     child: ModelsPalletWidget(
                       pallet: pallets,
+                      allBarcodeHistory: allBarcodeHistory,
+                      deleteBox: deleteBox,
                     ),
                   ),
                 ],

@@ -4,9 +4,13 @@ import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 
 class RefactorBoxScreen extends StatefulWidget {
   final ModelsPallet pallets;
+  final Set<String> allBarcodeHistory;
   final Box box;
   const RefactorBoxScreen(
-      {super.key, required this.pallets, required this.box});
+      {super.key,
+      required this.pallets,
+      required this.box,
+      required this.allBarcodeHistory});
 
   @override
   State<RefactorBoxScreen> createState() => _RefactorBoxScreenState();
@@ -19,6 +23,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
   bool isExit = false;
   bool isDeleteUnit = false;
   bool isDeleteBox = false;
+  late final int indexBox;
 
   Future<void> _showWindowConfirmationChange(BuildContext context) async {
     return showDialog<void>(
@@ -51,9 +56,10 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     style: TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
-                    final int indexBox =
-                        widget.pallets.boxes.indexOf(widget.box);
+                    //  indexBox =
+                    //     widget.pallets.boxes.indexOf(widget.box);
                     setState(() {
+                      widget.allBarcodeHistory.remove(widget.box.barcode);
                       widget.pallets.boxes.removeAt(indexBox);
                       isDeleteBox = true;
                       isExit = true;
@@ -77,8 +83,11 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
           children: [
             ElevatedButton.icon(
                 onPressed: () {
-                  final int indexBox = widget.pallets.boxes.indexOf(widget.box);
+                  indexBox = widget.pallets.boxes.indexOf(widget.box);
                   setState(() {
+                    widget.box.items.forEach((element) {
+                      widget.allBarcodeHistory.remove(element.barcode);
+                    });
                     widget.box.items.clear();
                     widget.pallets.boxes[indexBox].items.clear();
                     isDeleteUnit = true;
@@ -97,11 +106,12 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                   }
 
                   if (isExit) {
-                    final onbject = {
+                    final result = {
                       'isDeleteBox': '$isDeleteBox',
                       'box': '${widget.box.barcode}',
+                      'indexBox': '$indexBox',
                     };
-                    Navigator.pop(context, onbject);
+                    Navigator.pop(context, result);
                   }
                 },
                 icon: const Icon(
