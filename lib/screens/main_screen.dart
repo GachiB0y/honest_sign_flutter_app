@@ -944,7 +944,7 @@ class _BoxWidgetState extends State<BoxWidget> {
                     if (result['isDeleteBox'] == "true") {
                       widget.deleteBox(indexBox);
                     }
-
+                    setState(() {});
                     print(result);
                   }
                 },

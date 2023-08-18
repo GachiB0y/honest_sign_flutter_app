@@ -113,8 +113,9 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                           date: formattedDateTime,
                         );
                         setState(() {
-                          widget.box.items.add(item);
+                          // widget.box.items.add(item);
                           widget.allBarcodeHistory.add(value);
+                          widget.pallets.boxes[indexBox].items.add(item);
                           _textEditingController.clear();
                           myFocusNode.requestFocus();
                         });
