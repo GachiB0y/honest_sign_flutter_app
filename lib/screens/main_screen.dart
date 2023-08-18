@@ -401,12 +401,6 @@ class _InputWidgetState extends State<InputWidget> {
         }));
   }
 
-  String createDateNow() {
-    DateTime now = DateTime.now();
-    String formattedDateTime = DateFormat('dd.MM.yyyy HH:mm').format(now);
-    return formattedDateTime;
-  }
-
   void createBox(String item) {
     setState(() {
       String formattedDateTime = createDateNow();
@@ -871,6 +865,7 @@ class _InputWidgetState extends State<InputWidget> {
                 unit: unit,
                 allBarcodeHistory: allBarcodeHistory,
                 deleteBox: deleteBox,
+                myFocusNode: myFocusNode,
               ),
             ],
           );
@@ -899,6 +894,7 @@ class BoxWidget extends StatefulWidget {
   final ModelsPallet pallet;
   final Set<String> allBarcodeHistory;
   final void Function(int indexBox) deleteBox;
+  final InputWithKeyboardControlFocusNode myFocusNode;
 
   const BoxWidget({
     super.key,
@@ -906,6 +902,7 @@ class BoxWidget extends StatefulWidget {
     required this.pallet,
     required this.allBarcodeHistory,
     required this.deleteBox,
+    required this.myFocusNode,
   });
 
   @override
@@ -924,6 +921,8 @@ class _BoxWidgetState extends State<BoxWidget> {
             const Spacer(),
             IconButton(
                 onPressed: () async {
+                  widget.myFocusNode.nextFocus();
+
                   final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -934,6 +933,8 @@ class _BoxWidgetState extends State<BoxWidget> {
                       ),
                     ),
                   );
+                  widget.myFocusNode.requestFocus();
+
                   // Обработка результата с нового экрана
                   if (result != null) {
                     final res = result['isDeleteBox'];
@@ -969,6 +970,7 @@ class _BoxWidgetState extends State<BoxWidget> {
 class ModelsPalletWidget extends StatelessWidget {
   final ModelsPallet pallet;
   final Set<String> allBarcodeHistory;
+  final InputWithKeyboardControlFocusNode myFocusNode;
 
   final void Function(int indexBox) deleteBox;
 
@@ -976,7 +978,8 @@ class ModelsPalletWidget extends StatelessWidget {
       {super.key,
       required this.pallet,
       required this.allBarcodeHistory,
-      required this.deleteBox});
+      required this.deleteBox,
+      required this.myFocusNode});
 
   @override
   Widget build(BuildContext context) {
@@ -996,6 +999,7 @@ class ModelsPalletWidget extends StatelessWidget {
                       pallet: pallet,
                       allBarcodeHistory: allBarcodeHistory,
                       deleteBox: deleteBox,
+                      myFocusNode: myFocusNode,
                     ))
                 .toList(),
           ),
@@ -1008,6 +1012,7 @@ class ModelsPalletWidget extends StatelessWidget {
 class TwoTabWidget extends StatelessWidget {
   final ModelsPallet pallets;
   final Set<String> allBarcodeHistory;
+  final InputWithKeyboardControlFocusNode myFocusNode;
 
   final void Function(int indexBox) deleteBox;
 
@@ -1023,7 +1028,8 @@ class TwoTabWidget extends StatelessWidget {
       required this.unit,
       required this.deleteCurrentUnit,
       required this.allBarcodeHistory,
-      required this.deleteBox});
+      required this.deleteBox,
+      required this.myFocusNode});
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -1052,6 +1058,7 @@ class TwoTabWidget extends StatelessWidget {
                       pallet: pallets,
                       allBarcodeHistory: allBarcodeHistory,
                       deleteBox: deleteBox,
+                      myFocusNode: myFocusNode,
                     ),
                   ),
                 ],

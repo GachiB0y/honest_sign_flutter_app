@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:honest_sign_flutter_app/components/input_with_keyboard_control.dart';
+import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 
 class RefactorBoxScreen extends StatefulWidget {
@@ -20,10 +21,20 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
   final InputWithKeyboardControlFocusNode myFocusNode =
       InputWithKeyboardControlFocusNode();
   final TextEditingController _textEditingController = TextEditingController();
-  bool isExit = false;
+  final GlobalKey _windowConfirmationChangeKey = GlobalKey();
+
+  // bool isExit = false;
   bool isDeleteUnit = false;
   bool isDeleteBox = false;
+  bool isShowInput = false;
+  bool isExit = true;
   late final int indexBox;
+
+  @override
+  void initState() {
+    super.initState();
+    indexBox = widget.pallets.boxes.indexOf(widget.box);
+  }
 
   Future<void> _showWindowConfirmationChange(BuildContext context) async {
     return showDialog<void>(
@@ -32,6 +43,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return AlertDialog(
+            key: _windowConfirmationChangeKey,
             content: const Text(
               'Коробкая пуста.При выходе с пустой коробкой, коробка будет удалена. Вы уверены?',
               textAlign: TextAlign.center,
@@ -45,7 +57,10 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     style: TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
-                    Navigator.pop(context);
+                    // Navigator.pop(context);
+                    setState(() => isExit = false);
+                    Navigator.of(_windowConfirmationChangeKey.currentContext!)
+                        .pop();
                   },
                 ),
               ),
@@ -56,13 +71,10 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     style: TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
-                    //  indexBox =
-                    //     widget.pallets.boxes.indexOf(widget.box);
                     setState(() {
                       widget.allBarcodeHistory.remove(widget.box.barcode);
                       widget.pallets.boxes.removeAt(indexBox);
                       isDeleteBox = true;
-                      isExit = true;
                     });
                     Navigator.pop(context);
                   },
@@ -77,13 +89,53 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // indexBox = widget.pallets.boxes.indexOf(widget.box);
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
+            isShowInput
+                ? TextFormField(
+                    focusNode: myFocusNode,
+                    autofocus: true,
+                    controller: _textEditingController,
+                    onFieldSubmitted: (value) {
+                      if (widget.pallets.boxes[indexBox].items.length ==
+                          countUnitsPerBox) {
+                        setState(() {
+                          _textEditingController.clear();
+                        });
+                        return;
+                      } else {
+                        String formattedDateTime = createDateNow();
+                        final Item item = Item(
+                          barcode: value,
+                          date: formattedDateTime,
+                        );
+                        setState(() {
+                          widget.box.items.add(item);
+                          widget.allBarcodeHistory.add(value);
+                          _textEditingController.clear();
+                          myFocusNode.requestFocus();
+                        });
+                      }
+                    },
+                  )
+                : const SizedBox.shrink(),
             ElevatedButton.icon(
                 onPressed: () {
-                  indexBox = widget.pallets.boxes.indexOf(widget.box);
+                  setState(() {
+                    myFocusNode.requestFocus();
+                    isShowInput = true;
+                  });
+                },
+                icon: const Icon(
+                  Icons.add,
+                ),
+                label: const Text('Наполнить коробку')),
+            ElevatedButton.icon(
+                onPressed: () {
+                  // indexBox = widget.pallets.boxes.indexOf(widget.box);
                   setState(() {
                     widget.box.items.forEach((element) {
                       widget.allBarcodeHistory.remove(element.barcode);
@@ -92,7 +144,6 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     widget.pallets.boxes[indexBox].items.clear();
                     isDeleteUnit = true;
                   });
-                  print(indexBox);
                 },
                 icon: const Icon(
                   Icons.delete,
@@ -101,21 +152,25 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                 label: const Text('Очистить коробку')),
             ElevatedButton.icon(
                 onPressed: () async {
+                  setState(() {
+                    isExit = true;
+                  });
                   if (widget.box.items.isEmpty) {
                     await _showWindowConfirmationChange(context);
                   }
 
+                  final result = {
+                    'isDeleteBox': '$isDeleteBox',
+                    'box': '${widget.box.barcode}',
+                    'indexBox': '$indexBox',
+                  };
                   if (isExit) {
-                    final result = {
-                      'isDeleteBox': '$isDeleteBox',
-                      'box': '${widget.box.barcode}',
-                      'indexBox': '$indexBox',
-                    };
                     Navigator.pop(context, result);
                   }
                 },
                 icon: const Icon(
                   Icons.arrow_back,
+                  color: Colors.blue,
                 ),
                 label: const Text('Вернутся назад')),
             Align(
