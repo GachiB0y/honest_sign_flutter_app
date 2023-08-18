@@ -425,6 +425,7 @@ class _InputWidgetState extends State<InputWidget> {
       unit.clear();
       pallets.barcode = text;
       pallets.date = formattedDateTime;
+      pallets.dateRelease = dateOfRelease;
     });
   }
 
