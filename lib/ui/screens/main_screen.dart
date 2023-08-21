@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:honest_sign_flutter_app/components/custom_snack_bar.dart';
-import 'package:honest_sign_flutter_app/components/input_date_widget.dart';
-import 'package:honest_sign_flutter_app/components/input_with_keyboard_control.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
+import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar.dart';
+import 'package:honest_sign_flutter_app/ui/components/input_date_widget.dart';
+import 'package:honest_sign_flutter_app/ui/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
-import 'package:honest_sign_flutter_app/screens/first_screen.dart';
-import 'package:honest_sign_flutter_app/screens/refactor_box_screen.dart';
+import 'package:honest_sign_flutter_app/ui/screens/first_screen.dart';
+import 'package:honest_sign_flutter_app/ui/screens/refactor_box_screen.dart';
 
 import 'package:intl/intl.dart';
 
@@ -17,6 +19,13 @@ enum TypeOfStateSend { duplicate, send, notSend, valid, notValid }
 
 class InputWidget extends StatefulWidget {
   const InputWidget({super.key});
+
+  static Widget create() {
+    return BlocProvider<PalletCubit>(
+      create: (context) => PalletCubit(),
+      child: const InputWidget(),
+    );
+  }
 
   @override
   _InputWidgetState createState() => _InputWidgetState();
@@ -425,16 +434,7 @@ class _InputWidgetState extends State<InputWidget> {
     String formattedDateTime = createDateNow();
     //проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
 
-    setState(() {
-      final Item item = Item(
-        barcode: barcode,
-        date: formattedDateTime,
-      );
-
-      unit.add(item);
-      countBarcodes += 1;
-      allBarcodeHistory.add(barcode);
-    });
+    createUnit(barcode, formattedDateTime);
     // проверка на отправку не полной палеты
     if (isSendNotColpetePallet) {
       if (typeBarcode == TypeOfBarcode.pallet) {
@@ -465,7 +465,7 @@ class _InputWidgetState extends State<InputWidget> {
     // Проверка на коробку
     else if ((unit.length == (countUnitsPerBox + 1))) {
       if (typeBarcode == TypeOfBarcode.box) {
-        countBox += 1;
+        countBox += 1; // Перенести внутрь createBox
         createBox(barcode);
 
         return true;
@@ -492,6 +492,19 @@ class _InputWidgetState extends State<InputWidget> {
         return false;
       }
     }
+  }
+
+  void createUnit(String barcode, String formattedDateTime) {
+    setState(() {
+      final Item item = Item(
+        barcode: barcode,
+        date: formattedDateTime,
+      );
+
+      unit.add(item);
+      countBarcodes += 1;
+      allBarcodeHistory.add(barcode);
+    });
   }
 
   TypeOfBarcode isValidBarcode(String barcode) {
@@ -589,7 +602,7 @@ class _InputWidgetState extends State<InputWidget> {
     //   isNewRelease =
     //       false; //Заглушка на код карточик разлицва ПОТОМ УБРАТЬ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // });
-
+    final PalletCubit bloc = context.watch<PalletCubit>();
     return isNewRelease
         ? FirstScreen(
             textEditingController: _textEditingController,

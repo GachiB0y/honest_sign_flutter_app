@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:honest_sign_flutter_app/screens/main_screen.dart';
-import 'package:honest_sign_flutter_app/screens/refactor_box_screen.dart';
+import 'package:honest_sign_flutter_app/ui/screens/main_screen.dart';
+import 'package:honest_sign_flutter_app/ui/screens/refactor_box_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,9 +25,9 @@ class MyApp extends StatelessWidget {
       //     body: SafeArea(child: InputWidget())),
       //   '/refactor_box': (context) => RefactorBoxScreen(),
       // },
-      home: const Scaffold(
+      home: Scaffold(
           resizeToAvoidBottomInset: false,
-          body: SafeArea(child: InputWidget())),
+          body: SafeArea(child: InputWidget.create())),
     );
   }
 }

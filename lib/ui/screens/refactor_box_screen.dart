@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:honest_sign_flutter_app/components/custom_snack_bar.dart';
-import 'package:honest_sign_flutter_app/components/input_with_keyboard_control.dart';
+import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar.dart';
+import 'package:honest_sign_flutter_app/ui/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 
