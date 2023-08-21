@@ -783,31 +783,29 @@ class _BoxWidgetState extends State<BoxWidget> {
                 onPressed: () async {
                   widget.myFocusNode.nextFocus();
 
-                  // final result = await Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => RefactorBoxScreen(
-                  //       pallets: widget.pallet,
-                  //       box: widget.box,
-                  //       allBarcodeHistory: widget.allBarcodeHistory,
-                  //       checkDublicateBarcodeInPallet:
-                  //           widget.checkDublicateBarcodeInPallet,
-                  //     ),
-                  //   ),
-                  // );
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RefactorBoxScreen(
+                        box: widget.box,
+                        checkDublicateBarcodeInPallet:
+                            widget.checkDublicateBarcodeInPallet,
+                      ),
+                    ),
+                  );
                   widget.myFocusNode.requestFocus();
 
-                  // // Обработка результата с нового экрана
-                  // if (result != null) {
-                  //   final res = result['isDeleteBox'];
-                  //   final int indexBox = int.parse(result['indexBox']);
+                  // Обработка результата с нового экрана
+                  if (result != null) {
+                    final res = result['isDeleteBox'];
+                    final int indexBox = int.parse(result['indexBox']);
 
-                  //   if (result['isDeleteBox'] == "true") {
-                  //     widget.deleteBox(indexBox);
-                  //   }
-                  //   setState(() {});
-                  //   print(result);
-                  // }
+                    if (result['isDeleteBox'] == "true") {
+                      // widget.deleteBox(indexBox);
+                    }
+                    setState(() {});
+                    print(result);
+                  }
                 },
                 icon: const Icon(Icons.edit)),
           ],

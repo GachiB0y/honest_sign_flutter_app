@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 
 class RefactorBoxScreen extends StatefulWidget {
-  final ModelsPallet pallets;
-  final Set<String> allBarcodeHistory;
+  // final ModelsPallet pallets;
+  // final Set<String> allBarcodeHistory;
   final Box box;
   final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
 
   const RefactorBoxScreen(
       {super.key,
-      required this.pallets,
       required this.box,
-      required this.allBarcodeHistory,
       required this.checkDublicateBarcodeInPallet});
 
   @override
@@ -31,15 +31,19 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
   bool isDeleteBox = false;
   bool isShowInput = false;
   bool isExit = true;
-  late final int indexBox;
+  int indexBox = 0;
 
   @override
   void initState() {
     super.initState();
-    indexBox = widget.pallets.boxes.indexOf(widget.box);
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      final PalletCubit bloc = context.read<PalletCubit>();
+      indexBox = bloc.state.pallets.boxes.indexOf(widget.box);
+    });
   }
 
-  Future<void> _showWindowConfirmationChange(BuildContext context) async {
+  Future<void> _showWindowConfirmationChange(
+      {required BuildContext context, required PalletCubit bloc}) async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -74,8 +78,9 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                   ),
                   onPressed: () {
                     setState(() {
-                      widget.allBarcodeHistory.remove(widget.box.barcode);
-                      widget.pallets.boxes.removeAt(indexBox);
+                      bloc.deleteBox(indexBox: indexBox);
+                      // widget.allBarcodeHistory.remove(widget.box.barcode);
+                      // widget.pallets.boxes.removeAt(indexBox);
                       isDeleteBox = true;
                     });
                     Navigator.pop(context);
@@ -91,6 +96,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final PalletCubit bloc = context.read<PalletCubit>();
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -101,7 +107,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     autofocus: true,
                     controller: _textEditingController,
                     onFieldSubmitted: (String value) {
-                      if (widget.pallets.boxes[indexBox].items.length ==
+                      if (bloc.state.pallets.boxes[indexBox].items.length ==
                           countUnitsPerBox) {
                         setState(() {
                           _textEditingController.clear();
@@ -115,14 +121,18 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                               context);
                         } else {
                           String formattedDateTime = createDateNow();
-                          final Item item = Item(
-                            barcode: value,
-                            date: formattedDateTime,
-                          );
-                          setState(() {
-                            widget.allBarcodeHistory.add(value);
-                            widget.pallets.boxes[indexBox].items.add(item);
-                          });
+                          bloc.createUnitByIndexBox(
+                              barcode: value,
+                              formattedDateTime: formattedDateTime,
+                              indexBox: indexBox);
+                          // final Item item = Item(
+                          //   barcode: value,
+                          //   date: formattedDateTime,
+                          // );
+                          // setState(() {
+                          //   widget.allBarcodeHistory.add(value);
+                          //   widget.pallets.boxes[indexBox].items.add(item);
+                          // });
                         }
 
                         setState(() {
@@ -146,12 +156,13 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                 label: const Text('Наполнить коробку')),
             ElevatedButton.icon(
                 onPressed: () {
+                  bloc.deleteBox(indexBox: indexBox);
                   setState(() {
-                    widget.box.items.forEach((element) {
-                      widget.allBarcodeHistory.remove(element.barcode);
-                    });
-                    widget.box.items.clear();
-                    widget.pallets.boxes[indexBox].items.clear();
+                    // widget.box.items.forEach((element) {
+                    //   widget.allBarcodeHistory.remove(element.barcode);
+                    // });
+                    // widget.box.items.clear();
+                    // widget.pallets.boxes[indexBox].items.clear();
                     isDeleteUnit = true;
                   });
                 },
@@ -166,7 +177,8 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     isExit = true;
                   });
                   if (widget.box.items.isEmpty) {
-                    await _showWindowConfirmationChange(context);
+                    await _showWindowConfirmationChange(
+                        context: context, bloc: bloc);
                   }
 
                   final result = {
@@ -210,9 +222,10 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
             ),
             Expanded(
               child: ListView.builder(
-                  itemCount: widget.box.items.length,
+                  itemCount: bloc.state.boxes[indexBox].items
+                      .length, // widget.box.items.length,
                   itemBuilder: (BuildContext context, int index) => ItemWidget(
-                        item: widget.box.items[index],
+                        item: bloc.state.boxes[indexBox].items[index],
                         index: index,
                       )),
             )

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
 
 import 'package:honest_sign_flutter_app/ui/screens/main_screen.dart';
 import 'package:honest_sign_flutter_app/ui/screens/refactor_box_screen.dart';
@@ -12,22 +14,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-        useMaterial3: true,
+    return BlocProvider<PalletCubit>(
+      create: (context) => PalletCubit(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+          useMaterial3: true,
+        ),
+        // initialRoute: '/',
+        // routes: {
+        //   '/': (context) => const Scaffold(
+        //     resizeToAvoidBottomInset: false,
+        //     body: SafeArea(child: InputWidget())),
+        //   '/refactor_box': (context) => RefactorBoxScreen(),
+        // },
+        home: const Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: SafeArea(child: InputWidget())),
       ),
-      // initialRoute: '/',
-      // routes: {
-      //   '/': (context) => const Scaffold(
-      //     resizeToAvoidBottomInset: false,
-      //     body: SafeArea(child: InputWidget())),
-      //   '/refactor_box': (context) => RefactorBoxScreen(),
-      // },
-      home: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: SafeArea(child: InputWidget.create())),
     );
   }
 }

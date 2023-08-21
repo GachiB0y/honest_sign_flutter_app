@@ -267,4 +267,33 @@ class PalletCubit extends Cubit<PalletCubitState> {
     );
     emit(newState);
   }
+
+  void createUnitByIndexBox(
+      {required String barcode,
+      required String formattedDateTime,
+      required int indexBox}) {
+    final Item item = Item(
+      barcode: barcode,
+      date: formattedDateTime,
+    );
+
+    final List<Item> newUnit = state.unit;
+    newUnit.add(item);
+    final int newCountBarcodes = state.countBarcodes + 1;
+    final Set<String> newAllBarcodeHistory =
+        Set<String>.from(state.allBarcodeHistory);
+    newAllBarcodeHistory.add(barcode);
+    final ModelsPallet newPallets = state.pallets;
+    newPallets.boxes[indexBox].items.add(item);
+
+    final newState = state.copyWith(
+      boxes: [...state.boxes],
+      allBarcodeHistory: newAllBarcodeHistory,
+      pallets: newPallets,
+      unit: newUnit,
+      countBarcodes: newCountBarcodes,
+      countBox: state.countBox,
+    );
+    emit(newState);
+  }
 }
