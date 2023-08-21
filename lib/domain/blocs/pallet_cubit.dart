@@ -127,7 +127,7 @@ class PalletCubit extends Cubit<PalletCubitState> {
 
     final newState = state.copyWith(
       boxes: [...state.boxes],
-      allBarcodeHistory: state.allBarcodeHistory,
+      allBarcodeHistory: newAllBarcodeHistory,
       pallets: state.pallets,
       unit: newUnit,
       countBarcodes: newCountBarcodes,
@@ -235,5 +235,36 @@ class PalletCubit extends Cubit<PalletCubitState> {
       );
       emit(newState);
     }
+  }
+
+  void clearPallet() {
+    final ModelsPallet newPallets = state.pallets;
+    newPallets.barcode = 'Будущая палета';
+    newPallets.boxes = [];
+    newPallets.date = '';
+    final newState = state.copyWith(
+      boxes: [],
+      allBarcodeHistory: {},
+      pallets: newPallets,
+      unit: [...state.unit],
+      countBarcodes: 0,
+      countBox: 0,
+    );
+    emit(newState);
+  }
+
+  void changeDateRelease({required String dateOfRelease}) {
+    final ModelsPallet newPallets = state.pallets;
+    newPallets.dateRelease = dateOfRelease;
+
+    final newState = state.copyWith(
+      boxes: [...state.boxes],
+      allBarcodeHistory: {...state.allBarcodeHistory},
+      pallets: newPallets,
+      unit: [...state.unit],
+      countBarcodes: state.countBarcodes,
+      countBox: state.countBox,
+    );
+    emit(newState);
   }
 }
