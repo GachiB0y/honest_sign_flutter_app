@@ -58,17 +58,6 @@ class _FirstScreenState extends State<FirstScreen> {
                   formattedText: _formattedText,
                   callBack: onSubmitedAnGetInfoForBarcodeRelease,
                 )
-              // TextFormField(
-              //     controller: controllerForDateInput,
-              //     keyboardType: TextInputType.number,
-              //     autofocus: true,
-              //     onFieldSubmitted: (value) async {
-              //       await onSubmitedAnGetInfoForBarcodeRealise(context);
-              //     },
-              //     // inputFormatters: [
-              //     //   FilteringTextInputFormatter.allow(RegExp(r'[\d\.]')), // Разрешаем только числа и точки
-              //     // ],
-              //   )
               : TextFormField(
                   keyboardType: TextInputType.number,
                   autofocus: true,
@@ -99,85 +88,3 @@ class _FirstScreenState extends State<FirstScreen> {
     }
   }
 }
-
-// class DateTextFieldWidget extends StatefulWidget {
-//   final TextEditingController controller;
-//   String formattedText;
-//   final Future<void> Function(BuildContext context)
-//       onSubmitedAnGetInfoForBarcodeRealise;
-
-//   DateTextFieldWidget(
-//       {super.key,
-//       required this.controller,
-//       required this.formattedText,
-//       required this.onSubmitedAnGetInfoForBarcodeRealise});
-//   @override
-//   _DateTextFieldWidgetState createState() => _DateTextFieldWidgetState();
-// }
-
-// class _DateTextFieldWidgetState extends State<DateTextFieldWidget> {
-//   TextEditingController get _controller => widget.controller;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _controller.addListener(_formatText);
-//   }
-
-//   @override
-//   void dispose() {
-//     _controller.dispose();
-//     super.dispose();
-//   }
-
-//   void _formatText() {
-//     final input = _controller.text.replaceAll('.', '');
-//     if (input.length > 8) {
-//       _controller.text = input.substring(0, 8);
-//     }
-//     String formatted = '';
-
-//     if (input.isNotEmpty) {
-//       formatted = input.substring(0, input.length < 2 ? input.length : 2);
-//     }
-//     if (input.length > 2) {
-//       formatted +=
-//           '.' + input.substring(2, input.length < 4 ? input.length : 4);
-//     }
-//     if (input.length > 4) {
-//       formatted +=
-//           '.' + input.substring(4, input.length < 8 ? input.length : 8);
-//     }
-
-//     setState(() {
-//       widget.formattedText = formatted;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return TextField(
-//       autofocus: true,
-//       controller: _controller,
-//       keyboardType: TextInputType.number,
-//       decoration: const InputDecoration(
-//         hintText: 'Введите дату (дд.мм.гггг)',
-//       ),
-//       maxLength: 10,
-//       textAlign: TextAlign.center,
-//       onChanged: (value) {
-//         _formatText();
-//         _controller.value = _controller.value.copyWith(
-//           text: widget.formattedText,
-//           selection: TextSelection.fromPosition(
-//             TextPosition(offset: widget.formattedText.length),
-//           ),
-//         );
-//       },
-//       onSubmitted: (value) async {
-//         await widget.onSubmitedAnGetInfoForBarcodeRealise(context);
-//         dateOfRelease = value;
-//       },
-//     );
-//   }
-// }

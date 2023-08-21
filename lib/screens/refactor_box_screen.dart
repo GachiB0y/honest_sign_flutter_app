@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:honest_sign_flutter_app/components/custom_snack_bar.dart';
 import 'package:honest_sign_flutter_app/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
@@ -7,11 +8,14 @@ class RefactorBoxScreen extends StatefulWidget {
   final ModelsPallet pallets;
   final Set<String> allBarcodeHistory;
   final Box box;
+  final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
+
   const RefactorBoxScreen(
       {super.key,
       required this.pallets,
       required this.box,
-      required this.allBarcodeHistory});
+      required this.allBarcodeHistory,
+      required this.checkDublicateBarcodeInPallet});
 
   @override
   State<RefactorBoxScreen> createState() => _RefactorBoxScreenState();
@@ -23,7 +27,6 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
   final TextEditingController _textEditingController = TextEditingController();
   final GlobalKey _windowConfirmationChangeKey = GlobalKey();
 
-  // bool isExit = false;
   bool isDeleteUnit = false;
   bool isDeleteBox = false;
   bool isShowInput = false;
@@ -57,7 +60,6 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     style: TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
-                    // Navigator.pop(context);
                     setState(() => isExit = false);
                     Navigator.of(_windowConfirmationChangeKey.currentContext!)
                         .pop();
@@ -89,7 +91,6 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // indexBox = widget.pallets.boxes.indexOf(widget.box);
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -99,7 +100,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     focusNode: myFocusNode,
                     autofocus: true,
                     controller: _textEditingController,
-                    onFieldSubmitted: (value) {
+                    onFieldSubmitted: (String value) {
                       if (widget.pallets.boxes[indexBox].items.length ==
                           countUnitsPerBox) {
                         setState(() {
@@ -107,15 +108,24 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                         });
                         return;
                       } else {
-                        String formattedDateTime = createDateNow();
-                        final Item item = Item(
-                          barcode: value,
-                          date: formattedDateTime,
-                        );
+                        final isDublicate = widget
+                            .checkDublicateBarcodeInPallet(barcode: value);
+                        if (isDublicate) {
+                          CustomSnackBar.showSnackBarForDuplicateBarcode(
+                              context);
+                        } else {
+                          String formattedDateTime = createDateNow();
+                          final Item item = Item(
+                            barcode: value,
+                            date: formattedDateTime,
+                          );
+                          setState(() {
+                            widget.allBarcodeHistory.add(value);
+                            widget.pallets.boxes[indexBox].items.add(item);
+                          });
+                        }
+
                         setState(() {
-                          // widget.box.items.add(item);
-                          widget.allBarcodeHistory.add(value);
-                          widget.pallets.boxes[indexBox].items.add(item);
                           _textEditingController.clear();
                           myFocusNode.requestFocus();
                         });
@@ -136,7 +146,6 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                 label: const Text('Наполнить коробку')),
             ElevatedButton.icon(
                 onPressed: () {
-                  // indexBox = widget.pallets.boxes.indexOf(widget.box);
                   setState(() {
                     widget.box.items.forEach((element) {
                       widget.allBarcodeHistory.remove(element.barcode);

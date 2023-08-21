@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:honest_sign_flutter_app/components/custom_snack_bar.dart';
 import 'package:honest_sign_flutter_app/components/input_date_widget.dart';
 import 'package:honest_sign_flutter_app/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
@@ -133,7 +134,7 @@ class _InputWidgetState extends State<InputWidget> {
                   setState(() {
                     isOpenAlertDialog = false;
                   });
-                  // Navigator.of(_alertDialogKeyTwo.currentContext!).pop();
+
                   Navigator.pop(context);
                 },
                 child: const Text('OK'),
@@ -142,19 +143,6 @@ class _InputWidgetState extends State<InputWidget> {
           ],
         );
       },
-    );
-  }
-
-  void showSnackBarForDuplicateBarcode(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Штрих код дублируется, отсканируйте другой штрихкод!',
-          style: TextStyle(fontSize: 20, color: Colors.red),
-        ),
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 3),
-      ),
     );
   }
 
@@ -311,8 +299,6 @@ class _InputWidgetState extends State<InputWidget> {
         countBoxesPerPallet == countBox) {
       _showDialogChekBarcodeForPalletsOrBox(_alertDialogKeyTwo,
           checkValid: false, context: context, isBox: false);
-      // _showDialogChekBarcodeForPallets(checkValid: false, context: context);
-      // _showDialogChekBarcode(context, false, false);
     }
   }
 
@@ -388,7 +374,6 @@ class _InputWidgetState extends State<InputWidget> {
                             isOpenAlertDialog = false;
                             Navigator.of(context).pop();
                           });
-                          // Navigator.of(context).maybePop(true);
                         },
                       ),
                     ),
@@ -439,7 +424,7 @@ class _InputWidgetState extends State<InputWidget> {
 
     String formattedDateTime = createDateNow();
     //проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
-    // bool isValid = isValidBarcode(barcode, TypeOfBarcode.unit);
+
     setState(() {
       final Item item = Item(
         barcode: barcode,
@@ -452,9 +437,6 @@ class _InputWidgetState extends State<InputWidget> {
     });
     // проверка на отправку не полной палеты
     if (isSendNotColpetePallet) {
-      // isValid = isValidBarcode(barcode, TypeOfBarcode.pallet);
-      // if (isValid) {
-
       if (typeBarcode == TypeOfBarcode.pallet) {
         setState(() {
           isSendNotColpetePallet = false;
@@ -466,35 +448,10 @@ class _InputWidgetState extends State<InputWidget> {
             deleteAll: false, lastBarcode: barcode);
         return false;
       }
-
-      // try {
-      //   final bool isOk = await barcodeService.postBarcodes(pallets: pallets);
-      //   if (isOk) {
-      //     return true;
-      //   } else {
-      //     return false;
-      //   }
-      // } catch (e) {
-      //   setState(() {
-      //     isErrorSendPallet = true;
-      //   });
-      //   final String message = e.toString().replaceAll('Exception: ', '');
-      //   _showSendPalletDialog(context, message);
-
-      //   return false;
-      // }
-      // } else {
-      //   deleteCurrentUnitOrAllUnitsInBox(
-      //       deleteAll: false, lastBarcode: barcode);
-      //   return false;
-      //   // _showDialogChekBarcode(context, false, true);
-      // }
     }
 
     // Проверка на палету
     if ((countBarcodes % (countAllBarcodesPerPallet) == 0)) {
-      // isValid = isValidBarcode(barcode, TypeOfBarcode.pallet);
-      // if (isValid) {
       if (typeBarcode == TypeOfBarcode.pallet) {
         createPallet(barcode);
         return true;
@@ -503,20 +460,10 @@ class _InputWidgetState extends State<InputWidget> {
             deleteAll: false, lastBarcode: barcode);
         return false;
       }
-
-      // } else {
-      //   deleteCurrentUnitOrAllUnitsInBox(
-      //       deleteAll: false, lastBarcode: barcode);
-
-      //   return false;
-      //   // _showDialogChekBarcode(context, false, true);
-      // }
     }
 
     // Проверка на коробку
     else if ((unit.length == (countUnitsPerBox + 1))) {
-      // isValid = isValidBarcode(barcode, TypeOfBarcode.box);
-      // if (isValid) {
       if (typeBarcode == TypeOfBarcode.box) {
         countBox += 1;
         createBox(barcode);
@@ -528,24 +475,15 @@ class _InputWidgetState extends State<InputWidget> {
         return false;
       }
 
-      // } else {
-      //   deleteCurrentUnitOrAllUnitsInBox(
-      //       deleteAll: false, lastBarcode: barcode);
-
-      //   return false;
-      //   // _showDialogChekBarcode(context, false, true);
-      // }
       //проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
     } else {
-      // if (isValid) {
       if (typeBarcode == TypeOfBarcode.unit) {
         if (unit.length == countUnitsPerBox) {
           _showDialogChekBarcodeForPalletsOrBox(null,
-              checkValid: false, context: context, isBox: true);
-          // _showDialogChekBarcodeForBox(
-          //     checkValid: false,
-          //     context:
-          //         context); // Вызов окна скана коробки, сразу после скана последней штучки в коробке
+              checkValid: false,
+              context: context,
+              isBox:
+                  true); // Вызов окна скана коробки, сразу после скана последней штучки в коробке
         }
         return true;
       } else {
@@ -553,47 +491,8 @@ class _InputWidgetState extends State<InputWidget> {
             deleteAll: false, lastBarcode: barcode);
         return false;
       }
-
-      // } else {
-      //   deleteCurrentUnitOrAllUnitsInBox(
-      //       deleteAll: false, lastBarcode: barcode);
-      //   return false;
-      //   // _showDialogChekBarcode(context, false, true);
-      // }
     }
   }
-
-  // bool isValidBarcode(String text, TypeOfBarcode barcodeType) {
-  //   switch (barcodeType) {
-  //     case TypeOfBarcode.unit:
-  //       return true; // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
-  //     // final Set<String> setUnit = {'4630097264533', '99999997688990'};
-  //     // if (setUnit.contains(text)) {
-  //     //   return true;
-  //     // } else {
-  //     //   return false;
-  //     // }
-
-  //     case TypeOfBarcode.box:
-  //       setBoxs = {'99999997688990'};
-  //       if (setBoxs.contains(text)) {
-  //         return true;
-  //       } else {
-  //         return false;
-  //       }
-
-  //     case TypeOfBarcode.pallet:
-  //       setPallets = {'99999999389957'};
-  //       if (setPallets.contains(text)) {
-  //         return true;
-  //       } else {
-  //         return false;
-  //       }
-
-  //     case TypeOfBarcode.undefined:
-  //       return false;
-  //   }
-  // }
 
   TypeOfBarcode isValidBarcode(String barcode) {
     bool isContains = setPallets.contains(barcode);
@@ -658,10 +557,8 @@ class _InputWidgetState extends State<InputWidget> {
     });
     final isDuplicate = checkDublicateBarcodeInPallet(barcode: value);
     if (isDuplicate) {
-      // setState(() {
-      //   _textEditingController.clear();
-      // });
-      showSnackBarForDuplicateBarcode(context);
+      CustomSnackBar.showSnackBarForDuplicateBarcode(context);
+
       return TypeOfStateSend.duplicate;
     } else {
       final TypeOfBarcode typeBarcode = isValidBarcode(value);
@@ -700,41 +597,6 @@ class _InputWidgetState extends State<InputWidget> {
             showSendPalletDialog: _showSendPalletDialog,
             chnageStateIsNewRelease: chnageStateIsNewRelease,
           )
-        // Column(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       Padding(
-        //         padding: const EdgeInsets.all(8.0),
-        //         child: TextFormField(
-        //           keyboardType: TextInputType.number,
-        //           autofocus: true,
-        //           controller: _textEditingController,
-        //           onFieldSubmitted: (value) async {
-        //             try {
-        //               await barcodeService.getInfoForBarcodeRealise(
-        //                   numberCard: _textEditingController.text);
-        //               await barcodeService.getBarcodes();
-        //               setState(() {
-        //                 _textEditingController.clear();
-        //                 isNewRelease = false;
-        //               });
-        //             } catch (e) {
-        //               final String message =
-        //                   e.toString().replaceAll('Exception: ', '');
-        //               _showSendPalletDialog(context, message);
-        //             }
-        //           },
-        //         ),
-        //       ),
-        //       const Padding(
-        //         padding: EdgeInsets.all(8.0),
-        //         child: Text(
-        //           'Введите номер карты, для получения данных!',
-        //           style: TextStyle(fontSize: 20),
-        //         ),
-        //       ),
-        //     ],
-        //   )
         : Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -773,21 +635,7 @@ class _InputWidgetState extends State<InputWidget> {
                 children: [
                   IconButton(
                     onPressed: () async {
-                      // myFocusNode.nextFocus();
                       _showDeleteDialog(context);
-                      // /// ВЫЗОВ НОВГО СКРИНА НА УДАЛЕНИЕ
-                      // final result = await Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => DeleteScreen(
-                      //       pallets: pallets,
-                      //     ),
-                      //   ),
-                      // );
-                      // // Обработка результата с нового экрана
-                      // if (result != null) {}
-
-                      // myFocusNode.requestFocus();
                     },
                     icon: const Icon(
                       Icons.delete,
@@ -867,6 +715,7 @@ class _InputWidgetState extends State<InputWidget> {
                 allBarcodeHistory: allBarcodeHistory,
                 deleteBox: deleteBox,
                 myFocusNode: myFocusNode,
+                checkDublicateBarcodeInPallet: checkDublicateBarcodeInPallet,
               ),
             ],
           );
@@ -896,6 +745,7 @@ class BoxWidget extends StatefulWidget {
   final Set<String> allBarcodeHistory;
   final void Function(int indexBox) deleteBox;
   final InputWithKeyboardControlFocusNode myFocusNode;
+  final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
 
   const BoxWidget({
     super.key,
@@ -904,6 +754,7 @@ class BoxWidget extends StatefulWidget {
     required this.allBarcodeHistory,
     required this.deleteBox,
     required this.myFocusNode,
+    required this.checkDublicateBarcodeInPallet,
   });
 
   @override
@@ -931,6 +782,8 @@ class _BoxWidgetState extends State<BoxWidget> {
                         pallets: widget.pallet,
                         box: widget.box,
                         allBarcodeHistory: widget.allBarcodeHistory,
+                        checkDublicateBarcodeInPallet:
+                            widget.checkDublicateBarcodeInPallet,
                       ),
                     ),
                   );
@@ -972,6 +825,7 @@ class ModelsPalletWidget extends StatelessWidget {
   final ModelsPallet pallet;
   final Set<String> allBarcodeHistory;
   final InputWithKeyboardControlFocusNode myFocusNode;
+  final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
 
   final void Function(int indexBox) deleteBox;
 
@@ -980,7 +834,8 @@ class ModelsPalletWidget extends StatelessWidget {
       required this.pallet,
       required this.allBarcodeHistory,
       required this.deleteBox,
-      required this.myFocusNode});
+      required this.myFocusNode,
+      required this.checkDublicateBarcodeInPallet});
 
   @override
   Widget build(BuildContext context) {
@@ -1001,6 +856,8 @@ class ModelsPalletWidget extends StatelessWidget {
                       allBarcodeHistory: allBarcodeHistory,
                       deleteBox: deleteBox,
                       myFocusNode: myFocusNode,
+                      checkDublicateBarcodeInPallet:
+                          checkDublicateBarcodeInPallet,
                     ))
                 .toList(),
           ),
@@ -1014,6 +871,7 @@ class TwoTabWidget extends StatelessWidget {
   final ModelsPallet pallets;
   final Set<String> allBarcodeHistory;
   final InputWithKeyboardControlFocusNode myFocusNode;
+  final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
 
   final void Function(int indexBox) deleteBox;
 
@@ -1030,7 +888,8 @@ class TwoTabWidget extends StatelessWidget {
       required this.deleteCurrentUnit,
       required this.allBarcodeHistory,
       required this.deleteBox,
-      required this.myFocusNode});
+      required this.myFocusNode,
+      required this.checkDublicateBarcodeInPallet});
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -1060,6 +919,8 @@ class TwoTabWidget extends StatelessWidget {
                       allBarcodeHistory: allBarcodeHistory,
                       deleteBox: deleteBox,
                       myFocusNode: myFocusNode,
+                      checkDublicateBarcodeInPallet:
+                          checkDublicateBarcodeInPallet,
                     ),
                   ),
                 ],
