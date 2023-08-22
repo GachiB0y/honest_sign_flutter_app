@@ -156,7 +156,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                 label: const Text('Наполнить коробку')),
             ElevatedButton.icon(
                 onPressed: () {
-                  bloc.deleteBox(indexBox: indexBox);
+                  bloc.clearBoxByIndex(indexBox: indexBox);
                   setState(() {
                     // widget.box.items.forEach((element) {
                     //   widget.allBarcodeHistory.remove(element.barcode);
@@ -181,13 +181,8 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                         context: context, bloc: bloc);
                   }
 
-                  final result = {
-                    'isDeleteBox': '$isDeleteBox',
-                    'box': '${widget.box.barcode}',
-                    'indexBox': '$indexBox',
-                  };
                   if (isExit) {
-                    Navigator.pop(context, result);
+                    Navigator.pop(context);
                   }
                 },
                 icon: const Icon(

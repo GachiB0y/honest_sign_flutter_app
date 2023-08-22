@@ -180,16 +180,21 @@ class PalletCubit extends Cubit<PalletCubitState> {
   }
 
   void deleteBox({required int indexBox}) {
+    final Set<String> newAllBarcodeHistory = {...state.allBarcodeHistory};
+
     final List<Box> newBoxes = [...state.boxes];
+    newAllBarcodeHistory.remove(newBoxes[indexBox].barcode);
     newBoxes.removeAt(indexBox);
+    final ModelsPallet newPallets = state.pallets;
+    newPallets.boxes = newBoxes;
 
     final int newCountBarcodes = state.countBarcodes - (countUnitsPerBox + 1);
     final int newCountBox = state.countBox - 1;
 
     final newState = state.copyWith(
       boxes: newBoxes,
-      allBarcodeHistory: state.allBarcodeHistory,
-      pallets: state.pallets,
+      allBarcodeHistory: newAllBarcodeHistory,
+      pallets: newPallets,
       unit: [],
       countBarcodes: newCountBarcodes,
       countBox: newCountBox,
@@ -277,8 +282,8 @@ class PalletCubit extends Cubit<PalletCubitState> {
       date: formattedDateTime,
     );
 
-    final List<Item> newUnit = state.unit;
-    newUnit.add(item);
+    // final List<Item> newUnit = state.unit;
+    // newUnit.add(item);
     final int newCountBarcodes = state.countBarcodes + 1;
     final Set<String> newAllBarcodeHistory =
         Set<String>.from(state.allBarcodeHistory);
@@ -290,7 +295,28 @@ class PalletCubit extends Cubit<PalletCubitState> {
       boxes: [...state.boxes],
       allBarcodeHistory: newAllBarcodeHistory,
       pallets: newPallets,
-      unit: newUnit,
+      unit: [...state.unit],
+      countBarcodes: newCountBarcodes,
+      countBox: state.countBox,
+    );
+    emit(newState);
+  }
+
+  void clearBoxByIndex({required int indexBox}) {
+    final Set<String> newAllBarcodeHistory = {...state.allBarcodeHistory};
+    state.pallets.boxes[indexBox].items.forEach((element) {
+      newAllBarcodeHistory.remove(element.barcode);
+    });
+    final ModelsPallet newPallets = state.pallets;
+    newPallets.boxes[indexBox].items.clear();
+    final int newCountBarcodes =
+        state.countBarcodes - state.pallets.boxes[indexBox].items.length;
+
+    final newState = state.copyWith(
+      boxes: [...state.boxes],
+      allBarcodeHistory: newAllBarcodeHistory,
+      pallets: newPallets,
+      unit: state.unit,
       countBarcodes: newCountBarcodes,
       countBox: state.countBox,
     );

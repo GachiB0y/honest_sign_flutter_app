@@ -794,18 +794,6 @@ class _BoxWidgetState extends State<BoxWidget> {
                     ),
                   );
                   widget.myFocusNode.requestFocus();
-
-                  // Обработка результата с нового экрана
-                  if (result != null) {
-                    final res = result['isDeleteBox'];
-                    final int indexBox = int.parse(result['indexBox']);
-
-                    if (result['isDeleteBox'] == "true") {
-                      // widget.deleteBox(indexBox);
-                    }
-                    setState(() {});
-                    print(result);
-                  }
                 },
                 icon: const Icon(Icons.edit)),
           ],
