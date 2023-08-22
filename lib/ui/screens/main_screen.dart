@@ -17,13 +17,6 @@ enum TypeOfStateSend { duplicate, send, notSend, valid, notValid }
 class InputWidget extends StatefulWidget {
   const InputWidget({super.key});
 
-  static Widget create() {
-    return BlocProvider<PalletCubit>(
-      create: (context) => PalletCubit(),
-      child: const InputWidget(),
-    );
-  }
-
   @override
   _InputWidgetState createState() => _InputWidgetState();
 }

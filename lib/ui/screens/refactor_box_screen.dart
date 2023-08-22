@@ -7,8 +7,6 @@ import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 
 class RefactorBoxScreen extends StatefulWidget {
-  // final ModelsPallet pallets;
-  // final Set<String> allBarcodeHistory;
   final Box box;
   final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
 
@@ -36,7 +34,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final PalletCubit bloc = context.read<PalletCubit>();
       indexBox = bloc.state.pallets.boxes.indexOf(widget.box);
     });
@@ -79,8 +77,6 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                   onPressed: () {
                     setState(() {
                       bloc.deleteBox(indexBox: indexBox);
-                      // widget.allBarcodeHistory.remove(widget.box.barcode);
-                      // widget.pallets.boxes.removeAt(indexBox);
                       isDeleteBox = true;
                     });
                     Navigator.pop(context);
@@ -125,14 +121,6 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                               barcode: value,
                               formattedDateTime: formattedDateTime,
                               indexBox: indexBox);
-                          // final Item item = Item(
-                          //   barcode: value,
-                          //   date: formattedDateTime,
-                          // );
-                          // setState(() {
-                          //   widget.allBarcodeHistory.add(value);
-                          //   widget.pallets.boxes[indexBox].items.add(item);
-                          // });
                         }
 
                         setState(() {
@@ -158,11 +146,6 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                 onPressed: () {
                   bloc.clearBoxByIndex(indexBox: indexBox);
                   setState(() {
-                    // widget.box.items.forEach((element) {
-                    //   widget.allBarcodeHistory.remove(element.barcode);
-                    // });
-                    // widget.box.items.clear();
-                    // widget.pallets.boxes[indexBox].items.clear();
                     isDeleteUnit = true;
                   });
                 },
@@ -199,20 +182,6 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 20),
                 ),
-
-                // InputWithKeyboardControl(
-                //   focusNode: myFocusNode,
-                //   onSubmitted: (String value) async {
-                //     // await onSubmittedTextField(
-                //     //     context: context, value: value);
-                //   },
-                //   autofocus: true,
-                //   controller: _textEditingController,
-                //   width: 300,
-                //   startShowKeyboard: false,
-                //   buttonColorEnabled: Colors.blue,
-                //   buttonColorDisabled: Colors.black,
-                // ),
               ),
             ),
             Expanded(
