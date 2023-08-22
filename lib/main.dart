@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
 
 import 'package:honest_sign_flutter_app/ui/screens/main_screen.dart';
-import 'package:honest_sign_flutter_app/ui/screens/refactor_box_screen.dart';
 
 void main() {
   runApp(const MyApp());

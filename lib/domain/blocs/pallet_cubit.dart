@@ -120,6 +120,13 @@ class PalletCubit extends Cubit<PalletCubitState> {
 
     final List<Item> newUnit = state.unit;
     newUnit.add(item);
+    if (state.unit.length == 1) {
+      maxIndexUnitInBox = 1;
+    } else if (!(newUnit.length == maxIndexUnitInBox)) {
+      maxIndexUnitInBox +=
+          1; // Добавляем мах индекс 1, чтобы отслеживать последний добавленный элемент в коробку.
+    }
+
     final int newCountBarcodes = state.countBarcodes + 1;
     final Set<String> newAllBarcodeHistory =
         Set<String>.from(state.allBarcodeHistory);
@@ -304,9 +311,9 @@ class PalletCubit extends Cubit<PalletCubitState> {
 
   void clearBoxByIndex({required int indexBox}) {
     final Set<String> newAllBarcodeHistory = {...state.allBarcodeHistory};
-    state.pallets.boxes[indexBox].items.forEach((element) {
+    for (var element in state.pallets.boxes[indexBox].items) {
       newAllBarcodeHistory.remove(element.barcode);
-    });
+    }
     final ModelsPallet newPallets = state.pallets;
     newPallets.boxes[indexBox].items.clear();
     final int newCountBarcodes =

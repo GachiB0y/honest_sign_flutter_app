@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar.dart';
@@ -10,8 +9,6 @@ import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dar
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 import 'package:honest_sign_flutter_app/ui/screens/first_screen.dart';
 import 'package:honest_sign_flutter_app/ui/screens/refactor_box_screen.dart';
-
-import 'package:intl/intl.dart';
 
 enum TypeOfBarcode { unit, box, pallet, undefined }
 
@@ -39,11 +36,6 @@ class _InputWidgetState extends State<InputWidget> {
 
   final BarcodeService barcodeService = const BarcodeService();
 
-  // final Set<String> allBarcodeHistory = {};
-  // final List<Item> unit = [];
-  // final List<Box> boxes = [];
-  // int countBarcodes = 0;
-  // int countBox = 0;
   bool isNewRelease = true;
   bool isSendNotColpetePallet = false;
   bool isErrorSendPallet = false;
@@ -53,12 +45,6 @@ class _InputWidgetState extends State<InputWidget> {
 
   final GlobalKey _alertDialogKey = GlobalKey();
   final GlobalKey _alertDialogKeyTwo = GlobalKey();
-
-  // final ModelsPallet pallets = ModelsPallet(
-  //     barcode: 'Будущая палета',
-  //     date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
-  //     boxes: [],
-  //     dateRelease: '');
 
   late InputWithKeyboardControlFocusNode myFocusNode;
   late InputWithKeyboardControlFocusNode myFocusNodeCheckBarcode =
@@ -96,7 +82,6 @@ class _InputWidgetState extends State<InputWidget> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                // final PalletCubit bloc = context.read<PalletCubit>();
                 bloc.deleteCurrentUnitOrAllUnitsInBox(
                     deleteAll: true, lastBarcode: null);
 
@@ -227,6 +212,9 @@ class _InputWidgetState extends State<InputWidget> {
                                     setState(() {
                                       _isLoading = true;
                                     });
+                                    await _showAlertDialogChangeDateRelease(
+                                        bloc: context.read<PalletCubit>(),
+                                        context: context);
 
                                     final bool isSendPallet =
                                         await barcodeService.postBarcodes(
@@ -305,6 +293,10 @@ class _InputWidgetState extends State<InputWidget> {
     Navigator.pop(context);
     if (bloc.state.countBarcodes % (countAllBarcodesPerPallet - 1) == 0 &&
         countBoxesPerPallet == bloc.state.countBox) {
+      setState(() {
+        isOpenAlertDialog = true;
+      });
+
       _showDialogChekBarcodeForPalletsOrBox(_alertDialogKeyTwo,
           checkValid: false, context: context, isBox: false, bloc: bloc);
     }
@@ -312,7 +304,7 @@ class _InputWidgetState extends State<InputWidget> {
 
   Future<void> _showAlertDialogChangeDateRelease(
       {required BuildContext context, required PalletCubit bloc}) async {
-    bool _showTextField = false;
+    bool showTextField = false;
 
     final String formattedText = dateOfRelease;
 
@@ -322,7 +314,7 @@ class _InputWidgetState extends State<InputWidget> {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return AlertDialog(
-            content: _showTextField
+            content: showTextField
                 ? BaseDateTextFieldWidget(
                     callBack: null,
                     controller: _controllerForAlertChangeDateRelease,
@@ -333,7 +325,7 @@ class _InputWidgetState extends State<InputWidget> {
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 20),
                   ),
-            actions: _showTextField
+            actions: showTextField
                 ? <Widget>[
                     Center(
                       child: TextButton(
@@ -346,7 +338,7 @@ class _InputWidgetState extends State<InputWidget> {
                               _controllerForAlertChangeDateRelease.text;
                           bloc.changeDateRelease(dateOfRelease: dateOfRelease);
                           setState(() {
-                            _showTextField = false;
+                            showTextField = false;
                           });
                         },
                       ),
@@ -363,7 +355,7 @@ class _InputWidgetState extends State<InputWidget> {
                           setState(() {
                             _controllerForAlertChangeDateRelease =
                                 TextEditingController();
-                            _showTextField = true;
+                            showTextField = true;
                             isOpenAlertDialog = true;
                           });
                         },
@@ -392,34 +384,6 @@ class _InputWidgetState extends State<InputWidget> {
         }));
   }
 
-  // void createBox(String item) {
-  //   setState(() {
-  //     String formattedDateTime = createDateNow();
-  //     final List<Item> copyUnits = unit.sublist(0, unit.length - 1);
-  //     final Box box = Box(
-  //       barcode: item,
-  //       date: formattedDateTime,
-  //       items: copyUnits,
-  //     );
-
-  //     boxes.add(box);
-
-  //     pallets.boxes = [...boxes];
-
-  //     unit.clear();
-  //   });
-  // }
-
-  // void createPallet(String text) {
-  //   setState(() {
-  //     String formattedDateTime = createDateNow();
-  //     unit.clear();
-  //     pallets.barcode = text;
-  //     pallets.date = formattedDateTime;
-  //     pallets.dateRelease = dateOfRelease;
-  //   });
-  // }
-
   Future<bool> _sendText(
       {required String barcode,
       required TypeOfBarcode typeBarcode,
@@ -429,7 +393,6 @@ class _InputWidgetState extends State<InputWidget> {
     //   _textEditingController.clear();
     // });
     if (isErrorSendPallet) return false;
-    // final bloc = context.read<PalletCubit>();
 
     String formattedDateTime = createDateNow();
 
@@ -493,19 +456,6 @@ class _InputWidgetState extends State<InputWidget> {
     }
   }
 
-  // void createUnit(String barcode, String formattedDateTime) {
-  //   setState(() {
-  //     final Item item = Item(
-  //       barcode: barcode,
-  //       date: formattedDateTime,
-  //     );
-
-  //     unit.add(item);
-  //     countBarcodes += 1;
-  //     allBarcodeHistory.add(barcode);
-  //   });
-  // }
-
   TypeOfBarcode isValidBarcode(String barcode) {
     bool isContains = setPallets.contains(barcode);
     if (isContains) {
@@ -526,33 +476,6 @@ class _InputWidgetState extends State<InputWidget> {
       }
     }
   }
-
-  // void deleteCurrentUnitOrAllUnitsInBox(
-  //     {required bool deleteAll, required String? lastBarcode}) {
-  //   setState(() {
-  //     if (deleteAll) {
-  //       if (unit.isNotEmpty) {
-  //         countBarcodes -= unit.length;
-  //         for (var element in unit) {
-  //           allBarcodeHistory.remove(element.barcode);
-  //         }
-  //         unit.clear();
-  //       }
-  //     } else {
-  //       countBarcodes -= 1;
-  //       allBarcodeHistory.remove(lastBarcode);
-  //       unit.removeLast();
-  //     }
-  //   });
-  // }
-
-  // void deleteBox(int indexBox) {
-  //   setState(() {
-  //     boxes.removeAt(indexBox);
-  //     countBarcodes -= countUnitsPerBox + 1;
-  //     countBox -= 1;
-  //   });
-  // }
 
   bool checkDublicateBarcodeInPallet({required String barcode}) {
     final PalletCubit bloc = context.read<PalletCubit>();
@@ -702,8 +625,6 @@ class _InputWidgetState extends State<InputWidget> {
                                   context: context,
                                   isBox: false,
                                   bloc: bloc);
-                              // _showDialogChekBarcodeForPallets(
-                              //     checkValid: false, context: context);
                             } else {
                               // _sendText(pallets.barcode);
                               // await onSubmittedTextField(
@@ -783,7 +704,7 @@ class _BoxWidgetState extends State<BoxWidget> {
                 onPressed: () async {
                   widget.myFocusNode.nextFocus();
 
-                  final result = await Navigator.push(
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => RefactorBoxScreen(
@@ -816,12 +737,8 @@ class _BoxWidgetState extends State<BoxWidget> {
 }
 
 class ModelsPalletWidget extends StatelessWidget {
-  // final ModelsPallet pallet;
-  // final Set<String> allBarcodeHistory;
   final InputWithKeyboardControlFocusNode myFocusNode;
   final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
-
-  // final void Function(int indexBox) deleteBox;
 
   const ModelsPalletWidget(
       {super.key,
@@ -837,7 +754,7 @@ class ModelsPalletWidget extends StatelessWidget {
             ? ''
             : '(неполная палета)';
     final String namePalletInHistory =
-        'Палета $partNamePallet ${bloc.state.pallets.boxes.length}/${countBoxesPerPallet}';
+        'Палета $partNamePallet ${bloc.state.pallets.boxes.length}/$countBoxesPerPallet';
     return ExpansionTile(
       title: Text(namePalletInHistory),
       children: <Widget>[
@@ -932,7 +849,7 @@ class CurrentHistoryWidget extends StatelessWidget {
                 '${index + 1}. Бутылка ${index + 1}.',
                 style: const TextStyle(fontSize: 18),
               ),
-              trailing: index + 1 == bloc.state.unit.length
+              trailing: index + 1 == maxIndexUnitInBox //bloc.state.unit.length
                   ? IconButton(
                       onPressed: () {
                         context
