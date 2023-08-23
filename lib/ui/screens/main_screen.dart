@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
-import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar.dart';
+import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar_dublicate.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_date_widget.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
@@ -485,7 +485,7 @@ class _InputWidgetState extends State<InputWidget> {
     });
     final isDuplicate = checkDublicateBarcodeInPallet(barcode: value);
     if (isDuplicate) {
-      CustomSnackBar.showSnackBarForDuplicateBarcode(context);
+      CustomSnackBarDudlicateBarcode.showSnackBarForDuplicateBarcode(context);
 
       return TypeOfStateSend.duplicate;
     } else {
@@ -578,15 +578,15 @@ class _InputWidgetState extends State<InputWidget> {
                   ),
                   ElevatedButton.icon(
                       onPressed: () async {
-                        if (bloc.state.pallets.boxes.isNotEmpty) {
-                          setState(() {
-                            isOpenAlertDialog = true;
-                          });
-                          await _showAlertDialogChangeDateRelease(
-                            context: context,
-                            bloc: context.read<PalletCubit>(),
-                          );
-                        }
+                        // if (bloc.state.pallets.boxes.isNotEmpty) {
+                        //   setState(() {
+                        //     isOpenAlertDialog = true;
+                        //   });
+                        //   await _showAlertDialogChangeDateRelease(
+                        //     context: context,
+                        //     bloc: context.read<PalletCubit>(),
+                        //   );
+                        // }
                         try {
                           // Проверка на отправку полной палеты
                           if (bloc.state.pallets.boxes.length ==

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CustomSnackBar extends SnackBar {
-  CustomSnackBar({
+class CustomSnackBarDudlicateBarcode extends SnackBar {
+  CustomSnackBarDudlicateBarcode({
     Key? key,
     required Widget content,
     SnackBarAction? action,
@@ -29,7 +29,7 @@ class CustomSnackBar extends SnackBar {
 
   static void showSnackBarForDuplicateBarcode(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      CustomSnackBar(
+      CustomSnackBarDudlicateBarcode(
         content: const Text(
           'Штрих код дублируется, отсканируйте другой штрихкод!',
           style: TextStyle(fontSize: 20, color: Colors.red),

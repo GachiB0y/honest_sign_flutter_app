@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
-import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar.dart';
+import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar_dublicate.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
@@ -114,8 +114,8 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                         final isDublicate = widget
                             .checkDublicateBarcodeInPallet(barcode: value);
                         if (isDublicate) {
-                          CustomSnackBar.showSnackBarForDuplicateBarcode(
-                              context);
+                          CustomSnackBarDudlicateBarcode
+                              .showSnackBarForDuplicateBarcode(context);
                         } else {
                           String formattedDateTime = createDateNow();
                           bloc.createUnitByIndexBox(
