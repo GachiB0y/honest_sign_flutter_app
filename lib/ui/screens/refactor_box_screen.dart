@@ -74,11 +74,12 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     'Да',
                     style: TextStyle(fontSize: 20),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     setState(() {
-                      bloc.deleteBox(indexBox: indexBox);
                       isDeleteBox = true;
                     });
+                    bloc.deleteBox(indexBox: indexBox);
+                    await bloc.postIntermediateBarcodes();
                     Navigator.pop(context);
                   },
                 ),
@@ -102,7 +103,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     focusNode: myFocusNode,
                     autofocus: true,
                     controller: _textEditingController,
-                    onFieldSubmitted: (String value) {
+                    onFieldSubmitted: (String value) async {
                       if (bloc.state.pallets.boxes[indexBox].items.length ==
                           countUnitsPerBox) {
                         setState(() {
@@ -121,6 +122,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                               barcode: value,
                               formattedDateTime: formattedDateTime,
                               indexBox: indexBox);
+                          await bloc.postIntermediateBarcodes();
                         }
 
                         setState(() {

@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BarcodeService {
-  Future<bool> getBarcodes() async {
+  Future<bool> getBarcodesBoxes() async {
     var url = 'http://10.3.50.96:8000/get_boxes';
     final response = await http.get(Uri.parse(url));
 
@@ -26,10 +26,27 @@ class BarcodeService {
     }
   }
 
+  Future<bool> getBarcodesPallets() async {
+    var url = 'http://10.3.50.96:8000/get_pallet';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      // List<String> myList = jsonDecode(response.body);
+      List<String> myList =
+          (jsonDecode(response.body) as List<dynamic>).cast<String>();
+
+      setPallets = Set.from(myList);
+
+      return true;
+    } else {
+      throw Exception('Failed to load');
+    }
+  }
+
   Future<bool> postBarcodes({required ModelsPallet pallets}) async {
     var url = 'http://10.3.50.96:8000/';
     final body = jsonEncode(pallets.toJson());
-    saveData(fileName: 'pallet', pallets: pallets);
+    await saveData(fileName: 'pallet', pallets: pallets);
     final response = await http.post(Uri.parse(url), body: body);
 
     if (response.statusCode == 200) {
@@ -39,7 +56,25 @@ class BarcodeService {
     }
   }
 
-  void saveData(
+  Future<bool> postIntermediateBarcodes({required ModelsPallet pallets}) async {
+    http.Response response;
+    const url = 'http://10.3.50.96:8000/';
+    final body = jsonEncode(pallets.toJson());
+    await saveData(fileName: 'palletCash', pallets: pallets);
+    final isConnect = await checkInternetConnection();
+    if (isConnect) {
+      response = await http.post(Uri.parse(url), body: body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('Ошибка отправки промежуточных данных!');
+      }
+    } else {
+      return false;
+    }
+  }
+
+  Future<void> saveData(
       {required ModelsPallet pallets, required String fileName}) async {
     if (await Permission.storage.request().isGranted) {
       final file = await createFile('$fileName.json');
@@ -47,6 +82,15 @@ class BarcodeService {
       await file.writeAsString(jsonStr);
     } else {
       print('ERROR');
+    }
+  }
+
+  Future<bool> checkInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException catch (_) {
+      return false;
     }
   }
 
@@ -66,11 +110,11 @@ class BarcodeService {
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
 
-      countUnitsPerBox = jsonResponse['PalletItems'];
-      countBoxesPerPallet = jsonResponse['PalletBox'];
+      // countUnitsPerBox = jsonResponse['PalletItems'];
+      // countBoxesPerPallet = jsonResponse['PalletBox'];
 
-      countAllBarcodesPerPallet =
-          jsonResponse['Pallet'] + countBoxesPerPallet + 1;
+      // countAllBarcodesPerPallet =
+      //     jsonResponse['Pallet'] + countBoxesPerPallet + 1; // РАССКОМЕНТИРОВАТЬ В РЕЛИЗЕ ВЕРСИИ
       return true;
     } else {
       throw Exception('Ошибка получения данных о разливе!');

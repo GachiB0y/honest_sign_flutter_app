@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_date_widget.dart';
 
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
@@ -36,6 +38,8 @@ class _FirstScreenState extends State<FirstScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final PalletCubit bloc = context.watch<PalletCubit>();
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -77,8 +81,11 @@ class _FirstScreenState extends State<FirstScreen> {
   Future<void> onSubmitedAnGetInfoForBarcodeRelease(
       BuildContext context) async {
     try {
-      // await barcodeService.getInfoForBarcodeRelease(numberCard: numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
-      // await barcodeService.getBarcodes();
+      // await barcodeService.getInfoForBarcodeRelease(
+      //     numberCard: numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
+
+      //  await barcodeService.getBarcodesBoxes();
+      //  await barcodeService.getBarcodesPallets();
       widget.chnageStateIsNewRelease();
     } catch (e) {
       final String message = e.toString().replaceAll('Exception: ', '');

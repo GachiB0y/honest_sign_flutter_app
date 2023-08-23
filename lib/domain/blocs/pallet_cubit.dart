@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:honest_sign_flutter_app/constants.dart';
+import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -111,6 +113,8 @@ class PalletCubit extends Cubit<PalletCubitState> {
               dateRelease: ''),
         )) {}
 
+  final BarcodeService barcodeService = const BarcodeService();
+
   void createUnit(
       {required String barcode, required String formattedDateTime}) {
     final Item item = Item(
@@ -143,7 +147,15 @@ class PalletCubit extends Cubit<PalletCubitState> {
     emit(newState);
   }
 
-  void createBox({required String item}) {
+  Future<void> postIntermediateBarcodes() async {
+    await barcodeService.postIntermediateBarcodes(pallets: state.pallets);
+  }
+
+  Future<bool> postBarcodes() async {
+    return await barcodeService.postBarcodes(pallets: state.pallets);
+  }
+
+  void createBox({required String item}) async {
     String formattedDateTime = createDateNow();
     final List<Item> copyUnits = state.unit.sublist(0, state.unit.length - 1);
     final Box box = Box(

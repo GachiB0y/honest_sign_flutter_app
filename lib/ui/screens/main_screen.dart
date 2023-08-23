@@ -5,7 +5,6 @@ import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_date_widget.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
-import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 import 'package:honest_sign_flutter_app/ui/screens/first_screen.dart';
 import 'package:honest_sign_flutter_app/ui/screens/refactor_box_screen.dart';
@@ -26,8 +25,6 @@ class _InputWidgetState extends State<InputWidget> {
   late TextEditingController _controllerForAlertChangeDateRelease;
 
   final ScrollController _scrollController = ScrollController();
-
-  final BarcodeService barcodeService = const BarcodeService();
 
   bool isNewRelease = true;
   bool isSendNotColpetePallet = false;
@@ -210,8 +207,7 @@ class _InputWidgetState extends State<InputWidget> {
                                         context: context);
 
                                     final bool isSendPallet =
-                                        await barcodeService.postBarcodes(
-                                            pallets: bloc.state.pallets);
+                                        await bloc.postBarcodes();
 
                                     if (isSendPallet) {
                                       Navigator.of(context).pop();
@@ -421,7 +417,7 @@ class _InputWidgetState extends State<InputWidget> {
     else if ((bloc.state.unit.length == (countUnitsPerBox + 1))) {
       if (typeBarcode == TypeOfBarcode.box) {
         bloc.createBox(item: barcode);
-
+        await bloc.postIntermediateBarcodes();
         return true;
       } else {
         bloc.deleteCurrentUnitOrAllUnitsInBox(
@@ -525,9 +521,9 @@ class _InputWidgetState extends State<InputWidget> {
     return isNewRelease
         ? FirstScreen(
             textEditingController: _textEditingController,
-            barcodeService: barcodeService,
             showSendPalletDialog: _showSendPalletDialog,
             chnageStateIsNewRelease: chnageStateIsNewRelease,
+            barcodeService: bloc.barcodeService,
           )
         : Column(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -596,8 +592,7 @@ class _InputWidgetState extends State<InputWidget> {
                           if (bloc.state.pallets.boxes.length ==
                                   countBoxesPerPallet ||
                               bloc.state.pallets.barcode != 'Будущая палета') {
-                            final bool isSendPallet = await barcodeService
-                                .postBarcodes(pallets: bloc.state.pallets);
+                            final bool isSendPallet = await bloc.postBarcodes();
                             if (isSendPallet) {
                               _showSendPalletDialog(context, null);
                               if (!context.mounted) return;
