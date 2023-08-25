@@ -79,7 +79,9 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                       isDeleteBox = true;
                     });
                     bloc.deleteBox(indexBox: indexBox);
-                    await bloc.postIntermediateBarcodes();
+                    // await bloc.postIntermediateBarcodes();
+                    await bloc.postBarcodes();
+
                     Navigator.pop(context);
                   },
                 ),
@@ -117,12 +119,20 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                           CustomSnackBarDudlicateBarcode
                               .showSnackBarForDuplicateBarcode(context);
                         } else {
+                          if (bloc.state.pallets.boxes[indexBox].items.length +
+                                  1 ==
+                              countUnitsPerBox) {
+                            setState(() {
+                              isShowInput = false;
+                            });
+                          }
                           String formattedDateTime = createDateNow();
                           bloc.createUnitByIndexBox(
                               barcode: value,
                               formattedDateTime: formattedDateTime,
                               indexBox: indexBox);
-                          await bloc.postIntermediateBarcodes();
+                          // await bloc.postIntermediateBarcodes();
+                          await bloc.postBarcodes();
                         }
 
                         setState(() {

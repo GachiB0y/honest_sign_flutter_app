@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
@@ -110,7 +109,8 @@ class PalletCubit extends Cubit<PalletCubitState> {
               barcode: 'Будущая палета',
               date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
               boxes: [],
-              dateRelease: ''),
+              dateRelease: '',
+              status: 'NotFull'),
         )) {}
 
   final BarcodeService barcodeService = const BarcodeService();
@@ -186,6 +186,7 @@ class PalletCubit extends Cubit<PalletCubitState> {
     newPallets.barcode = text;
     newPallets.date = formattedDateTime;
     newPallets.dateRelease = dateOfRelease;
+    newPallets.status = 'Full';
 
     final newState = state.copyWith(
       boxes: [...state.boxes],
@@ -207,7 +208,7 @@ class PalletCubit extends Cubit<PalletCubitState> {
     final ModelsPallet newPallets = state.pallets;
     newPallets.boxes = newBoxes;
 
-    final int newCountBarcodes = state.countBarcodes - (countUnitsPerBox + 1);
+    final int newCountBarcodes = state.countBarcodes - 1;
     final int newCountBox = state.countBox - 1;
 
     final newState = state.copyWith(
@@ -266,6 +267,7 @@ class PalletCubit extends Cubit<PalletCubitState> {
     newPallets.barcode = 'Будущая палета';
     newPallets.boxes = [];
     newPallets.date = '';
+    newPallets.status = 'NotFull';
     final newState = state.copyWith(
       boxes: [],
       allBarcodeHistory: {},
@@ -326,10 +328,10 @@ class PalletCubit extends Cubit<PalletCubitState> {
     for (var element in state.pallets.boxes[indexBox].items) {
       newAllBarcodeHistory.remove(element.barcode);
     }
-    final ModelsPallet newPallets = state.pallets;
-    newPallets.boxes[indexBox].items.clear();
     final int newCountBarcodes =
         state.countBarcodes - state.pallets.boxes[indexBox].items.length;
+    final ModelsPallet newPallets = state.pallets;
+    newPallets.boxes[indexBox].items.clear();
 
     final newState = state.copyWith(
       boxes: [...state.boxes],

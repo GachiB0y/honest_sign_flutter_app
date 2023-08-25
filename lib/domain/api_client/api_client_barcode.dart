@@ -44,15 +44,44 @@ class BarcodeService {
   }
 
   Future<bool> postBarcodes({required ModelsPallet pallets}) async {
+    http.Response response;
     var url = 'http://10.3.50.96:8000/';
     final body = jsonEncode(pallets.toJson());
-    await saveData(fileName: 'pallet', pallets: pallets);
-    final response = await http.post(Uri.parse(url), body: body);
 
-    if (response.statusCode == 200) {
-      return true;
+    final copyPallets = pallets.copyWith();
+
+    bool isNewPallet = true;
+
+    if (pallets.status == 'NotFull') {
+      modelListPallets.listPallets.forEach((element) {
+        if (element.status == pallets.status) {
+          isNewPallet = false;
+        } else {
+          isNewPallet = true;
+        }
+      });
+      if (isNewPallet) {
+        modelListPallets.listPallets.add(pallets);
+      }
     } else {
-      throw Exception('Ошибка отправки палеты!');
+      modelListPallets.listPallets.removeLast();
+      modelListPallets.listPallets.add(copyPallets);
+    }
+
+    final bodyTwo = jsonEncode(modelListPallets.toJson());
+    await savePalletsInCash(
+        modelListPallets: modelListPallets, fileName: 'palletCash');
+
+    final isConnect = await checkInternetConnection();
+    if (isConnect) {
+      response = await http.post(Uri.parse(url), body: body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false; //throw Exception('Ошибка отправки промежуточных данных!');
+      }
+    } else {
+      return false;
     }
   }
 
@@ -60,14 +89,14 @@ class BarcodeService {
     http.Response response;
     const url = 'http://10.3.50.96:8000/';
     final body = jsonEncode(pallets.toJson());
-    await saveData(fileName: 'palletCash', pallets: pallets);
+    await saveData(fileName: 'palletIntermediateCash', pallets: pallets);
     final isConnect = await checkInternetConnection();
     if (isConnect) {
       response = await http.post(Uri.parse(url), body: body);
       if (response.statusCode == 200) {
         return true;
       } else {
-        throw Exception('Ошибка отправки промежуточных данных!');
+        return false; //throw Exception('Ошибка отправки промежуточных данных!');
       }
     } else {
       return false;
@@ -79,6 +108,17 @@ class BarcodeService {
     if (await Permission.storage.request().isGranted) {
       final file = await createFile('$fileName.json');
       final jsonStr = json.encode(pallets.toJson());
+      await file.writeAsString(jsonStr);
+    } else {
+      print('ERROR');
+    }
+  }
+
+  Future<void> savePalletsInCash(
+      {required ListPallets modelListPallets, required String fileName}) async {
+    if (await Permission.storage.request().isGranted) {
+      final file = await createFile('$fileName.json');
+      final jsonStr = json.encode(modelListPallets.toJson());
       await file.writeAsString(jsonStr);
     } else {
       print('ERROR');

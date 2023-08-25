@@ -1,18 +1,59 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // To parse this JSON data, do
 //
 //     final modelsPallet = modelsPalletFromJson(jsonString);
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 ModelsPallet modelsPalletFromJson(String str) =>
     ModelsPallet.fromJson(json.decode(str));
 
 String modelsPalletToJson(ModelsPallet data) => json.encode(data.toJson());
 
+class ListPallets {
+  List<ModelsPallet> listPallets;
+  ListPallets({
+    required this.listPallets,
+  });
+
+  ListPallets copyWith({
+    List<ModelsPallet>? pallets,
+  }) {
+    return ListPallets(
+      listPallets: listPallets ?? this.listPallets,
+    );
+  }
+
+  factory ListPallets.fromJson(Map<String, dynamic> json) => ListPallets(
+        listPallets: List<ModelsPallet>.from(
+            json["listPallets"].map((x) => ModelsPallet.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "listPallets": List<dynamic>.from(listPallets.map((x) => x.toJson())),
+      };
+
+  @override
+  String toString() => 'ListPallets(listPallets: $listPallets)';
+
+  @override
+  bool operator ==(covariant ListPallets other) {
+    if (identical(this, other)) return true;
+
+    return listEquals(other.listPallets, listPallets);
+  }
+
+  @override
+  int get hashCode => listPallets.hashCode;
+}
+
 class ModelsPallet {
   String barcode;
   String date;
   String dateRelease;
+  String status;
 
   List<Box> boxes;
 
@@ -20,6 +61,7 @@ class ModelsPallet {
     required this.barcode,
     required this.date,
     required this.dateRelease,
+    required this.status,
     required this.boxes,
   });
 
@@ -27,6 +69,7 @@ class ModelsPallet {
         barcode: json["barcode"],
         date: json["date"],
         dateRelease: json["dateRelease"],
+        status: json["status"],
         boxes: List<Box>.from(json["boxes"].map((x) => Box.fromJson(x))),
       );
 
@@ -34,8 +77,25 @@ class ModelsPallet {
         "barcode": barcode,
         "date": date,
         "dateRelease": dateRelease,
+        "status": status,
         "boxes": List<dynamic>.from(boxes.map((x) => x.toJson())),
       };
+
+  ModelsPallet copyWith({
+    String? barcode,
+    String? date,
+    String? dateRelease,
+    String? status,
+    List<Box>? boxes,
+  }) {
+    return ModelsPallet(
+      barcode: barcode ?? this.barcode,
+      date: date ?? this.date,
+      dateRelease: dateRelease ?? this.dateRelease,
+      status: status ?? this.status,
+      boxes: boxes ?? this.boxes,
+    );
+  }
 }
 
 class Box {

@@ -209,18 +209,16 @@ class _InputWidgetState extends State<InputWidget> {
                                     final bool isSendPallet =
                                         await bloc.postBarcodes();
 
-                                    if (isSendPallet) {
-                                      Navigator.of(context).pop();
-                                      _showSendPalletDialog(context, null);
-                                      context.read<PalletCubit>().clearPallet();
-                                      setState(() {
-                                        _isLoading = false;
-                                        isOpenAlertDialog = false;
-                                        _textEditingController.clear();
-                                        isErrorSendPallet = false;
-                                        isShowError = false;
-                                      });
-                                    }
+                                    Navigator.of(context).pop();
+                                    _showSendPalletDialog(context, null);
+                                    context.read<PalletCubit>().clearPallet();
+                                    setState(() {
+                                      _isLoading = false;
+                                      isOpenAlertDialog = false;
+                                      _textEditingController.clear();
+                                      isErrorSendPallet = false;
+                                      isShowError = false;
+                                    });
                                   } catch (e) {
                                     setState(() {
                                       isErrorSendPallet = true;
@@ -417,7 +415,8 @@ class _InputWidgetState extends State<InputWidget> {
     else if ((bloc.state.unit.length == (countUnitsPerBox + 1))) {
       if (typeBarcode == TypeOfBarcode.box) {
         bloc.createBox(item: barcode);
-        await bloc.postIntermediateBarcodes();
+        // await bloc.postIntermediateBarcodes();
+        await bloc.postBarcodes();
         return true;
       } else {
         bloc.deleteCurrentUnitOrAllUnitsInBox(
