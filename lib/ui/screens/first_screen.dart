@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_date_widget.dart';
 
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
@@ -33,13 +31,17 @@ class _FirstScreenState extends State<FirstScreen> {
   bool isShowDateInput = false;
   String numberCard = '';
 
-  final TextEditingController _controller = TextEditingController();
+  TextEditingController _controller = TextEditingController();
+
   String _formattedText = '';
 
   @override
-  Widget build(BuildContext context) {
-    final PalletCubit bloc = context.watch<PalletCubit>();
+  void initState() {
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -55,10 +57,22 @@ class _FirstScreenState extends State<FirstScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: isShowDateInput
-              ? BaseDateTextFieldWidget(
-                  controller: _controller,
-                  formattedText: _formattedText,
-                  callBack: onSubmitedAnGetInfoForBarcodeRelease,
+              ? Column(
+                  children: [
+                    BaseDateTextFieldWidget(
+                      controller: _controller,
+                      formattedText: _formattedText,
+                      callBack: onSubmitedAnGetInfoForBarcodeRelease,
+                    ),
+                    ElevatedButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            isShowDateInput = false;
+                          });
+                        },
+                        icon: const Icon(Icons.arrow_back),
+                        label: const Text('Назад')),
+                  ],
                 )
               : TextFormField(
                   keyboardType: TextInputType.number,
@@ -81,11 +95,11 @@ class _FirstScreenState extends State<FirstScreen> {
   Future<void> onSubmitedAnGetInfoForBarcodeRelease(
       BuildContext context) async {
     try {
-      // await barcodeService.getInfoForBarcodeRelease(
-      //     numberCard: numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
+      await barcodeService.getInfoForBarcodeRelease(
+          numberCard: numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
 
-      //  await barcodeService.getBarcodesBoxes();
-      //  await barcodeService.getBarcodesPallets();
+      await barcodeService.getBarcodesBoxes();
+      await barcodeService.getBarcodesPallets();
       widget.chnageStateIsNewRelease();
     } catch (e) {
       final String message = e.toString().replaceAll('Exception: ', '');

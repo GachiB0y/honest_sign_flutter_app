@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar_dublicate.dart';
-import 'package:honest_sign_flutter_app/ui/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 
@@ -235,7 +234,6 @@ class ItemWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Бутылка ${index + 1}'),
-          Text(item.barcode),
         ],
       ),
     );

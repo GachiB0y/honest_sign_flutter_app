@@ -27,7 +27,7 @@ class _BaseDateTextFieldWidgetState extends State<BaseDateTextFieldWidget> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    // _controller.dispose();
     super.dispose();
   }
 

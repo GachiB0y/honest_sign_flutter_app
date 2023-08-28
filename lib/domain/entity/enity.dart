@@ -19,7 +19,7 @@ class ListPallets {
   });
 
   ListPallets copyWith({
-    List<ModelsPallet>? pallets,
+    List<ModelsPallet>? listPallets,
   }) {
     return ListPallets(
       listPallets: listPallets ?? this.listPallets,

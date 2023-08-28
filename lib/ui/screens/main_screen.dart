@@ -97,6 +97,8 @@ class _InputWidgetState extends State<InputWidget> {
     String? message,
   ) async {
     await showDialog(
+      barrierDismissible: false, //РАСКОМЕНТИРОВАТЬ В  РЕЛИЗЕ
+
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -142,7 +144,7 @@ class _InputWidgetState extends State<InputWidget> {
     });
 
     await showDialog(
-      // barrierDismissible: false, РАСКОМЕНТИРОВАТЬ В  РЕЛИЗЕ
+      barrierDismissible: false, //РАСКОМЕНТИРОВАТЬ В  РЕЛИЗЕ
       barrierColor: const Color(0x01000000),
       context: context,
       builder: (BuildContext context) {
@@ -296,6 +298,8 @@ class _InputWidgetState extends State<InputWidget> {
     final String formattedText = dateOfRelease;
 
     return showDialog<void>(
+      barrierDismissible: false, //РАСКОМЕНТИРОВАТЬ В  РЕЛИЗЕ
+
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
@@ -469,8 +473,8 @@ class _InputWidgetState extends State<InputWidget> {
   bool checkDublicateBarcodeInPallet({required String barcode}) {
     final PalletCubit bloc = context.read<PalletCubit>();
 
-    if (barcode == '4630097264533')
-      return false; // ЗАГЛУШКА НА ДУБЛИКАТ ШТУЧКИ, УБРАТЬ В РЕЛИЗЕ
+    // if (barcode == '4630097264533')
+    //   return false; // ЗАГЛУШКА НА ДУБЛИКАТ ШТУЧКИ, УБРАТЬ В РЕЛИЗЕ
     final bool isDuplicate = bloc.state.allBarcodeHistory.contains(barcode);
     return isDuplicate;
   }

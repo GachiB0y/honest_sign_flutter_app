@@ -111,7 +111,7 @@ class PalletCubit extends Cubit<PalletCubitState> {
               boxes: [],
               dateRelease: '',
               status: 'NotFull'),
-        )) {}
+        ));
 
   final BarcodeService barcodeService = const BarcodeService();
 
@@ -147,9 +147,9 @@ class PalletCubit extends Cubit<PalletCubitState> {
     emit(newState);
   }
 
-  Future<void> postIntermediateBarcodes() async {
-    await barcodeService.postIntermediateBarcodes(pallets: state.pallets);
-  }
+  // Future<void> postIntermediateBarcodes() async {
+  //   await barcodeService.postIntermediateBarcodes(pallets: state.pallets);
+  // }
 
   Future<bool> postBarcodes() async {
     return await barcodeService.postBarcodes(pallets: state.pallets);

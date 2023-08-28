@@ -19,6 +19,7 @@ class BarcodeService {
           (jsonDecode(response.body) as List<dynamic>).cast<String>();
 
       setBoxs = Set.from(myList);
+      setBoxs.add('228');
 
       return true;
     } else {
@@ -85,34 +86,34 @@ class BarcodeService {
     }
   }
 
-  Future<bool> postIntermediateBarcodes({required ModelsPallet pallets}) async {
-    http.Response response;
-    const url = 'http://10.3.50.96:8000/';
-    final body = jsonEncode(pallets.toJson());
-    await saveData(fileName: 'palletIntermediateCash', pallets: pallets);
-    final isConnect = await checkInternetConnection();
-    if (isConnect) {
-      response = await http.post(Uri.parse(url), body: body);
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        return false; //throw Exception('Ошибка отправки промежуточных данных!');
-      }
-    } else {
-      return false;
-    }
-  }
+  // Future<bool> postIntermediateBarcodes({required ModelsPallet pallets}) async {
+  //   http.Response response;
+  //   const url = 'http://10.3.50.96:8000/';
+  //   final body = jsonEncode(pallets.toJson());
+  //   await saveData(fileName: 'palletIntermediateCash', pallets: pallets);
+  //   final isConnect = await checkInternetConnection();
+  //   if (isConnect) {
+  //     response = await http.post(Uri.parse(url), body: body);
+  //     if (response.statusCode == 200) {
+  //       return true;
+  //     } else {
+  //       return false; //throw Exception('Ошибка отправки промежуточных данных!');
+  //     }
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
-  Future<void> saveData(
-      {required ModelsPallet pallets, required String fileName}) async {
-    if (await Permission.storage.request().isGranted) {
-      final file = await createFile('$fileName.json');
-      final jsonStr = json.encode(pallets.toJson());
-      await file.writeAsString(jsonStr);
-    } else {
-      print('ERROR');
-    }
-  }
+  // Future<void> saveData(
+  //     {required ModelsPallet pallets, required String fileName}) async {
+  //   if (await Permission.storage.request().isGranted) {
+  //     final file = await createFile('$fileName.json');
+  //     final jsonStr = json.encode(pallets.toJson());
+  //     await file.writeAsString(jsonStr);
+  //   } else {
+  //     print('ERROR');
+  //   }
+  // }
 
   Future<void> savePalletsInCash(
       {required ListPallets modelListPallets, required String fileName}) async {
@@ -150,11 +151,12 @@ class BarcodeService {
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
 
-      // countUnitsPerBox = jsonResponse['PalletItems'];
-      // countBoxesPerPallet = jsonResponse['PalletBox'];
+      countUnitsPerBox = jsonResponse['PalletItems'];
+      countBoxesPerPallet = jsonResponse['PalletBox'];
 
-      // countAllBarcodesPerPallet =
-      //     jsonResponse['Pallet'] + countBoxesPerPallet + 1; // РАССКОМЕНТИРОВАТЬ В РЕЛИЗЕ ВЕРСИИ
+      countAllBarcodesPerPallet = jsonResponse['Pallet'] +
+          countBoxesPerPallet +
+          1; // РАССКОМЕНТИРОВАТЬ В РЕЛИЗЕ ВЕРСИИ
       return true;
     } else {
       throw Exception('Ошибка получения данных о разливе!');
