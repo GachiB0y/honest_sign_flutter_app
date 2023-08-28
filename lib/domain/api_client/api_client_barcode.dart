@@ -46,7 +46,6 @@ class BarcodeService {
   Future<bool> postBarcodes({required ModelsPallet pallets}) async {
     http.Response response;
     var url = 'http://10.3.50.96:8000/';
-    final body = jsonEncode(pallets.toJson());
 
     final copyPallets = pallets.copyWith();
 
@@ -74,12 +73,12 @@ class BarcodeService {
 
     final isConnect = await checkInternetConnection();
     if (isConnect) {
-      response = await http.post(Uri.parse(url), body: body);
+      response = await http.post(Uri.parse(url), body: bodyTwo);
       if (response.statusCode == 200) {
         return true;
       } else {
         // return false;
-        throw Exception('Ошибка отправки промежуточных данных!');
+        throw Exception('Ошибка отправки палеты!');
       }
     } else {
       return false;

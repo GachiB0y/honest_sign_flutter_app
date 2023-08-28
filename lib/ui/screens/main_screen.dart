@@ -151,7 +151,7 @@ class _InputWidgetState extends State<InputWidget> {
           return AlertDialog(
             backgroundColor: Colors.grey[200],
             key: keyForAlertDialog ?? _alertDialogKey,
-            elevation: 5.0,
+            elevation: 3.0,
             content: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -301,6 +301,7 @@ class _InputWidgetState extends State<InputWidget> {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return AlertDialog(
+            elevation: 3.0,
             content: showTextField
                 ? BaseDateTextFieldWidget(
                     callBack: null,
@@ -646,22 +647,25 @@ class _InputWidgetState extends State<InputWidget> {
 
 class ItemWidget extends StatelessWidget {
   final Item item;
+  final int indexItem;
 
   const ItemWidget({
     super.key,
     required this.item,
+    required this.indexItem,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(item.barcode),
+      title: Text('Бутылка ${indexItem + 1}'),
     );
   }
 }
 
 class BoxWidget extends StatefulWidget {
   final Box box;
+  final int indexBox;
 
   final InputWithKeyboardControlFocusNode myFocusNode;
   final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
@@ -671,6 +675,7 @@ class BoxWidget extends StatefulWidget {
     required this.box,
     required this.myFocusNode,
     required this.checkDublicateBarcodeInPallet,
+    required this.indexBox,
   });
 
   @override
@@ -685,7 +690,7 @@ class _BoxWidgetState extends State<BoxWidget> {
       return ExpansionTile(
         title: Row(
           children: [
-            Text(widget.box.barcode),
+            Text('Коробка №${widget.indexBox + 1}'),
             const Spacer(),
             IconButton(
                 onPressed: () async {
@@ -711,8 +716,11 @@ class _BoxWidgetState extends State<BoxWidget> {
             title: const Text('Бутылки:'),
             subtitle: Column(
               children: widget.box.items
+                  .asMap()
+                  .entries
                   .map((item) => ItemWidget(
-                        item: item,
+                        item: item.value,
+                        indexItem: item.key,
                       ))
                   .toList(),
             ),
@@ -749,11 +757,14 @@ class ModelsPalletWidget extends StatelessWidget {
           title: const Text('Коробки:'),
           subtitle: Column(
             children: bloc.state.pallets.boxes
+                .asMap()
+                .entries
                 .map((box) => BoxWidget(
-                      box: box,
+                      box: box.value,
                       myFocusNode: myFocusNode,
                       checkDublicateBarcodeInPallet:
                           checkDublicateBarcodeInPallet,
+                      indexBox: box.key,
                     ))
                 .toList(),
           ),

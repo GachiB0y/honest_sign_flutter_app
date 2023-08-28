@@ -20,8 +20,7 @@ class RefactorBoxScreen extends StatefulWidget {
 }
 
 class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
-  final InputWithKeyboardControlFocusNode myFocusNode =
-      InputWithKeyboardControlFocusNode();
+  final FocusNode myFocusNode = FocusNode();
   final TextEditingController _textEditingController = TextEditingController();
   final GlobalKey _windowConfirmationChangeKey = GlobalKey();
 
@@ -48,9 +47,10 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return AlertDialog(
+            elevation: 3.0,
             key: _windowConfirmationChangeKey,
             content: const Text(
-              'Коробкая пуста.При выходе с пустой коробкой, коробка будет удалена. Вы уверены?',
+              'Коробкая пустая/неполная.При выходе коробка будет удалена. Вы уверены?',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 20),
             ),
@@ -80,7 +80,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     });
                     bloc.deleteBox(indexBox: indexBox);
                     // await bloc.postIntermediateBarcodes();
-                    await bloc.postBarcodes();
+                    // await bloc.postBarcodes();
 
                     Navigator.pop(context);
                   },
@@ -101,46 +101,50 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
         child: Column(
           children: [
             isShowInput
-                ? TextFormField(
-                    focusNode: myFocusNode,
-                    autofocus: true,
-                    controller: _textEditingController,
-                    onFieldSubmitted: (String value) async {
-                      if (bloc.state.pallets.boxes[indexBox].items.length ==
-                          countUnitsPerBox) {
-                        setState(() {
-                          _textEditingController.clear();
-                        });
-                        return;
-                      } else {
-                        final isDublicate = widget
-                            .checkDublicateBarcodeInPallet(barcode: value);
-                        if (isDublicate) {
-                          CustomSnackBarDudlicateBarcode
-                              .showSnackBarForDuplicateBarcode(context);
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                    child: TextField(
+                      focusNode: myFocusNode,
+                      autofocus: true,
+                      controller: _textEditingController,
+                      onSubmitted: (String value) async {
+                        if (bloc.state.pallets.boxes[indexBox].items.length ==
+                            countUnitsPerBox) {
+                          setState(() {
+                            _textEditingController.clear();
+                          });
+                          return;
                         } else {
-                          if (bloc.state.pallets.boxes[indexBox].items.length +
-                                  1 ==
-                              countUnitsPerBox) {
-                            setState(() {
-                              isShowInput = false;
-                            });
+                          final isDublicate = widget
+                              .checkDublicateBarcodeInPallet(barcode: value);
+                          if (isDublicate) {
+                            CustomSnackBarDudlicateBarcode
+                                .showSnackBarForDuplicateBarcode(context);
+                          } else {
+                            if (bloc.state.pallets.boxes[indexBox].items
+                                        .length +
+                                    1 ==
+                                countUnitsPerBox) {
+                              setState(() {
+                                isShowInput = false;
+                              });
+                            }
+                            String formattedDateTime = createDateNow();
+                            bloc.createUnitByIndexBox(
+                                barcode: value,
+                                formattedDateTime: formattedDateTime,
+                                indexBox: indexBox);
+                            // await bloc.postIntermediateBarcodes();
+                            // await bloc.postBarcodes();
                           }
-                          String formattedDateTime = createDateNow();
-                          bloc.createUnitByIndexBox(
-                              barcode: value,
-                              formattedDateTime: formattedDateTime,
-                              indexBox: indexBox);
-                          // await bloc.postIntermediateBarcodes();
-                          await bloc.postBarcodes();
-                        }
 
-                        setState(() {
-                          _textEditingController.clear();
-                          myFocusNode.requestFocus();
-                        });
-                      }
-                    },
+                          setState(() {
+                            _textEditingController.clear();
+                            myFocusNode.requestFocus();
+                          });
+                        }
+                      },
+                    ),
                   )
                 : const SizedBox.shrink(),
             ElevatedButton.icon(
@@ -171,12 +175,14 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                   setState(() {
                     isExit = true;
                   });
-                  if (widget.box.items.isEmpty) {
+                  if (widget.box.items.isEmpty ||
+                      widget.box.items.length != countUnitsPerBox) {
                     await _showWindowConfirmationChange(
                         context: context, bloc: bloc);
                   }
 
                   if (isExit) {
+                    await bloc.postBarcodes();
                     Navigator.pop(context);
                   }
                 },
