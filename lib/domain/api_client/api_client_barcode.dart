@@ -78,7 +78,8 @@ class BarcodeService {
       if (response.statusCode == 200) {
         return true;
       } else {
-        return false; //throw Exception('Ошибка отправки промежуточных данных!');
+        // return false;
+        throw Exception('Ошибка отправки промежуточных данных!');
       }
     } else {
       return false;
