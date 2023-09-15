@@ -152,7 +152,21 @@ class PalletCubit extends Cubit<PalletCubitState> {
   // }
 
   Future<bool> postBarcodes() async {
-    return await barcodeService.postBarcodes(pallets: state.pallets);
+    try {
+      return await barcodeService.postBarcodes(pallets: state.pallets);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> savePalletsInCash(
+      {required ListPallets modelListPallets}) async {
+    try {
+      return await barcodeService.savePalletsInCash(
+          modelListPallets: modelListPallets, fileName: 'palletCash');
+    } catch (e) {
+      rethrow;
+    }
   }
 
   void createBox({required String item}) async {

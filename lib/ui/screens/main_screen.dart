@@ -11,7 +11,7 @@ import 'package:honest_sign_flutter_app/ui/screens/refactor_box_screen.dart';
 
 enum TypeOfBarcode { unit, box, pallet, undefined }
 
-enum TypeOfStateSend { duplicate, send, notSend, valid, notValid }
+enum TypeOfStateSend { duplicate, send, notSend, valid, notValid, errorTimeout }
 
 class InputWidget extends StatefulWidget {
   const InputWidget({super.key});
@@ -186,64 +186,70 @@ class _InputWidgetState extends State<InputWidget> {
                           InputWithKeyboardControl(
                             focusNode: myFocusNodeCheckBarcode,
                             onSubmitted: (value) async {
-                              final TypeOfStateSend isSend =
-                                  await onSubmittedTextField(
-                                      context: context,
-                                      value: value,
-                                      bloc: bloc);
+                              try {
+                                final TypeOfStateSend isSend =
+                                    await onSubmittedTextField(
+                                        context: context,
+                                        value: value,
+                                        bloc: bloc);
 
-                              if (isSend == TypeOfStateSend.send) {
-                                if (isBox) {
-                                  sendBoxAndOpenPalletDialog(
-                                      context: context, bloc: bloc);
+                                if (isSend == TypeOfStateSend.send ||
+                                    isSend == TypeOfStateSend.errorTimeout) {
+                                  if (isBox) {
+                                    sendBoxAndOpenPalletDialog(
+                                        context: context, bloc: bloc);
+                                    setState(() {
+                                      isShowError = false;
+                                    });
+                                  } else {
+                                    try {
+                                      setState(() {
+                                        _isLoading = true;
+                                      });
+                                      await _showAlertDialogChangeDateRelease(
+                                          bloc: context.read<PalletCubit>(),
+                                          context: context);
+
+                                      final bool isSendPallet =
+                                          await bloc.postBarcodes();
+
+                                      Navigator.of(context).pop();
+                                      _showSendPalletDialog(context, null);
+                                      context.read<PalletCubit>().clearPallet();
+                                      setState(() {
+                                        _isLoading = false;
+                                        isOpenAlertDialog = false;
+                                        _textEditingController.clear();
+                                        isErrorSendPallet = false;
+                                        isShowError = false;
+                                      });
+                                    } catch (e) {
+                                      setState(() {
+                                        isErrorSendPallet = true;
+                                        _isLoading = false;
+                                        isOpenAlertDialog = false;
+                                      });
+
+                                      final String message = e
+                                          .toString()
+                                          .replaceAll('Exception: ', '');
+                                      Navigator.pop(context);
+                                      _showSendPalletDialog(context, message);
+                                    }
+                                  }
+                                } else if (isSend ==
+                                    TypeOfStateSend.duplicate) {
                                   setState(() {
                                     isShowError = false;
                                   });
-                                } else {
-                                  try {
-                                    setState(() {
-                                      _isLoading = true;
-                                    });
-                                    await _showAlertDialogChangeDateRelease(
-                                        bloc: context.read<PalletCubit>(),
-                                        context: context);
-
-                                    final bool isSendPallet =
-                                        await bloc.postBarcodes();
-
-                                    Navigator.of(context).pop();
-                                    _showSendPalletDialog(context, null);
-                                    context.read<PalletCubit>().clearPallet();
-                                    setState(() {
-                                      _isLoading = false;
-                                      isOpenAlertDialog = false;
-                                      _textEditingController.clear();
-                                      isErrorSendPallet = false;
-                                      isShowError = false;
-                                    });
-                                  } catch (e) {
-                                    setState(() {
-                                      isErrorSendPallet = true;
-                                      _isLoading = false;
-                                      isOpenAlertDialog = false;
-                                    });
-
-                                    final String message = e
-                                        .toString()
-                                        .replaceAll('Exception: ', '');
-                                    Navigator.pop(context);
-                                    _showSendPalletDialog(context, message);
-                                  }
+                                } else if (isSend == TypeOfStateSend.notValid ||
+                                    isSend == TypeOfStateSend.notSend) {
+                                  setState(() {
+                                    isShowError = true;
+                                  });
                                 }
-                              } else if (isSend == TypeOfStateSend.duplicate) {
-                                setState(() {
-                                  isShowError = false;
-                                });
-                              } else if (isSend == TypeOfStateSend.notValid ||
-                                  isSend == TypeOfStateSend.notSend) {
-                                setState(() {
-                                  isShowError = true;
-                                });
+                              } catch (e) {
+                                Navigator.pop(context);
                               }
                             },
                             autofocus: true,
@@ -421,8 +427,17 @@ class _InputWidgetState extends State<InputWidget> {
       if (typeBarcode == TypeOfBarcode.box) {
         bloc.createBox(item: barcode);
         // await bloc.postIntermediateBarcodes();
-        await bloc.postBarcodes();
-        return true;
+
+        try {
+          // await bloc.postBarcodes(); // ЗАКОММЕНТИРОВАНО ПОКА НЕ НАДО СЛАТЬ КАЖДУЮ ОТПИКАННУЮ КОРОБКУ
+          await bloc.savePalletsInCash(
+              modelListPallets:
+                  modelListPallets); // ДОБАВЛЕННО ПОКА НЕ НАДО СЛАТЬ КАЖДУЮ ОТПИКАННУЮ КОРОБКУ
+
+          return true;
+        } catch (e) {
+          rethrow;
+        }
       } else {
         bloc.deleteCurrentUnitOrAllUnitsInBox(
             deleteAll: false, lastBarcode: barcode);
@@ -497,12 +512,16 @@ class _InputWidgetState extends State<InputWidget> {
       if (typeBarcode == TypeOfBarcode.undefined) {
         return TypeOfStateSend.notValid;
       } else {
-        final bool isSend = await _sendText(
-            barcode: value, typeBarcode: typeBarcode, bloc: bloc);
-        if (isSend == true) {
-          return TypeOfStateSend.send;
-        } else {
-          return TypeOfStateSend.notSend;
+        try {
+          final bool isSend = await _sendText(
+              barcode: value, typeBarcode: typeBarcode, bloc: bloc);
+          if (isSend == true) {
+            return TypeOfStateSend.send;
+          } else {
+            return TypeOfStateSend.notSend;
+          }
+        } catch (e) {
+          return TypeOfStateSend.errorTimeout;
         }
       }
     }

@@ -96,6 +96,31 @@ class ModelsPallet {
       boxes: boxes ?? this.boxes,
     );
   }
+
+  @override
+  String toString() {
+    return 'ModelsPallet(barcode: $barcode, date: $date, dateRelease: $dateRelease, status: $status, boxes: $boxes)';
+  }
+
+  @override
+  bool operator ==(covariant ModelsPallet other) {
+    if (identical(this, other)) return true;
+
+    return other.barcode == barcode &&
+        other.date == date &&
+        other.dateRelease == dateRelease &&
+        other.status == status &&
+        listEquals(other.boxes, boxes);
+  }
+
+  @override
+  int get hashCode {
+    return barcode.hashCode ^
+        date.hashCode ^
+        dateRelease.hashCode ^
+        status.hashCode ^
+        boxes.hashCode;
+  }
 }
 
 class Box {
@@ -121,6 +146,33 @@ class Box {
         "date": date,
         "items": List<dynamic>.from(items.map((x) => x.toJson())),
       };
+
+  Box copyWith({
+    String? barcode,
+    String? date,
+    List<Item>? items,
+  }) {
+    return Box(
+      barcode: barcode ?? this.barcode,
+      date: date ?? this.date,
+      items: items ?? this.items,
+    );
+  }
+
+  @override
+  String toString() => 'Box(barcode: $barcode, date: $date, items: $items)';
+
+  @override
+  bool operator ==(covariant Box other) {
+    if (identical(this, other)) return true;
+
+    return other.barcode == barcode &&
+        other.date == date &&
+        listEquals(other.items, items);
+  }
+
+  @override
+  int get hashCode => barcode.hashCode ^ date.hashCode ^ items.hashCode;
 }
 
 class Item {
@@ -141,4 +193,34 @@ class Item {
         "barcode": barcode,
         "date": date,
       };
+
+  Item copyWith({
+    String? barcode,
+    String? date,
+  }) {
+    return Item(
+      barcode: barcode ?? this.barcode,
+      date: date ?? this.date,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'barcode': barcode,
+      'date': date,
+    };
+  }
+
+  @override
+  String toString() => 'Item(barcode: $barcode, date: $date)';
+
+  @override
+  bool operator ==(covariant Item other) {
+    if (identical(this, other)) return true;
+
+    return other.barcode == barcode && other.date == date;
+  }
+
+  @override
+  int get hashCode => barcode.hashCode ^ date.hashCode;
 }

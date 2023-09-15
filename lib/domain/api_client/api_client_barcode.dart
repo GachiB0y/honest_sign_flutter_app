@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:honest_sign_flutter_app/constants.dart';
@@ -64,8 +65,11 @@ class BarcodeService {
         modelListPallets.listPallets.add(pallets);
       }
     } else {
-      modelListPallets.listPallets.removeLast();
-      modelListPallets.listPallets.add(copyPallets);
+      // modelListPallets.listPallets.removeLast();
+      final isConatins = modelListPallets.listPallets.contains(copyPallets);
+      if (!isConatins) {
+        modelListPallets.listPallets.add(copyPallets);
+      }
     }
 
     final bodyTwo = jsonEncode(modelListPallets.toJson());
@@ -74,12 +78,20 @@ class BarcodeService {
 
     final isConnect = await checkInternetConnection();
     if (isConnect) {
-      response = await http.post(Uri.parse(url), body: bodyTwo);
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        // return false;
-        throw Exception('Ошибка отправки палеты!');
+      try {
+        response = await http
+            .post(Uri.parse(url), body: bodyTwo)
+            .timeout(const Duration(seconds: 3));
+        if (response.statusCode == 200) {
+          return true;
+        } else {
+          // return false;
+          throw Exception('Ошибка отправки палеты!');
+        }
+      } on TimeoutException {
+        throw Exception('Время отправки выше 3секунд.');
+      } catch (e) {
+        rethrow;
       }
     } else {
       return false;
@@ -144,17 +156,30 @@ class BarcodeService {
   }
 
   Future<bool> getInfoForBarcodeRelease({required String numberCard}) async {
-    var url = 'http://10.3.50.96:8000/get_info/$numberCard';
+    var headers = {
+      'Content-Type': 'text/plain',
+      'Authorization': 'Basic R3Jhc3NFeGNoYW5nZTphbG9iQTY0'
+    };
+    var url = 'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cards';
+    var request = http.Request('POST', Uri.parse(url));
+    request.body = '''{"CardId":$numberCard,"Action":"Create"}''';
+    request.headers.addAll(headers);
 
-    final response = await http.get(Uri.parse(url));
+    http.StreamedResponse response = await request.send();
+    // var url = 'http://10.3.50.96:8000/get_info/$numberCard';
+
+    // final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      final jsonResponse = await response.stream.bytesToString();
+      final jsonData = jsonDecode(jsonResponse);
 
-      countUnitsPerBox = jsonResponse['PalletItems'];
-      countBoxesPerPallet = jsonResponse['PalletBox'];
+      countUnitsPerBox = jsonData['Message']['PalletBox'];
 
-      countAllBarcodesPerPallet = jsonResponse['Pallet'] +
+      final int allBarcodeUnitsPallet = jsonData['Message']['PalletItems'];
+      countBoxesPerPallet = countUnitsPerBox ~/ allBarcodeUnitsPallet;
+
+      countAllBarcodesPerPallet = allBarcodeUnitsPallet +
           countBoxesPerPallet +
           1; // РАССКОМЕНТИРОВАТЬ В РЕЛИЗЕ ВЕРСИИ
       return true;

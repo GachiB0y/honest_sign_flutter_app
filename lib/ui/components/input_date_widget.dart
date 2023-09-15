@@ -18,6 +18,7 @@ class BaseDateTextFieldWidget extends StatefulWidget {
 
 class _BaseDateTextFieldWidgetState extends State<BaseDateTextFieldWidget> {
   TextEditingController get _controller => widget.controller;
+  String formatted = '';
 
   @override
   void initState() {
@@ -36,7 +37,6 @@ class _BaseDateTextFieldWidgetState extends State<BaseDateTextFieldWidget> {
     if (input.length > 8) {
       _controller.text = input.substring(0, 8);
     }
-    String formatted = '';
 
     if (input.isNotEmpty) {
       formatted = input.substring(0, input.length < 2 ? input.length : 2);

@@ -95,11 +95,11 @@ class _FirstScreenState extends State<FirstScreen> {
   Future<void> onSubmitedAnGetInfoForBarcodeRelease(
       BuildContext context) async {
     try {
-      await barcodeService.getInfoForBarcodeRelease(
-          numberCard: numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
+      // await barcodeService.getInfoForBarcodeRelease(
+      //     numberCard: numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
 
-      await barcodeService.getBarcodesBoxes();
-      await barcodeService.getBarcodesPallets();
+      // await barcodeService.getBarcodesBoxes();
+      // await barcodeService.getBarcodesPallets();
       widget.chnageStateIsNewRelease();
     } catch (e) {
       final String message = e.toString().replaceAll('Exception: ', '');
