@@ -46,8 +46,16 @@ class BarcodeService {
   }
 
   Future<bool> postBarcodes({required ModelsPallet pallets}) async {
-    http.Response response;
-    var url = 'http://10.3.50.96:8000/';
+    // http.Response response;
+    // var url = 'http://10.3.50.96:8000/';
+    var headers = {
+      'Content-Type': 'text/plain',
+      'Authorization': 'Basic R3Jhc3NFeGNoYW5nZTphbG9iQTY0'
+    };
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cards'));
 
     final copyPallets = pallets.copyWith();
 
@@ -79,9 +87,14 @@ class BarcodeService {
     final isConnect = await checkInternetConnection();
     if (isConnect) {
       try {
-        response = await http
-            .post(Uri.parse(url), body: bodyTwo)
-            .timeout(const Duration(seconds: 3));
+        request.body =
+            '''{"CardId":"977065","Action":"Update","Pallets":$bodyTwo}''';
+        request.headers.addAll(headers);
+
+        http.StreamedResponse response = await request.send();
+        // response = await http
+        //     .post(Uri.parse(url), body: bodyTwo)
+        //     .timeout(const Duration(seconds: 3));
         if (response.statusCode == 200) {
           return true;
         } else {
