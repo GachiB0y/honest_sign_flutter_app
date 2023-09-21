@@ -384,7 +384,7 @@ class _InputWidgetState extends State<InputWidget> {
 
   Future<bool> _sendText(
       {required String barcode,
-      required TypeOfBarcode typeBarcode,
+      // required TypeOfBarcode typeBarcode,//// Закомментировано пока нет агрегационных кодов
       required PalletCubit bloc}) async {
     // setState(() {
     //   // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
@@ -397,70 +397,70 @@ class _InputWidgetState extends State<InputWidget> {
     bloc.createUnit(barcode: barcode, formattedDateTime: formattedDateTime);
     // Проверка на отправку не полной палеты
     if (isSendNotColpetePallet) {
-      if (typeBarcode == TypeOfBarcode.pallet) {
-        setState(() {
-          isSendNotColpetePallet = false;
-        });
-        bloc.createPallet(text: barcode);
-        return true;
-      } else {
-        bloc.deleteCurrentUnitOrAllUnitsInBox(
-            deleteAll: false, lastBarcode: barcode);
-        return false;
-      }
+      // if (typeBarcode == TypeOfBarcode.pallet) {// Закомментировано пока нет агрегационных кодов
+      setState(() {
+        isSendNotColpetePallet = false;
+      });
+      bloc.createPallet(text: barcode);
+      return true;
+      // } else {// Закомментировано пока нет агрегационных кодов
+      //   bloc.deleteCurrentUnitOrAllUnitsInBox(// Закомментировано пока нет агрегационных кодов
+      //       deleteAll: false, lastBarcode: barcode);// Закомментировано пока нет агрегационных кодов
+      //   return false;// Закомментировано пока нет агрегационных кодов
+      // }// Закомментировано пока нет агрегационных кодов
     }
 
     // Проверка на палету
     if ((bloc.state.countBarcodes % (countAllBarcodesPerPallet) == 0)) {
-      if (typeBarcode == TypeOfBarcode.pallet) {
-        bloc.createPallet(text: barcode);
-        return true;
-      } else {
-        bloc.deleteCurrentUnitOrAllUnitsInBox(
-            deleteAll: false, lastBarcode: barcode);
-        return false;
-      }
+      // if (typeBarcode == TypeOfBarcode.pallet) {// Закомментировано пока нет агрегационных кодов
+      bloc.createPallet(text: barcode);
+      return true;
+      // } else {// Закомментировано пока нет агрегационных кодов
+      //   bloc.deleteCurrentUnitOrAllUnitsInBox(// Закомментировано пока нет агрегационных кодов
+      //       deleteAll: false, lastBarcode: barcode);// Закомментировано пока нет агрегационных кодов
+      //   return false;// Закомментировано пока нет агрегационных кодов
+      // }// Закомментировано пока нет агрегационных кодов
     }
 
     // Проверка на коробку
     else if ((bloc.state.unit.length == (countUnitsPerBox + 1))) {
-      if (typeBarcode == TypeOfBarcode.box) {
-        bloc.createBox(item: barcode);
-        // await bloc.postIntermediateBarcodes();
+      // if (typeBarcode == TypeOfBarcode.box) { // Закомментировано пока нет агрегационных кодов
+      bloc.createBox(item: barcode);
+      // await bloc.postIntermediateBarcodes();
 
-        try {
-          // await bloc.postBarcodes(); // ЗАКОММЕНТИРОВАНО ПОКА НЕ НАДО СЛАТЬ КАЖДУЮ ОТПИКАННУЮ КОРОБКУ
-          await bloc.savePalletsInCash(
-              modelListPallets:
-                  modelListPallets); // ДОБАВЛЕННО ПОКА НЕ НАДО СЛАТЬ КАЖДУЮ ОТПИКАННУЮ КОРОБКУ
+      try {
+        // await bloc.postBarcodes(); // ЗАКОММЕНТИРОВАНО ПОКА НЕ НАДО СЛАТЬ КАЖДУЮ ОТПИКАННУЮ КОРОБКУ
+        await bloc.savePalletsInCash(
+            modelListPallets:
+                modelListPallets); // ДОБАВЛЕННО ПОКА НЕ НАДО СЛАТЬ КАЖДУЮ ОТПИКАННУЮ КОРОБКУ
 
-          return true;
-        } catch (e) {
-          rethrow;
-        }
-      } else {
-        bloc.deleteCurrentUnitOrAllUnitsInBox(
-            deleteAll: false, lastBarcode: barcode);
-        return false;
+        return true;
+      } catch (e) {
+        rethrow;
       }
+      // } else {// Закомментировано пока нет агрегационных кодов
+      //   bloc.deleteCurrentUnitOrAllUnitsInBox(// Закомментировано пока нет агрегационных кодов
+      //       deleteAll: false, lastBarcode: barcode);// Закомментировано пока нет агрегационных кодов
+      //   return false;// Закомментировано пока нет агрегационных кодов
+      // }// Закомментировано пока нет агрегационных кодов
 
       // Проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
     } else {
-      if (typeBarcode == TypeOfBarcode.unit) {
-        if (bloc.state.unit.length == countUnitsPerBox) {
-          _showDialogChekBarcodeForPalletsOrBox(null,
-              checkValid: false,
-              context: context,
-              isBox: true,
-              bloc:
-                  bloc); // Вызов окна скана коробки, сразу после скана последней штучки в коробке
-        }
-        return true;
-      } else {
-        bloc.deleteCurrentUnitOrAllUnitsInBox(
-            deleteAll: false, lastBarcode: barcode);
-        return false;
+      // if (typeBarcode == TypeOfBarcode.unit) {// Закомментировано пока нет агрегационных кодов
+      if (bloc.state.unit.length == countUnitsPerBox) {
+        _showDialogChekBarcodeForPalletsOrBox(null,
+            checkValid: false,
+            context: context,
+            isBox: true,
+            bloc:
+                bloc); // Вызов окна скана коробки, сразу после скана последней штучки в коробке
       }
+      return true;
+      // } else {// Закомментировано пока нет агрегационных кодов
+      //   bloc.deleteCurrentUnitOrAllUnitsInBox(// Закомментировано пока нет агрегационных кодов
+      //       deleteAll: false, lastBarcode: barcode);// Закомментировано пока нет агрегационных кодов
+      //   return false;// Закомментировано пока нет агрегационных кодов
+      // }// Закомментировано пока нет агрегационных кодов
     }
   }
 
@@ -508,22 +508,24 @@ class _InputWidgetState extends State<InputWidget> {
 
       return TypeOfStateSend.duplicate;
     } else {
-      final TypeOfBarcode typeBarcode = isValidBarcode(value);
-      if (typeBarcode == TypeOfBarcode.undefined) {
-        return TypeOfStateSend.notValid;
-      } else {
-        try {
-          final bool isSend = await _sendText(
-              barcode: value, typeBarcode: typeBarcode, bloc: bloc);
-          if (isSend == true) {
-            return TypeOfStateSend.send;
-          } else {
-            return TypeOfStateSend.notSend;
-          }
-        } catch (e) {
-          return TypeOfStateSend.errorTimeout;
+      // final TypeOfBarcode typeBarcode = isValidBarcode(value); // Закомментировано пока нет агрегационных кодов
+      // if (typeBarcode == TypeOfBarcode.undefined) {// Закомментировано пока нет агрегационных кодов
+      //   return TypeOfStateSend.notValid;// Закомментировано пока нет агрегационных кодов
+      // } else {// Закомментировано пока нет агрегационных кодов
+      try {
+        final bool isSend = await _sendText(
+            barcode: value,
+            // typeBarcode: typeBarcode, // Закомментировано пока нет агрегационных кодов
+            bloc: bloc);
+        if (isSend == true) {
+          return TypeOfStateSend.send;
+        } else {
+          return TypeOfStateSend.notSend;
         }
+      } catch (e) {
+        return TypeOfStateSend.errorTimeout;
       }
+      // }// Закомментировано пока нет агрегационных кодов
     }
   }
 

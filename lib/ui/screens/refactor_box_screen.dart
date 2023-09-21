@@ -181,7 +181,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                   }
 
                   if (isExit) {
-                    await bloc.postBarcodes();
+                    // await bloc.postBarcodes(); ЗАкомментировано на время, пока не можем оотправлять имзенения каждой коробки
                     Navigator.pop(context);
                   }
                 },

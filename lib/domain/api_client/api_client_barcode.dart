@@ -187,11 +187,9 @@ class BarcodeService {
       final jsonResponse = await response.stream.bytesToString();
       final jsonData = jsonDecode(jsonResponse);
 
-      countUnitsPerBox = jsonData['Message']['PalletBox'];
-
       final int allBarcodeUnitsPallet = jsonData['Message']['PalletItems'];
-      countBoxesPerPallet = countUnitsPerBox ~/ allBarcodeUnitsPallet;
-
+      countBoxesPerPallet = jsonData['Message']['PalletBox'];
+      countUnitsPerBox = allBarcodeUnitsPallet ~/ countBoxesPerPallet;
       countAllBarcodesPerPallet = allBarcodeUnitsPallet +
           countBoxesPerPallet +
           1; // РАССКОМЕНТИРОВАТЬ В РЕЛИЗЕ ВЕРСИИ
