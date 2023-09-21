@@ -715,7 +715,7 @@ class _BoxWidgetState extends State<BoxWidget> {
       return ExpansionTile(
         title: Row(
           children: [
-            Text('Коробка №${widget.indexBox + 1}'),
+            Text('Коробка №${widget.indexBox + 1}\n ${widget.box.barcode}'),
             const Spacer(),
             IconButton(
                 onPressed: () async {
@@ -771,7 +771,7 @@ class ModelsPalletWidget extends StatelessWidget {
 
     final String partNamePallet =
         bloc.state.pallets.boxes.length == countBoxesPerPallet
-            ? ''
+            ? bloc.state.pallets.barcode
             : '(неполная палета)';
     final String namePalletInHistory =
         'Палета $partNamePallet ${bloc.state.pallets.boxes.length}/$countBoxesPerPallet';

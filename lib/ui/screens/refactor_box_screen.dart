@@ -77,6 +77,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     setState(() {
                       isDeleteBox = true;
                     });
+                    bloc.clearBoxByIndex(indexBox: indexBox);
                     bloc.deleteBox(indexBox: indexBox);
                     // await bloc.postIntermediateBarcodes();
                     // await bloc.postBarcodes();
