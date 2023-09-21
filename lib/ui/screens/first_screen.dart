@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_date_widget.dart';
 
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
@@ -29,7 +30,7 @@ class _FirstScreenState extends State<FirstScreen> {
   BarcodeService get barcodeService => widget.barcodeService;
 
   bool isShowDateInput = false;
-  String numberCard = '';
+  String numberCard = numberCardConst;
 
   TextEditingController _controller = TextEditingController();
 
@@ -82,6 +83,7 @@ class _FirstScreenState extends State<FirstScreen> {
                     if (value.isNotEmpty) {
                       setState(() {
                         numberCard = value;
+                        numberCardConst = value;
                         isShowDateInput = true;
                       });
                     }

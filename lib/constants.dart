@@ -8,6 +8,7 @@ Set<String> setBoxs = {'99999997688990', '228', '227'};
 Set<String> setPallets = {'99999999389957', '2007'};
 Set<String> setUnit = {};
 int maxIndexUnitInBox = 0;
+String numberCardConst = '';
 
 const String keyFututrePallet = 'Будущий палет';
 String dateOfRelease = '';

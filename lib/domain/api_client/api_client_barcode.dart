@@ -88,10 +88,11 @@ class BarcodeService {
     if (isConnect) {
       try {
         request.body =
-            '''{"CardId":"977065","Action":"Update","Pallets":$bodyTwo}''';
+            '''{"CardId":"$numberCardConst","Action":"Update","Pallets":$bodyTwo}''';
         request.headers.addAll(headers);
 
-        http.StreamedResponse response = await request.send();
+        http.StreamedResponse response =
+            await request.send().timeout(const Duration(seconds: 5));
         // response = await http
         //     .post(Uri.parse(url), body: bodyTwo)
         //     .timeout(const Duration(seconds: 3));
