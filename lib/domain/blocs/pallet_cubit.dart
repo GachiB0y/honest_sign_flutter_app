@@ -99,21 +99,23 @@ class PalletCubitState {
 
 class PalletCubit extends Cubit<PalletCubitState> {
   PalletCubit()
-      : super(PalletCubitState(
-          allBarcodeHistory: {},
-          boxes: [],
-          countBarcodes: 0,
-          countBox: 0,
-          unit: [],
-          pallets: ModelsPallet(
-              barcode: 'Будущая палета',
-              date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
-              boxes: [],
-              dateRelease: '',
-              status: 'NotFull'),
-        ));
+      : super(
+          PalletCubitState(
+            allBarcodeHistory: {},
+            boxes: [],
+            countBarcodes: 0,
+            countBox: 0,
+            unit: [],
+            pallets: ModelsPallet(
+                barcode: 'Будущая палета',
+                date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
+                boxes: [],
+                dateRelease: '',
+                status: 'NotFull'),
+          ),
+        );
 
-  final BarcodeService barcodeService = const BarcodeService();
+  final BarcodeService barcodeService = const BarcodeServiceImpl();
 
   void createUnit(
       {required String barcode, required String formattedDateTime}) {

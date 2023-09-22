@@ -204,10 +204,10 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
             ),
             Expanded(
               child: ListView.builder(
-                  itemCount: bloc.state.boxes[indexBox].items
+                  itemCount: bloc.state.pallets.boxes[indexBox].items
                       .length, // widget.box.items.length,
                   itemBuilder: (BuildContext context, int index) => ItemWidget(
-                        item: bloc.state.boxes[indexBox].items[index],
+                        item: bloc.state.pallets.boxes[indexBox].items[index],
                         index: index,
                       )),
             )

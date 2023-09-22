@@ -9,7 +9,22 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class BarcodeService {
+abstract class BarcodeService {
+  const BarcodeService();
+  Future<bool> getBarcodesBoxes();
+  Future<bool> getBarcodesPallets();
+  Future<bool> postBarcodes({required ModelsPallet pallets});
+  Future<bool> sendPallets({required ListPallets listPallets});
+  Future<bool> checkInternetConnection();
+  Future<void> savePalletsInCash(
+      {required ListPallets modelListPallets, required String fileName});
+  Future<File> createFile(String fileName);
+  Future<bool> getInfoForBarcodeRelease({required String numberCard});
+}
+
+class BarcodeServiceImpl extends BarcodeService {
+  const BarcodeServiceImpl();
+  @override
   Future<bool> getBarcodesBoxes() async {
     var url = 'http://10.3.50.96:8000/get_boxes';
     final response = await http.get(Uri.parse(url));
@@ -28,6 +43,7 @@ class BarcodeService {
     }
   }
 
+  @override
   Future<bool> getBarcodesPallets() async {
     var url = 'http://10.3.50.96:8000/get_pallet';
     final response = await http.get(Uri.parse(url));
@@ -45,6 +61,7 @@ class BarcodeService {
     }
   }
 
+  @override
   Future<bool> postBarcodes({required ModelsPallet pallets}) async {
     // http.Response response;
     // var url = 'http://10.3.50.96:8000/';
@@ -141,6 +158,7 @@ class BarcodeService {
   //   }
   // }
 
+  @override
   Future<void> savePalletsInCash(
       {required ListPallets modelListPallets, required String fileName}) async {
     if (await Permission.storage.request().isGranted) {
@@ -152,6 +170,7 @@ class BarcodeService {
     }
   }
 
+  @override
   Future<bool> checkInternetConnection() async {
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -161,6 +180,7 @@ class BarcodeService {
     }
   }
 
+  @override
   Future<File> createFile(String fileName) async {
     final directory = await getExternalStorageDirectory();
     final newPath = '${directory!.path}/Download';
@@ -169,6 +189,7 @@ class BarcodeService {
     return File(newPathWithFile).create();
   }
 
+  @override
   Future<bool> getInfoForBarcodeRelease({required String numberCard}) async {
     var headers = {
       'Content-Type': 'text/plain',
@@ -200,5 +221,9 @@ class BarcodeService {
     }
   }
 
-  const BarcodeService();
+  @override
+  Future<bool> sendPallets({required ListPallets listPallets}) {
+    // TODO: implement sendPallets
+    throw UnimplementedError();
+  }
 }
