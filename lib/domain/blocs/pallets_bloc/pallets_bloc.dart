@@ -12,6 +12,10 @@ part 'pallets_bloc.g.dart';
 part 'pallets_event.dart';
 part 'pallets_state.dart';
 
+enum TypeOfBarcode { unit, box, pallet, undefined }
+
+enum TypeOfStateSend { duplicate, send, notSend, valid, notValid, errorTimeout }
+
 class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
   final PalletsRepository palletsRepository;
 
@@ -21,18 +25,68 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     on<PalletsEvent>((event, emit) async {
       if (event is PalletsEventFetch) {
         await onPalletsEventFetch(emit);
-      } else if (event is PalletsEventCreateUnit) {
-        onCreateUnit(event, emit);
-      } else if (event is PalletsEventCreateBox) {
-        onCreateBox(event, emit);
-      } else if (event is PalletsEventCreatePallet) {
-        onCreatePallet(event, emit);
+      } else if (event is PalletsEventOnSubmited) {
+        onSubmittedTextField(emit: emit, event: event);
       }
     });
   }
 
+  bool checkDublicateBarcodeInPallet({required String barcode}) {
+    final bool isDuplicate =
+        (state as PalletsStateLoaded).allBarcodeHistory.contains(barcode);
+    return isDuplicate;
+  }
+
+  TypeOfBarcode isValidBarcode(String barcode) {
+    if (barcode.length == 18 && barcode.startsWith('1')) {
+      return TypeOfBarcode.pallet;
+    } else {
+      if (barcode.length == 18 && barcode.startsWith('0')) {
+        return TypeOfBarcode.box;
+      } else {
+        if (barcode.length >= 37) {
+          return TypeOfBarcode.unit;
+        } else {
+          return TypeOfBarcode.undefined;
+        }
+      }
+    }
+  }
+
+  Future<TypeOfStateSend> onSubmittedTextField({
+    required Emitter<PalletsState> emit,
+    required PalletsEventOnSubmited event,
+  }) async {
+    final isDuplicate = checkDublicateBarcodeInPallet(barcode: event.barcode);
+    if (isDuplicate) {
+      return TypeOfStateSend.duplicate;
+    } else {
+      final TypeOfBarcode typeBarcode = isValidBarcode(event.barcode);
+
+      switch (typeBarcode) {
+        case TypeOfBarcode.pallet:
+          {
+            onCreatePallet(event, emit);
+            return TypeOfStateSend.send;
+          }
+        case TypeOfBarcode.box:
+          {
+            onCreateBox(event, emit);
+            return TypeOfStateSend.send;
+          }
+        case TypeOfBarcode.unit:
+          {
+            onCreateUnit(event, emit);
+            return TypeOfStateSend.send;
+          }
+        default:
+          return TypeOfStateSend.notValid;
+      }
+    }
+  }
+
   void onCreatePallet(
-      PalletsEventCreatePallet event, Emitter<PalletsState> emit) {
+      PalletsEventOnSubmited event, Emitter<PalletsState> emit) {
     //Создаем дату сканирования шк
     String formattedDateTime = createDateNow();
     // Копируем последнюю паллету с новыми занчениями
@@ -65,18 +119,19 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
 
     //Создаем новый стейт
     final newState = PalletsState.loaded(
-        listPallets: listPallets,
-        units: [],
-        allBarcodeHistory: newAllBarcodeHistory,
-        // Увеличиваем кол- во ШК на 1
-        countBarcodes: newAllBarcodeHistory.length + 1,
-        maxIndexUnitInBox: (state as PalletsStateLoaded).maxIndexUnitInBox,
-        countBox: (state as PalletsStateLoaded).countBox);
+      listPallets: listPallets,
+      units: [],
+      allBarcodeHistory: newAllBarcodeHistory,
+      // Увеличиваем кол- во ШК на 1
+      countBarcodes: newAllBarcodeHistory.length + 1,
+      maxIndexUnitInBox: (state as PalletsStateLoaded).maxIndexUnitInBox,
+      countBox: (state as PalletsStateLoaded).countBox,
+    );
 
     emit(newState);
   }
 
-  void onCreateBox(PalletsEventCreateBox event, Emitter<PalletsState> emit) {
+  void onCreateBox(PalletsEventOnSubmited event, Emitter<PalletsState> emit) {
     String formattedDateTime = createDateNow();
 
     final List<Item> copyUnits = [...(state as PalletsStateLoaded).units];
@@ -115,7 +170,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     emit(newState);
   }
 
-  void onCreateUnit(PalletsEventCreateUnit event, Emitter<PalletsState> emit) {
+  void onCreateUnit(PalletsEventOnSubmited event, Emitter<PalletsState> emit) {
     final formattedDateTime = createDateNow();
     final Item item = Item(
       barcode: event.barcode,
@@ -160,7 +215,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     emit(newState);
   }
 
-  Set<String> onNewBarcodeInHistory(PalletsEventCreateUnit event) {
+  Set<String> onNewBarcodeInHistory(PalletsEventOnSubmited event) {
     //Добавляем в список отсканированных кодов
     final Set<String> newAllBarcodeHistory =
         Set<String>.from((state as PalletsStateLoaded).allBarcodeHistory);

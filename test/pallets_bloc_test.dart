@@ -58,9 +58,9 @@ void main() {
       final date = DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now());
 
       setUp(() {
-        barcode = '228';
+        barcode = '0104630037511697215b;WOslyn2HS+93dUMT';
         item = Item(
-          barcode: '228',
+          barcode: barcode,
           date: date,
         );
 
@@ -76,7 +76,7 @@ void main() {
         listPallets = ListPallets(listModelsPallet: listModelPallet);
       });
       blocTest(
-        'add First Units  in box  when PalletsEventCreateUnit is added',
+        'add First Units  in box  when PalletsEventOnSubmited is added',
         build: () => palletsBloc,
         seed: () => PalletsState.loaded(
             listPallets: ListPallets(listModelsPallet: [
@@ -92,7 +92,7 @@ void main() {
             countBarcodes: 0,
             maxIndexUnitInBox: 0,
             countBox: 0),
-        act: (bloc) => bloc.add(PalletsEventCreateUnit(
+        act: (bloc) => bloc.add(PalletsEventOnSubmited(
           barcode: barcode,
         )),
         expect: () => <PalletsStateLoaded>[
@@ -109,7 +109,7 @@ void main() {
 
     group('add Boxes', () {
       final dateNow = DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now());
-      const String barcodeBox = '228';
+      const String barcodeBox = '046070721946531744';
       late final Set<String> barcodes;
       late final Box box;
       late List<Item> listUnits = [];
@@ -118,7 +118,16 @@ void main() {
       late final ListPallets listPallets;
 
       setUp(() {
-        barcodes = {'1', '2', '3', '4', '5', '6', '7', '8'};
+        barcodes = {
+          '0104630037511697215(4ZOOX(tXL6T93sRYZ',
+          '0104630037511697215(4ZOOX(tXL6T93шRYR',
+          '0104630037511697215(4ZOOX(tXL6T93IoKR',
+          '0104630037511697215(4ZPkX(tXL6T93sRYZ',
+          '0104630037511697215(p07OX(tXL6T93sRYZ',
+          '0104630037511697215(4ZOOX(tX(8Y93sRYZ',
+          '0104630037511697215(4ZOOX(tXL6T93sRIh',
+          '0104630037511699215(4ZOOX(tXL6T93sRYZ'
+        };
         final iterable = barcodes.map((e) => Item(barcode: e, date: dateNow));
         listUnits.addAll(iterable);
         box = Box(barcode: barcodeBox, date: dateNow, items: listUnits);
@@ -134,7 +143,7 @@ void main() {
         listPallets = ListPallets(listModelsPallet: listModelPallet);
       });
       blocTest(
-        'add First Box  in pallet  when PalletsEventCreateBox is added',
+        'add First Box  in pallet  when PalletsEventOnSubmited is added',
         build: () => palletsBloc,
         seed: () => PalletsState.loaded(
             listPallets: ListPallets(listModelsPallet: [
@@ -150,7 +159,7 @@ void main() {
             countBarcodes: 8,
             maxIndexUnitInBox: 8,
             countBox: 0),
-        act: (bloc) => bloc.add(const PalletsEventCreateBox(
+        act: (bloc) => bloc.add(const PalletsEventOnSubmited(
           barcode: barcodeBox,
         )),
         expect: () => <PalletsStateLoaded>[
@@ -167,9 +176,9 @@ void main() {
 
     group('add Pallets', () {
       final dateNow = DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now());
-      const String barcodeBoxOne = '228';
-      const String barcodeBoxTwo = '227';
-      const String barcodePallet = '2007';
+      const String barcodeBoxOne = '046070721946531744';
+      const String barcodeBoxTwo = '046070721946531742';
+      const String barcodePallet = '146070721946531744';
       late final Set<String> barcodesUnitsOne;
       late final Set<String> barcodesUnitsTwo;
       late final Box boxOne;
@@ -181,7 +190,13 @@ void main() {
       final Set<String> allBarcodeHistory = {};
 
       setUp(() {
-        barcodesUnitsOne = {'1', '2', '3', '4'};
+        barcodesUnitsOne = {
+          '0104630037511697215o4ZOOXUTtXL6T93sRYZ',
+          '0104630037511697215UT4ZOOXUTtXL6T93шRYR',
+          '0104630037511697215UT4ZOOXUTtXL6T93IoKR',
+          '0104630037511697215UT4ZPkXUTtXL6T93sRYZ'
+        };
+
         allBarcodeHistory.addAll(barcodesUnitsOne);
         final iterableOne =
             barcodesUnitsOne.map((e) => Item(barcode: e, date: dateNow));
@@ -191,7 +206,13 @@ void main() {
         allBarcodeHistory.add(barcodeBoxOne);
         listUnits = [];
 
-        barcodesUnitsTwo = {'6', '7', '8', '9'};
+        barcodesUnitsTwo = {
+          '0104630037511697215Rp07OXRtXL6T93sRYZ',
+          '0104630037511697215R4ZOOXRtXR8Y93sRYZ',
+          '0104630037511697215R4ZOOXRtXL6T93sRIh',
+          '0104630037511699215R4ZOOXRtXL6T93sRYZ'
+        };
+
         allBarcodeHistory.addAll(barcodesUnitsTwo);
         final iterableTwo =
             barcodesUnitsTwo.map((e) => Item(barcode: e, date: dateNow));
@@ -211,7 +232,7 @@ void main() {
         listPallets = ListPallets(listModelsPallet: listModelPallet);
       });
       blocTest(
-        'add First PALLETS  when PalletsEventCreateBox is added',
+        'add First PALLETS  when PalletsEventOnSubmited is added',
         build: () => palletsBloc,
         seed: () => PalletsState.loaded(
             listPallets: ListPallets(
@@ -232,7 +253,7 @@ void main() {
             countBox: 2),
         act: (bloc) {
           allBarcodeHistory.add(barcodePallet);
-          bloc.add(const PalletsEvent.createPallet(
+          bloc.add(const PalletsEventOnSubmited(
             barcode: barcodePallet,
           ));
         },

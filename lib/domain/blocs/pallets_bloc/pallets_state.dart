@@ -10,6 +10,7 @@ class PalletsState with _$PalletsState {
     required int countBarcodes,
     required int maxIndexUnitInBox,
     required int countBox,
+    TypeOfBarcode? currentTypeBarcode,
   }) = PalletsStateLoaded;
   const factory PalletsState.error({String? errorText}) = PalletsStateError;
 
