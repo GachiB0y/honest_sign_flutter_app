@@ -5,7 +5,7 @@ part 'new_entity.g.dart';
 @freezed
 class ListPallets with _$ListPallets {
   const factory ListPallets({
-    required List<ModelsPallet> listPallets,
+    required List<ModelsPallet> listModelsPallet,
   }) = _ListPallets;
 
   factory ListPallets.fromJson(Map<String, dynamic> json) =>

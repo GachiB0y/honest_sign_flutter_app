@@ -22,6 +22,9 @@ _$PalletsStateLoaded _$$PalletsStateLoadedFromJson(Map<String, dynamic> json) =>
     _$PalletsStateLoaded(
       listPallets:
           ListPallets.fromJson(json['listPallets'] as Map<String, dynamic>),
+      units: (json['units'] as List<dynamic>)
+          .map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList(),
       allBarcodeHistory: (json['allBarcodeHistory'] as List<dynamic>)
           .map((e) => e as String)
           .toSet(),
@@ -35,6 +38,7 @@ Map<String, dynamic> _$$PalletsStateLoadedToJson(
         _$PalletsStateLoaded instance) =>
     <String, dynamic>{
       'listPallets': instance.listPallets,
+      'units': instance.units,
       'allBarcodeHistory': instance.allBarcodeHistory.toList(),
       'countBarcodes': instance.countBarcodes,
       'maxIndexUnitInBox': instance.maxIndexUnitInBox,

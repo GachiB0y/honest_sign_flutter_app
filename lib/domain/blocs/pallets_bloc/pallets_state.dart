@@ -5,6 +5,7 @@ class PalletsState with _$PalletsState {
   const factory PalletsState.loading() = PalletsStateLoading;
   const factory PalletsState.loaded({
     required ListPallets listPallets,
+    required List<Item> units,
     required Set<String> allBarcodeHistory,
     required int countBarcodes,
     required int maxIndexUnitInBox,

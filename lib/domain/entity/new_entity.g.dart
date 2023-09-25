@@ -8,14 +8,14 @@ part of 'new_entity.dart';
 
 _$_ListPallets _$$_ListPalletsFromJson(Map<String, dynamic> json) =>
     _$_ListPallets(
-      listPallets: (json['listPallets'] as List<dynamic>)
+      listModelsPallet: (json['listModelsPallet'] as List<dynamic>)
           .map((e) => ModelsPallet.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$$_ListPalletsToJson(_$_ListPallets instance) =>
     <String, dynamic>{
-      'listPallets': instance.listPallets,
+      'listModelsPallet': instance.listModelsPallet,
     };
 
 _$_ModelsPallet _$$_ModelsPalletFromJson(Map<String, dynamic> json) =>

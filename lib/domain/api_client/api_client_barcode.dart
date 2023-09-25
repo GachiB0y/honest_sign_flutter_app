@@ -109,7 +109,7 @@ class BarcodeServiceImpl extends BarcodeService {
         request.headers.addAll(headers);
 
         http.StreamedResponse response =
-            await request.send().timeout(const Duration(seconds: 5));
+            await request.send().timeout(const Duration(seconds: 10));
         // response = await http
         //     .post(Uri.parse(url), body: bodyTwo)
         //     .timeout(const Duration(seconds: 3));

@@ -20,7 +20,7 @@ ListPallets _$ListPalletsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ListPallets {
-  List<ModelsPallet> get listPallets => throw _privateConstructorUsedError;
+  List<ModelsPallet> get listModelsPallet => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +34,7 @@ abstract class $ListPalletsCopyWith<$Res> {
           ListPallets value, $Res Function(ListPallets) then) =
       _$ListPalletsCopyWithImpl<$Res, ListPallets>;
   @useResult
-  $Res call({List<ModelsPallet> listPallets});
+  $Res call({List<ModelsPallet> listModelsPallet});
 }
 
 /// @nodoc
@@ -50,12 +50,12 @@ class _$ListPalletsCopyWithImpl<$Res, $Val extends ListPallets>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? listPallets = null,
+    Object? listModelsPallet = null,
   }) {
     return _then(_value.copyWith(
-      listPallets: null == listPallets
-          ? _value.listPallets
-          : listPallets // ignore: cast_nullable_to_non_nullable
+      listModelsPallet: null == listModelsPallet
+          ? _value.listModelsPallet
+          : listModelsPallet // ignore: cast_nullable_to_non_nullable
               as List<ModelsPallet>,
     ) as $Val);
   }
@@ -69,7 +69,7 @@ abstract class _$$_ListPalletsCopyWith<$Res>
       __$$_ListPalletsCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<ModelsPallet> listPallets});
+  $Res call({List<ModelsPallet> listModelsPallet});
 }
 
 /// @nodoc
@@ -83,12 +83,12 @@ class __$$_ListPalletsCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? listPallets = null,
+    Object? listModelsPallet = null,
   }) {
     return _then(_$_ListPallets(
-      listPallets: null == listPallets
-          ? _value._listPallets
-          : listPallets // ignore: cast_nullable_to_non_nullable
+      listModelsPallet: null == listModelsPallet
+          ? _value._listModelsPallet
+          : listModelsPallet // ignore: cast_nullable_to_non_nullable
               as List<ModelsPallet>,
     ));
   }
@@ -97,23 +97,24 @@ class __$$_ListPalletsCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_ListPallets implements _ListPallets {
-  const _$_ListPallets({required final List<ModelsPallet> listPallets})
-      : _listPallets = listPallets;
+  const _$_ListPallets({required final List<ModelsPallet> listModelsPallet})
+      : _listModelsPallet = listModelsPallet;
 
   factory _$_ListPallets.fromJson(Map<String, dynamic> json) =>
       _$$_ListPalletsFromJson(json);
 
-  final List<ModelsPallet> _listPallets;
+  final List<ModelsPallet> _listModelsPallet;
   @override
-  List<ModelsPallet> get listPallets {
-    if (_listPallets is EqualUnmodifiableListView) return _listPallets;
+  List<ModelsPallet> get listModelsPallet {
+    if (_listModelsPallet is EqualUnmodifiableListView)
+      return _listModelsPallet;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_listPallets);
+    return EqualUnmodifiableListView(_listModelsPallet);
   }
 
   @override
   String toString() {
-    return 'ListPallets(listPallets: $listPallets)';
+    return 'ListPallets(listModelsPallet: $listModelsPallet)';
   }
 
   @override
@@ -122,13 +123,13 @@ class _$_ListPallets implements _ListPallets {
         (other.runtimeType == runtimeType &&
             other is _$_ListPallets &&
             const DeepCollectionEquality()
-                .equals(other._listPallets, _listPallets));
+                .equals(other._listModelsPallet, _listModelsPallet));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_listPallets));
+      runtimeType, const DeepCollectionEquality().hash(_listModelsPallet));
 
   @JsonKey(ignore: true)
   @override
@@ -145,14 +146,14 @@ class _$_ListPallets implements _ListPallets {
 }
 
 abstract class _ListPallets implements ListPallets {
-  const factory _ListPallets({required final List<ModelsPallet> listPallets}) =
-      _$_ListPallets;
+  const factory _ListPallets(
+      {required final List<ModelsPallet> listModelsPallet}) = _$_ListPallets;
 
   factory _ListPallets.fromJson(Map<String, dynamic> json) =
       _$_ListPallets.fromJson;
 
   @override
-  List<ModelsPallet> get listPallets;
+  List<ModelsPallet> get listModelsPallet;
   @override
   @JsonKey(ignore: true)
   _$$_ListPalletsCopyWith<_$_ListPallets> get copyWith =>
