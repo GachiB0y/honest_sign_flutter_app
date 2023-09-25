@@ -25,8 +25,55 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         onCreateUnit(event, emit);
       } else if (event is PalletsEventCreateBox) {
         onCreateBox(event, emit);
+      } else if (event is PalletsEventCreatePallet) {
+        onCreatePallet(event, emit);
       }
     });
+  }
+
+  void onCreatePallet(
+      PalletsEventCreatePallet event, Emitter<PalletsState> emit) {
+    //Создаем дату сканирования шк
+    String formattedDateTime = createDateNow();
+    // Копируем последнюю паллету с новыми занчениями
+    final ModelsPallet newPallet = (state as PalletsStateLoaded)
+        .listPallets
+        .listModelsPallet
+        .last
+        .copyWith(
+            barcode: event.barcode,
+            date: formattedDateTime,
+            dateRelease: dateOfRelease,
+            status: 'Full');
+
+    //Копирруем список паллет
+    final List<ModelsPallet> listNewModelPallets = [
+      ...(state as PalletsStateLoaded).listPallets.listModelsPallet
+    ];
+    //Удаляем и добавляем новую паллету в списко паллет
+    listNewModelPallets.removeLast();
+    listNewModelPallets.add(newPallet);
+
+    // Копируем список всех ШК и добавляем туда ШК паллеты
+    final Set<String> newAllBarcodeHistory =
+        Set<String>.from((state as PalletsStateLoaded).allBarcodeHistory);
+    newAllBarcodeHistory.add(event.barcode);
+
+    // В моедль лист паллет добавляем новую паллету в списке
+    final ListPallets listPallets =
+        ListPallets(listModelsPallet: listNewModelPallets);
+
+    //Создаем новый стейт
+    final newState = PalletsState.loaded(
+        listPallets: listPallets,
+        units: [],
+        allBarcodeHistory: newAllBarcodeHistory,
+        // Увеличиваем кол- во ШК на 1
+        countBarcodes: newAllBarcodeHistory.length + 1,
+        maxIndexUnitInBox: (state as PalletsStateLoaded).maxIndexUnitInBox,
+        countBox: (state as PalletsStateLoaded).countBox);
+
+    emit(newState);
   }
 
   void onCreateBox(PalletsEventCreateBox event, Emitter<PalletsState> emit) {
@@ -47,12 +94,6 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         Set<String>.from((state as PalletsStateLoaded).allBarcodeHistory);
     newAllBarcodeHistory.add(event.barcode);
 
-    // final ModelsPallet newPallets = (state as PalletsStateLoaded)
-    //     .listPallets
-    //     .listModelsPallet
-    //     .last
-    //     .copyWith(boxes: newBoxes);
-
     final int newCountBox = (state as PalletsStateLoaded).countBox + 1;
     final ListPallets listPallets = (state as PalletsStateLoaded)
         .listPallets
@@ -62,9 +103,6 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
                 .listModelsPallet
                 .map((e) => e.copyWith(boxes: newBoxes))
                 .toList());
-
-    /// ОШИБКА ЗДЕСЬ, НЕЛЬЗЯ ИММУТАБЛЕ КЛАСС МУТИРОВАТЬ
-    // listPallets.listModelsPallet.add(newPallets);
 
     final newState = PalletsState.loaded(
         listPallets: listPallets,
@@ -111,7 +149,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
 
     ListPallets listPallets =
         (state as PalletsStateLoaded).listPallets.copyWith();
-    // listPallets.listPallets.last.boxes.last.items.addAll(listUnits);
+
     final newState = PalletsState.loaded(
         listPallets: listPallets,
         allBarcodeHistory: newAllBarcodeHistory,

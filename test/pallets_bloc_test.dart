@@ -1,3 +1,4 @@
+import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.dart';
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
@@ -159,6 +160,89 @@ void main() {
               countBarcodes: barcodes.length,
               maxIndexUnitInBox: 8,
               countBox: 1,
+              units: [])
+        ],
+      );
+    });
+
+    group('add Pallets', () {
+      final dateNow = DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now());
+      const String barcodeBoxOne = '228';
+      const String barcodeBoxTwo = '227';
+      const String barcodePallet = '2007';
+      late final Set<String> barcodesUnitsOne;
+      late final Set<String> barcodesUnitsTwo;
+      late final Box boxOne;
+      late final Box boxTwo;
+      late List<Item> listUnits = [];
+      late final ModelsPallet pallet;
+      final List<ModelsPallet> listModelPallet = [];
+      late final ListPallets listPallets;
+      final Set<String> allBarcodeHistory = {};
+
+      setUp(() {
+        barcodesUnitsOne = {'1', '2', '3', '4'};
+        allBarcodeHistory.addAll(barcodesUnitsOne);
+        final iterableOne =
+            barcodesUnitsOne.map((e) => Item(barcode: e, date: dateNow));
+        listUnits.addAll(iterableOne);
+
+        boxOne = Box(barcode: barcodeBoxOne, date: dateNow, items: listUnits);
+        allBarcodeHistory.add(barcodeBoxOne);
+        listUnits = [];
+
+        barcodesUnitsTwo = {'6', '7', '8', '9'};
+        allBarcodeHistory.addAll(barcodesUnitsTwo);
+        final iterableTwo =
+            barcodesUnitsTwo.map((e) => Item(barcode: e, date: dateNow));
+        listUnits.addAll(iterableTwo);
+        boxTwo = Box(barcode: barcodeBoxTwo, date: dateNow, items: listUnits);
+        allBarcodeHistory.add(barcodeBoxTwo);
+
+        dateOfRelease = '11.11.1111';
+
+        pallet = ModelsPallet(
+            barcode: barcodePallet,
+            date: dateNow,
+            boxes: [boxOne, boxTwo],
+            dateRelease: '11.11.1111',
+            status: 'Full');
+        listModelPallet.add(pallet);
+        listPallets = ListPallets(listModelsPallet: listModelPallet);
+      });
+      blocTest(
+        'add First PALLETS  when PalletsEventCreateBox is added',
+        build: () => palletsBloc,
+        seed: () => PalletsState.loaded(
+            listPallets: ListPallets(
+              listModelsPallet: [
+                ModelsPallet(
+                  barcode: 'Будущая палета',
+                  date: dateNow,
+                  dateRelease: '11.11.1111',
+                  status: 'NotFull',
+                  boxes: [boxOne, boxTwo],
+                ),
+              ],
+            ),
+            units: listUnits,
+            allBarcodeHistory: allBarcodeHistory,
+            countBarcodes: allBarcodeHistory.length,
+            maxIndexUnitInBox: 4,
+            countBox: 2),
+        act: (bloc) {
+          allBarcodeHistory.add(barcodePallet);
+          bloc.add(const PalletsEvent.createPallet(
+            barcode: barcodePallet,
+          ));
+        },
+        expect: () => <PalletsStateLoaded>[
+          PalletsStateLoaded(
+              listPallets: listPallets,
+              allBarcodeHistory: allBarcodeHistory,
+              countBarcodes: (allBarcodeHistory.length + 1),
+              maxIndexUnitInBox: 4,
+              countBox: 2,
               units: [])
         ],
       );

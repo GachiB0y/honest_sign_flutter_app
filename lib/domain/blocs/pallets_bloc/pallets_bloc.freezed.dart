@@ -21,6 +21,7 @@ mixin _$PalletsEvent {
     required TResult Function() fetch,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
+    required TResult Function(String barcode) createPallet,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -28,6 +29,7 @@ mixin _$PalletsEvent {
     TResult? Function()? fetch,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
+    TResult? Function(String barcode)? createPallet,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -35,6 +37,7 @@ mixin _$PalletsEvent {
     TResult Function()? fetch,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
+    TResult Function(String barcode)? createPallet,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -43,6 +46,7 @@ mixin _$PalletsEvent {
     required TResult Function(PalletsEventFetch value) fetch,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
+    required TResult Function(PalletsEventCreatePallet value) createPallet,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -50,6 +54,7 @@ mixin _$PalletsEvent {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
+    TResult? Function(PalletsEventCreatePallet value)? createPallet,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -57,6 +62,7 @@ mixin _$PalletsEvent {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
+    TResult Function(PalletsEventCreatePallet value)? createPallet,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -121,6 +127,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     required TResult Function() fetch,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
+    required TResult Function(String barcode) createPallet,
   }) {
     return fetch();
   }
@@ -131,6 +138,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     TResult? Function()? fetch,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
+    TResult? Function(String barcode)? createPallet,
   }) {
     return fetch?.call();
   }
@@ -141,6 +149,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     TResult Function()? fetch,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
+    TResult Function(String barcode)? createPallet,
     required TResult orElse(),
   }) {
     if (fetch != null) {
@@ -155,6 +164,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     required TResult Function(PalletsEventFetch value) fetch,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
+    required TResult Function(PalletsEventCreatePallet value) createPallet,
   }) {
     return fetch(this);
   }
@@ -165,6 +175,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
+    TResult? Function(PalletsEventCreatePallet value)? createPallet,
   }) {
     return fetch?.call(this);
   }
@@ -175,6 +186,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
+    TResult Function(PalletsEventCreatePallet value)? createPallet,
     required TResult orElse(),
   }) {
     if (fetch != null) {
@@ -256,6 +268,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     required TResult Function() fetch,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
+    required TResult Function(String barcode) createPallet,
   }) {
     return createUnit(barcode);
   }
@@ -266,6 +279,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     TResult? Function()? fetch,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
+    TResult? Function(String barcode)? createPallet,
   }) {
     return createUnit?.call(barcode);
   }
@@ -276,6 +290,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     TResult Function()? fetch,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
+    TResult Function(String barcode)? createPallet,
     required TResult orElse(),
   }) {
     if (createUnit != null) {
@@ -290,6 +305,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     required TResult Function(PalletsEventFetch value) fetch,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
+    required TResult Function(PalletsEventCreatePallet value) createPallet,
   }) {
     return createUnit(this);
   }
@@ -300,6 +316,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
+    TResult? Function(PalletsEventCreatePallet value)? createPallet,
   }) {
     return createUnit?.call(this);
   }
@@ -310,6 +327,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
+    TResult Function(PalletsEventCreatePallet value)? createPallet,
     required TResult orElse(),
   }) {
     if (createUnit != null) {
@@ -397,6 +415,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     required TResult Function() fetch,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
+    required TResult Function(String barcode) createPallet,
   }) {
     return createBox(barcode);
   }
@@ -407,6 +426,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     TResult? Function()? fetch,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
+    TResult? Function(String barcode)? createPallet,
   }) {
     return createBox?.call(barcode);
   }
@@ -417,6 +437,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     TResult Function()? fetch,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
+    TResult Function(String barcode)? createPallet,
     required TResult orElse(),
   }) {
     if (createBox != null) {
@@ -431,6 +452,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     required TResult Function(PalletsEventFetch value) fetch,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
+    required TResult Function(PalletsEventCreatePallet value) createPallet,
   }) {
     return createBox(this);
   }
@@ -441,6 +463,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
+    TResult? Function(PalletsEventCreatePallet value)? createPallet,
   }) {
     return createBox?.call(this);
   }
@@ -451,6 +474,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
+    TResult Function(PalletsEventCreatePallet value)? createPallet,
     required TResult orElse(),
   }) {
     if (createBox != null) {
@@ -468,6 +492,154 @@ abstract class PalletsEventCreateBox implements PalletsEvent {
   @JsonKey(ignore: true)
   _$$PalletsEventCreateBoxCopyWith<_$PalletsEventCreateBox> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$PalletsEventCreatePalletCopyWith<$Res> {
+  factory _$$PalletsEventCreatePalletCopyWith(_$PalletsEventCreatePallet value,
+          $Res Function(_$PalletsEventCreatePallet) then) =
+      __$$PalletsEventCreatePalletCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String barcode});
+}
+
+/// @nodoc
+class __$$PalletsEventCreatePalletCopyWithImpl<$Res>
+    extends _$PalletsEventCopyWithImpl<$Res, _$PalletsEventCreatePallet>
+    implements _$$PalletsEventCreatePalletCopyWith<$Res> {
+  __$$PalletsEventCreatePalletCopyWithImpl(_$PalletsEventCreatePallet _value,
+      $Res Function(_$PalletsEventCreatePallet) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? barcode = null,
+  }) {
+    return _then(_$PalletsEventCreatePallet(
+      barcode: null == barcode
+          ? _value.barcode
+          : barcode // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
+  const _$PalletsEventCreatePallet({required this.barcode});
+
+  @override
+  final String barcode;
+
+  @override
+  String toString() {
+    return 'PalletsEvent.createPallet(barcode: $barcode)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PalletsEventCreatePallet &&
+            (identical(other.barcode, barcode) || other.barcode == barcode));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, barcode);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$PalletsEventCreatePalletCopyWith<_$PalletsEventCreatePallet>
+      get copyWith =>
+          __$$PalletsEventCreatePalletCopyWithImpl<_$PalletsEventCreatePallet>(
+              this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetch,
+    required TResult Function(String barcode) createUnit,
+    required TResult Function(String barcode) createBox,
+    required TResult Function(String barcode) createPallet,
+  }) {
+    return createPallet(barcode);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetch,
+    TResult? Function(String barcode)? createUnit,
+    TResult? Function(String barcode)? createBox,
+    TResult? Function(String barcode)? createPallet,
+  }) {
+    return createPallet?.call(barcode);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetch,
+    TResult Function(String barcode)? createUnit,
+    TResult Function(String barcode)? createBox,
+    TResult Function(String barcode)? createPallet,
+    required TResult orElse(),
+  }) {
+    if (createPallet != null) {
+      return createPallet(barcode);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventCreateUnit value) createUnit,
+    required TResult Function(PalletsEventCreateBox value) createBox,
+    required TResult Function(PalletsEventCreatePallet value) createPallet,
+  }) {
+    return createPallet(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventCreateUnit value)? createUnit,
+    TResult? Function(PalletsEventCreateBox value)? createBox,
+    TResult? Function(PalletsEventCreatePallet value)? createPallet,
+  }) {
+    return createPallet?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventCreateUnit value)? createUnit,
+    TResult Function(PalletsEventCreateBox value)? createBox,
+    TResult Function(PalletsEventCreatePallet value)? createPallet,
+    required TResult orElse(),
+  }) {
+    if (createPallet != null) {
+      return createPallet(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class PalletsEventCreatePallet implements PalletsEvent {
+  const factory PalletsEventCreatePallet({required final String barcode}) =
+      _$PalletsEventCreatePallet;
+
+  String get barcode;
+  @JsonKey(ignore: true)
+  _$$PalletsEventCreatePalletCopyWith<_$PalletsEventCreatePallet>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 PalletsState _$PalletsStateFromJson(Map<String, dynamic> json) {

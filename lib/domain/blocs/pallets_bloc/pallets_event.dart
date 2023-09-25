@@ -9,4 +9,7 @@ class PalletsEvent with _$PalletsEvent {
   const factory PalletsEvent.createBox({
     required String barcode,
   }) = PalletsEventCreateBox;
+  const factory PalletsEvent.createPallet({
+    required String barcode,
+  }) = PalletsEventCreatePallet;
 }
