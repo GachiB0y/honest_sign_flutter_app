@@ -110,7 +110,7 @@ class PalletCubit extends Cubit<PalletCubitState> {
                 barcode: 'Будущая палета',
                 date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
                 boxes: [],
-                dateRelease: '',
+                dateRelease: dateOfRelease,
                 status: 'NotFull'),
           ),
         );
@@ -284,6 +284,7 @@ class PalletCubit extends Cubit<PalletCubitState> {
     newPallets.boxes = [];
     newPallets.date = '';
     newPallets.status = 'NotFull';
+    newPallets.dateRelease = dateOfRelease;
     final newState = state.copyWith(
       boxes: [],
       allBarcodeHistory: {},

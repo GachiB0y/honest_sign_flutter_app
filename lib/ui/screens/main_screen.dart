@@ -334,7 +334,7 @@ class _InputWidgetState extends State<InputWidget> {
                         onPressed: () {
                           dateOfRelease =
                               _controllerForAlertChangeDateRelease.text;
-                          bloc.changeDateRelease(dateOfRelease: dateOfRelease);
+                          // bloc.changeDateRelease(dateOfRelease: dateOfRelease);// ЗАКОММЕНТИРОВАНО , ТЕПЕРЬ У ТЕКУЩЕЙ ПАЛЛЕТЫ НЕ МЕНЯЕТСЯ ДАТА, ОНА ВСЕ РВЕМЯ ОСТАЕТСЯ КАК ДАТА РЕЛИЗА
                           setState(() {
                             showTextField = false;
                           });
