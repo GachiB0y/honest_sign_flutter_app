@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
+import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_date_widget.dart';
 
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
@@ -102,6 +104,10 @@ class _FirstScreenState extends State<FirstScreen> {
 
       // await barcodeService.getBarcodesBoxes();
       // await barcodeService.getBarcodesPallets();
+      dateOfRelease = _controller.text;
+      context
+          .read<PalletCubit>()
+          .changeDateRelease(dateOfRelease: dateOfRelease);
       widget.chnageStateIsNewRelease();
     } catch (e) {
       final String message = e.toString().replaceAll('Exception: ', '');

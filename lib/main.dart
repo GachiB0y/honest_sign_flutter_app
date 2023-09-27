@@ -25,8 +25,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PalletsBloc(palletsRepository: palletsRepository),
+    return BlocProvider<PalletCubit>(
+      create: (context) => PalletCubit(),
+      // PalletsBloc(palletsRepository: palletsRepository),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -41,9 +42,10 @@ class _MyAppState extends State<MyApp> {
         //   '/refactor_box': (context) => RefactorBoxScreen(),
         // },
         home: const Scaffold(
-          body: SafeArea(
-            child: FirstNewScreen(),
-          ),
+          resizeToAvoidBottomInset: false,
+          body: SafeArea(child: InputWidget()
+              //  FirstNewScreen(),
+              ),
         ),
       ),
     );

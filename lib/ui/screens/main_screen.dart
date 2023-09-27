@@ -319,7 +319,7 @@ class _InputWidgetState extends State<InputWidget> {
                     formattedText: formattedText,
                   )
                 : Text(
-                    'Дата производства $dateOfRelease. Вы уверены?',
+                    'Дата розлива следующей паллеты: $dateOfRelease. Вы уверены?',
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 20),
                   ),
@@ -788,7 +788,7 @@ class ModelsPalletWidget extends StatelessWidget {
             ? bloc.state.pallets.barcode
             : '(неполная палета)';
     final String namePalletInHistory =
-        'Палета $partNamePallet ${bloc.state.pallets.boxes.length}/$countBoxesPerPallet\n ${bloc.state.pallets.dateRelease}';
+        'Палета $partNamePallet ${bloc.state.pallets.boxes.length}/$countBoxesPerPallet\n Дата розлива:${bloc.state.pallets.dateRelease}';
     return ExpansionTile(
       title: Text(namePalletInHistory),
       children: <Widget>[

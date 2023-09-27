@@ -109,7 +109,7 @@ class BarcodeServiceImpl extends BarcodeService {
         request.headers.addAll(headers);
 
         http.StreamedResponse response =
-            await request.send().timeout(const Duration(seconds: 10));
+            await request.send().timeout(const Duration(seconds: 8));
         // response = await http
         //     .post(Uri.parse(url), body: bodyTwo)
         //     .timeout(const Duration(seconds: 3));
@@ -120,7 +120,7 @@ class BarcodeServiceImpl extends BarcodeService {
           throw Exception('Ошибка отправки палеты!');
         }
       } on TimeoutException {
-        throw Exception('Время отправки выше 3секунд.');
+        throw Exception('Время отправки выше 8 секунд.');
       } catch (e) {
         rethrow;
       }
@@ -128,35 +128,6 @@ class BarcodeServiceImpl extends BarcodeService {
       return false;
     }
   }
-
-  // Future<bool> postIntermediateBarcodes({required ModelsPallet pallets}) async {
-  //   http.Response response;
-  //   const url = 'http://10.3.50.96:8000/';
-  //   final body = jsonEncode(pallets.toJson());
-  //   await saveData(fileName: 'palletIntermediateCash', pallets: pallets);
-  //   final isConnect = await checkInternetConnection();
-  //   if (isConnect) {
-  //     response = await http.post(Uri.parse(url), body: body);
-  //     if (response.statusCode == 200) {
-  //       return true;
-  //     } else {
-  //       return false; //throw Exception('Ошибка отправки промежуточных данных!');
-  //     }
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
-  // Future<void> saveData(
-  //     {required ModelsPallet pallets, required String fileName}) async {
-  //   if (await Permission.storage.request().isGranted) {
-  //     final file = await createFile('$fileName.json');
-  //     final jsonStr = json.encode(pallets.toJson());
-  //     await file.writeAsString(jsonStr);
-  //   } else {
-  //     print('ERROR');
-  //   }
-  // }
 
   @override
   Future<void> savePalletsInCash(
