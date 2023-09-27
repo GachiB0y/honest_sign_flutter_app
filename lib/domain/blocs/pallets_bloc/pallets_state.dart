@@ -7,10 +7,10 @@ class PalletsState with _$PalletsState {
     required ListPallets listPallets,
     required List<Item> units,
     required Set<String> allBarcodeHistory,
+    required Set<String> currentBarcodeHistory,
     required int countBarcodes,
     required int maxIndexUnitInBox,
     required int countBox,
-    TypeOfBarcode? currentTypeBarcode,
   }) = PalletsStateLoaded;
   const factory PalletsState.error({String? errorText}) = PalletsStateError;
 

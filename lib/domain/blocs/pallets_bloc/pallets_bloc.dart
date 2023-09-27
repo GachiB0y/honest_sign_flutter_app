@@ -12,9 +12,9 @@ part 'pallets_bloc.g.dart';
 part 'pallets_event.dart';
 part 'pallets_state.dart';
 
-enum TypeOfBarcode { unit, box, pallet, undefined }
+// enum TypeOfBarcode { unit, box, pallet, undefined }
 
-enum TypeOfStateSend { duplicate, send, notSend, valid, notValid, errorTimeout }
+// enum TypeOfStateSend { duplicate, send, notSend, valid, notValid, errorTimeout }
 
 class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
   final PalletsRepository palletsRepository;
@@ -25,68 +25,75 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     on<PalletsEvent>((event, emit) async {
       if (event is PalletsEventFetch) {
         await onPalletsEventFetch(emit);
-      } else if (event is PalletsEventOnSubmited) {
-        onSubmittedTextField(emit: emit, event: event);
+      } else if (event is PalletsEventCreateUnit) {
+        onCreateUnit(event, emit);
+      } else if (event is PalletsEventCreateBox) {
+        onCreateBox(event, emit);
+      } else if (event is PalletsEventCreatePallet) {
+        onCreatePallet(event, emit);
       }
     });
   }
 
-  bool checkDublicateBarcodeInPallet({required String barcode}) {
-    final bool isDuplicate =
-        (state as PalletsStateLoaded).allBarcodeHistory.contains(barcode);
-    return isDuplicate;
-  }
+  // bool checkDublicateBarcodeInPallet({required String barcode}) {
+  //   final bool isDuplicate =
+  //       (state as PalletsStateLoaded).allBarcodeHistory.contains(barcode);
+  //   return isDuplicate;
+  // }
 
-  TypeOfBarcode isValidBarcode(String barcode) {
-    if (barcode.length == 18 && barcode.startsWith('1')) {
-      return TypeOfBarcode.pallet;
-    } else {
-      if (barcode.length == 18 && barcode.startsWith('0')) {
-        return TypeOfBarcode.box;
-      } else {
-        if (barcode.length >= 37) {
-          return TypeOfBarcode.unit;
-        } else {
-          return TypeOfBarcode.undefined;
-        }
-      }
-    }
-  }
+  // TypeOfBarcode isValidBarcode(String barcode) {
+  //   bool isContains = setPallets.contains(barcode);
+  //   if (barcode.length == 18 && barcode.startsWith('1') || isContains) {
+  //     return TypeOfBarcode.pallet;
+  //   } else {
+  //     isContains = setBoxs.contains(barcode);
+  //     if (barcode.length == 18 && barcode.startsWith('0') || isContains) {
+  //       return TypeOfBarcode.box;
+  //     } else {
+  //       if (barcode.length >= 2 // ЗАглушка на тест вместо 37
+  //           ) {
+  //         return TypeOfBarcode.unit;
+  //       } else {
+  //         return TypeOfBarcode.undefined;
+  //       }
+  //     }
+  //   }
+  // }
 
-  Future<TypeOfStateSend> onSubmittedTextField({
-    required Emitter<PalletsState> emit,
-    required PalletsEventOnSubmited event,
-  }) async {
-    final isDuplicate = checkDublicateBarcodeInPallet(barcode: event.barcode);
-    if (isDuplicate) {
-      return TypeOfStateSend.duplicate;
-    } else {
-      final TypeOfBarcode typeBarcode = isValidBarcode(event.barcode);
+  // Future<TypeOfStateSend> onSubmittedTextField({
+  //   required Emitter<PalletsState> emit,
+  //   required PalletsEventOnSubmited event,
+  // }) async {
+  //   final isDuplicate = checkDublicateBarcodeInPallet(barcode: event.barcode);
+  //   if (isDuplicate) {
+  //     return TypeOfStateSend.duplicate;
+  //   } else {
+  //     final TypeOfBarcode typeBarcode = isValidBarcode(event.barcode);
 
-      switch (typeBarcode) {
-        case TypeOfBarcode.pallet:
-          {
-            onCreatePallet(event, emit);
-            return TypeOfStateSend.send;
-          }
-        case TypeOfBarcode.box:
-          {
-            onCreateBox(event, emit);
-            return TypeOfStateSend.send;
-          }
-        case TypeOfBarcode.unit:
-          {
-            onCreateUnit(event, emit);
-            return TypeOfStateSend.send;
-          }
-        default:
-          return TypeOfStateSend.notValid;
-      }
-    }
-  }
+  //     switch (typeBarcode) {
+  //       case TypeOfBarcode.pallet:
+  //         {
+  //           onCreatePallet(event, emit);
+  //           return TypeOfStateSend.send;
+  //         }
+  //       case TypeOfBarcode.box:
+  //         {
+  //           onCreateBox(event, emit);
+  //           return TypeOfStateSend.send;
+  //         }
+  //       case TypeOfBarcode.unit:
+  //         {
+  //           onCreateUnit(event, emit);
+  //           return TypeOfStateSend.send;
+  //         }
+  //       default:
+  //         return TypeOfStateSend.notValid;
+  //     }
+  //   }
+  // }
 
   void onCreatePallet(
-      PalletsEventOnSubmited event, Emitter<PalletsState> emit) {
+      PalletsEventCreatePallet event, Emitter<PalletsState> emit) {
     //Создаем дату сканирования шк
     String formattedDateTime = createDateNow();
     // Копируем последнюю паллету с новыми занчениями
@@ -113,25 +120,38 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         Set<String>.from((state as PalletsStateLoaded).allBarcodeHistory);
     newAllBarcodeHistory.add(event.barcode);
 
-    // В моедль лист паллет добавляем новую паллету в списке
-    final ListPallets listPallets =
-        ListPallets(listModelsPallet: listNewModelPallets);
+    final ModelsPallet pallet = ModelsPallet(
+        barcode: 'Будущая палета',
+        date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
+        boxes: [],
+        dateRelease: '',
+        status: 'NotFull');
+
+    listNewModelPallets.add(pallet);
+
+    // В модель лист паллет добавляем полную паллету и новую паллету в списке
+    // final ListPallets listPallets =
+    //     ListPallets(listModelsPallet: listNewModelPallets);
+    ListPallets listPallets = (state as PalletsStateLoaded)
+        .listPallets
+        .copyWith(listModelsPallet: listNewModelPallets);
 
     //Создаем новый стейт
     final newState = PalletsState.loaded(
       listPallets: listPallets,
       units: [],
       allBarcodeHistory: newAllBarcodeHistory,
-      // Увеличиваем кол- во ШК на 1
-      countBarcodes: newAllBarcodeHistory.length + 1,
+      // Сбраысваем кол - во штрихкодов на 0
+      countBarcodes: 0, // newAllBarcodeHistory.length,
       maxIndexUnitInBox: (state as PalletsStateLoaded).maxIndexUnitInBox,
-      countBox: (state as PalletsStateLoaded).countBox,
+      // Сбарысваем кол -во коробок на 0
+      countBox: 0, currentBarcodeHistory: {},
     );
 
     emit(newState);
   }
 
-  void onCreateBox(PalletsEventOnSubmited event, Emitter<PalletsState> emit) {
+  void onCreateBox(PalletsEventCreateBox event, Emitter<PalletsState> emit) {
     String formattedDateTime = createDateNow();
 
     final List<Item> copyUnits = [...(state as PalletsStateLoaded).units];
@@ -144,46 +164,79 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
       ...(state as PalletsStateLoaded).listPallets.listModelsPallet.last.boxes
     ];
     newBoxes.add(box);
-    //Добавляем в список отсканированных кодов
+    //Добавляем в списки AllBarcodeHistory и CurrentBarcodeHistory отсканированных кодов
     final Set<String> newAllBarcodeHistory =
         Set<String>.from((state as PalletsStateLoaded).allBarcodeHistory);
     newAllBarcodeHistory.add(event.barcode);
+    final Set<String> newCurrentBarcodeHistory =
+        Set<String>.from((state as PalletsStateLoaded).currentBarcodeHistory);
+    newCurrentBarcodeHistory.add(event.barcode);
 
+//Увеличиваем кол -во коробок на 1
     final int newCountBox = (state as PalletsStateLoaded).countBox + 1;
+
+// Копируем модель паллеты с новыми значениями списка коробок
+    final ModelsPallet modelsPallet = (state as PalletsStateLoaded)
+        .listPallets
+        .listModelsPallet
+        .last
+        .copyWith(boxes: newBoxes);
+// Копируем списко меодлей Паллет
+    List<ModelsPallet> listModelsPallet =
+        (state as PalletsStateLoaded).listPallets.listModelsPallet.toList();
+//Удаляем последнюю паллету и вставляем замену с новым списко коробок
+    listModelsPallet.removeLast();
+    listModelsPallet.add(modelsPallet);
+
+// Копируем модель ЛистПаллет с новым списком моеделй паллет
     final ListPallets listPallets = (state as PalletsStateLoaded)
         .listPallets
-        .copyWith(
-            listModelsPallet: (state as PalletsStateLoaded)
-                .listPallets
-                .listModelsPallet
-                .map((e) => e.copyWith(boxes: newBoxes))
-                .toList());
+        .copyWith(listModelsPallet: listModelsPallet);
 
-    final newState = PalletsState.loaded(
+    late final PalletsState newState;
+    // if ((state as PalletsStateLoaded).countBarcodes %
+    //             (countAllBarcodesPerPallet - 2) ==
+    //         0 &&
+    //     countBoxesPerPallet == (state as PalletsStateLoaded).countBox + 1) {
+    //   newState = PalletsState.loaded(
+    //       listPallets: listPallets,
+    //       units: [],
+    //       allBarcodeHistory: newAllBarcodeHistory,
+    //       countBarcodes: newAllBarcodeHistory.length,
+    //       maxIndexUnitInBox: (state as PalletsStateLoaded).maxIndexUnitInBox,
+    //       countBox: newCountBox,
+    //       currentTypeBarcode: TypeOfBarcode.pallet);
+    // } else {
+    newState = PalletsState.loaded(
         listPallets: listPallets,
         units: [],
         allBarcodeHistory: newAllBarcodeHistory,
-        countBarcodes: newAllBarcodeHistory.length,
+        countBarcodes: newCurrentBarcodeHistory.length,
         maxIndexUnitInBox: (state as PalletsStateLoaded).maxIndexUnitInBox,
-        countBox: newCountBox);
+        countBox: newCountBox,
+        currentBarcodeHistory: newCurrentBarcodeHistory);
+    // }
 
     emit(newState);
   }
 
-  void onCreateUnit(PalletsEventOnSubmited event, Emitter<PalletsState> emit) {
+  void onCreateUnit(PalletsEventCreateUnit event, Emitter<PalletsState> emit) {
     final formattedDateTime = createDateNow();
     final Item item = Item(
       barcode: event.barcode,
       date: formattedDateTime,
     );
 
-    final List<Item> listUnits = [];
+    late List<Item> listUnits;
 
     if ((state as PalletsStateLoaded).units.isEmpty) {
+      listUnits = [];
       listUnits.add(item);
     } else {
-      final List<Item> listUnits = [...(state as PalletsStateLoaded).units];
-      listUnits.add(item);
+      listUnits = [...(state as PalletsStateLoaded).units];
+      if (listUnits.length < countUnitsPerBox) {
+        listUnits.add(item);
+      }
     }
 
     int maxIndexUnitInBox = 0;
@@ -198,30 +251,50 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     final int newCountBarcodes =
         (state as PalletsStateLoaded).countBarcodes + 1;
     //Добавляем в список отсканированных кодов
-    Set<String> newAllBarcodeHistory = onNewBarcodeInHistory(event);
+    final Set<String> newAllBarcodeHistory =
+        Set<String>.from((state as PalletsStateLoaded).allBarcodeHistory);
+    newAllBarcodeHistory.add(event.barcode);
+    final Set<String> newCurrentBarcodeHistory =
+        Set<String>.from((state as PalletsStateLoaded).currentBarcodeHistory);
+    newCurrentBarcodeHistory.add(event.barcode);
     //  Копируем кол-во коробок
     final int newcountBox = (state as PalletsStateLoaded).countBox;
 
     ListPallets listPallets =
         (state as PalletsStateLoaded).listPallets.copyWith();
 
-    final newState = PalletsState.loaded(
-        listPallets: listPallets,
-        allBarcodeHistory: newAllBarcodeHistory,
-        countBarcodes: newCountBarcodes,
-        countBox: newcountBox,
-        maxIndexUnitInBox: maxIndexUnitInBox,
-        units: listUnits);
+    late final PalletsState newState;
+    // if (listUnits.length == countUnitsPerBox) {
+    //   newState = PalletsState.loaded(
+    //       listPallets: listPallets,
+    //       allBarcodeHistory: newAllBarcodeHistory,
+    //       countBarcodes: newCountBarcodes,
+    //       countBox: newcountBox,
+    //       maxIndexUnitInBox: maxIndexUnitInBox,
+    //       currentTypeBarcode: TypeOfBarcode.box,
+    //       units: listUnits);
+    // } else {
+    newState = PalletsState.loaded(
+      listPallets: listPallets,
+      allBarcodeHistory: newAllBarcodeHistory,
+      countBarcodes: newCountBarcodes,
+      countBox: newcountBox,
+      maxIndexUnitInBox: maxIndexUnitInBox,
+      units: listUnits,
+      currentBarcodeHistory: newCurrentBarcodeHistory,
+    );
+    // }
+
     emit(newState);
   }
 
-  Set<String> onNewBarcodeInHistory(PalletsEventOnSubmited event) {
-    //Добавляем в список отсканированных кодов
-    final Set<String> newAllBarcodeHistory =
-        Set<String>.from((state as PalletsStateLoaded).allBarcodeHistory);
-    newAllBarcodeHistory.add(event.barcode);
-    return newAllBarcodeHistory;
-  }
+  // Set<String> onNewBarcodeInHistory(PalletsEvent event) {
+  //   //Добавляем в список отсканированных кодов
+  //   final Set<String> newAllBarcodeHistory =
+  //       Set<String>.from((state as PalletsStateLoaded).allBarcodeHistory);
+  //   newAllBarcodeHistory.add(event.barcode);
+  //   return newAllBarcodeHistory;
+  // }
 
   Future<void> onPalletsEventFetch(Emitter<PalletsState> emit) async {
     emit(const PalletsState.loading());
@@ -243,7 +316,8 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
           countBarcodes: 0,
           countBox: 0,
           maxIndexUnitInBox: 0,
-          units: []);
+          units: [],
+          currentBarcodeHistory: {});
 
       emit(newState);
     } on TimeoutException {

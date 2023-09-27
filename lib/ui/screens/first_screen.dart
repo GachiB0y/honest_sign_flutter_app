@@ -51,7 +51,7 @@ class _FirstScreenState extends State<FirstScreen> {
           child: Text(
             isShowDateInput
                 ? 'Введите дату производства'
-                : 'Введите номер карты, для получения данных!',
+                : 'Введите номер карты Розлива, для получения данных!',
             style: const TextStyle(fontSize: 20),
           ),
         ),

@@ -43,7 +43,8 @@ void main() {
               allBarcodeHistory: {},
               countBarcodes: 0,
               maxIndexUnitInBox: 0,
-              countBox: 0),
+              countBox: 0,
+              currentBarcodeHistory: {}),
         ],
       );
     });
@@ -76,7 +77,7 @@ void main() {
         listPallets = ListPallets(listModelsPallet: listModelPallet);
       });
       blocTest(
-        'add First Units  in box  when PalletsEventOnSubmited is added',
+        'add First Units  in box  when PalletsEventCreateUnit is added',
         build: () => palletsBloc,
         seed: () => PalletsState.loaded(
             listPallets: ListPallets(listModelsPallet: [
@@ -91,8 +92,9 @@ void main() {
             allBarcodeHistory: {},
             countBarcodes: 0,
             maxIndexUnitInBox: 0,
-            countBox: 0),
-        act: (bloc) => bloc.add(PalletsEventOnSubmited(
+            countBox: 0,
+            currentBarcodeHistory: {}),
+        act: (bloc) => bloc.add(PalletsEventCreateUnit(
           barcode: barcode,
         )),
         expect: () => <PalletsStateLoaded>[
@@ -102,7 +104,8 @@ void main() {
               countBarcodes: 1,
               maxIndexUnitInBox: 1,
               countBox: 0,
-              units: listUnits)
+              units: listUnits,
+              currentBarcodeHistory: {barcode}),
         ],
       );
     });
@@ -143,23 +146,25 @@ void main() {
         listPallets = ListPallets(listModelsPallet: listModelPallet);
       });
       blocTest(
-        'add First Box  in pallet  when PalletsEventOnSubmited is added',
+        'add First Box  in pallet  when PalletsEventCreateBox is added',
         build: () => palletsBloc,
         seed: () => PalletsState.loaded(
-            listPallets: ListPallets(listModelsPallet: [
-              ModelsPallet(
-                  barcode: 'Будущая палета',
-                  date: dateNow,
-                  dateRelease: '',
-                  status: 'NotFull',
-                  boxes: [])
-            ]),
-            units: listUnits,
-            allBarcodeHistory: barcodes.take(8).toSet(),
-            countBarcodes: 8,
-            maxIndexUnitInBox: 8,
-            countBox: 0),
-        act: (bloc) => bloc.add(const PalletsEventOnSubmited(
+          listPallets: ListPallets(listModelsPallet: [
+            ModelsPallet(
+                barcode: 'Будущая палета',
+                date: dateNow,
+                dateRelease: '',
+                status: 'NotFull',
+                boxes: [])
+          ]),
+          units: listUnits,
+          allBarcodeHistory: barcodes.take(8).toSet(),
+          countBarcodes: 8,
+          maxIndexUnitInBox: 8,
+          countBox: 0,
+          currentBarcodeHistory: barcodes.take(8).toSet(),
+        ),
+        act: (bloc) => bloc.add(const PalletsEventCreateBox(
           barcode: barcodeBox,
         )),
         expect: () => <PalletsStateLoaded>[
@@ -169,7 +174,8 @@ void main() {
               countBarcodes: barcodes.length,
               maxIndexUnitInBox: 8,
               countBox: 1,
-              units: [])
+              units: [],
+              currentBarcodeHistory: barcodes)
         ],
       );
     });
@@ -188,11 +194,12 @@ void main() {
       final List<ModelsPallet> listModelPallet = [];
       late final ListPallets listPallets;
       final Set<String> allBarcodeHistory = {};
+      late Set<String> allBarcodeHistoryTwo;
 
       setUp(() {
         barcodesUnitsOne = {
           '0104630037511697215o4ZOOXUTtXL6T93sRYZ',
-          '0104630037511697215UT4ZOOXUTtXL6T93шRYR',
+          '0104630037511697215UT4ZOOXUTtXL6T93tRYR',
           '0104630037511697215UT4ZOOXUTtXL6T93IoKR',
           '0104630037511697215UT4ZPkXUTtXL6T93sRYZ'
         };
@@ -219,6 +226,7 @@ void main() {
         listUnits.addAll(iterableTwo);
         boxTwo = Box(barcode: barcodeBoxTwo, date: dateNow, items: listUnits);
         allBarcodeHistory.add(barcodeBoxTwo);
+        allBarcodeHistoryTwo = {...allBarcodeHistory};
 
         dateOfRelease = '11.11.1111';
 
@@ -228,11 +236,19 @@ void main() {
             boxes: [boxOne, boxTwo],
             dateRelease: '11.11.1111',
             status: 'Full');
+        final ModelsPallet newPallet = ModelsPallet(
+            barcode: 'Будущая палета',
+            date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
+            boxes: [],
+            dateRelease: '',
+            status: 'NotFull');
+
         listModelPallet.add(pallet);
+        listModelPallet.add(newPallet);
         listPallets = ListPallets(listModelsPallet: listModelPallet);
       });
       blocTest(
-        'add First PALLETS  when PalletsEventOnSubmited is added',
+        'add First PALLETS  when PalletsEventCreatePallet is added',
         build: () => palletsBloc,
         seed: () => PalletsState.loaded(
             listPallets: ListPallets(
@@ -250,21 +266,23 @@ void main() {
             allBarcodeHistory: allBarcodeHistory,
             countBarcodes: allBarcodeHistory.length,
             maxIndexUnitInBox: 4,
-            countBox: 2),
+            countBox: 2,
+            currentBarcodeHistory: allBarcodeHistory),
         act: (bloc) {
-          allBarcodeHistory.add(barcodePallet);
-          bloc.add(const PalletsEventOnSubmited(
+          allBarcodeHistoryTwo.add(barcodePallet);
+          bloc.add(const PalletsEventCreatePallet(
             barcode: barcodePallet,
           ));
         },
         expect: () => <PalletsStateLoaded>[
           PalletsStateLoaded(
               listPallets: listPallets,
-              allBarcodeHistory: allBarcodeHistory,
-              countBarcodes: (allBarcodeHistory.length + 1),
+              allBarcodeHistory: allBarcodeHistoryTwo,
+              countBarcodes: 0,
               maxIndexUnitInBox: 4,
-              countBox: 2,
-              units: [])
+              countBox: 0,
+              units: [],
+              currentBarcodeHistory: {})
         ],
       );
     });

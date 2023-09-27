@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
+import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar_dublicate.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_date_widget.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
-import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
-import 'package:honest_sign_flutter_app/ui/screens/first_screen.dart';
+import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 import 'package:honest_sign_flutter_app/ui/screens/refactor_box_screen.dart';
 
 enum TypeOfBarcode { unit, box, pallet, undefined }
 
 enum TypeOfStateSend { duplicate, send, notSend, valid, notValid, errorTimeout }
 
-class InputWidget extends StatefulWidget {
-  const InputWidget({super.key});
+class MainScreenCopy extends StatefulWidget {
+  const MainScreenCopy({super.key});
 
   @override
-  _InputWidgetState createState() => _InputWidgetState();
+  _MainScreenCopyState createState() => _MainScreenCopyState();
 }
 
-class _InputWidgetState extends State<InputWidget> {
+class _MainScreenCopyState extends State<MainScreenCopy> {
   late TextEditingController _textEditingController;
   late TextEditingController _controllerForAlertChangeDateRelease;
 
@@ -55,11 +55,11 @@ class _InputWidgetState extends State<InputWidget> {
     super.dispose();
   }
 
-  Future<void> _showDeleteDialog(
-      {required BuildContext context, required PalletCubit bloc}) async {
+  Future<void> _showDeleteDialog({required BuildContext context}) async {
     await showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
+        final PalletsBloc blocPallet = context.read<PalletsBloc>();
         return AlertDialog(
           content: const Column(
             mainAxisSize: MainAxisSize.min,
@@ -72,17 +72,17 @@ class _InputWidgetState extends State<InputWidget> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                bloc.deleteCurrentUnitOrAllUnitsInBox(
-                    deleteAll: true, lastBarcode: null);
+                // bloc.deleteCurrentUnitOrAllUnitsInBox(
+                //     deleteAll: true, lastBarcode: null); //РЕАЛИЗОВАТЬ УДАЛЕНИЕ
 
-                Navigator.pop(context); // закрыть Алерт диалог
+                Navigator.pop(dialogContext); // закрыть Алерт диалог
               },
               child: const Text('Да'),
             ),
             ElevatedButton(
               onPressed: () {
                 // Обработка нажатия кнопки "Отмена"
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
               },
               child: const Text('Отмена'),
             ),
@@ -100,7 +100,7 @@ class _InputWidgetState extends State<InputWidget> {
       barrierDismissible: false, //РАСКОМЕНТИРОВАТЬ В  РЕЛИЗЕ
 
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -122,7 +122,7 @@ class _InputWidgetState extends State<InputWidget> {
                     isOpenAlertDialog = false;
                   });
 
-                  Navigator.pop(context);
+                  Navigator.pop(dialogContext);
                 },
                 child: const Text('OK'),
               ),
@@ -134,11 +134,11 @@ class _InputWidgetState extends State<InputWidget> {
   }
 
   Future<void> _showDialogChekBarcodeForPalletsOrBox(
-      GlobalKey? keyForAlertDialog,
-      {required BuildContext context,
-      required bool checkValid,
-      required bool isBox,
-      required PalletCubit bloc}) async {
+    GlobalKey? keyForAlertDialog, {
+    required BuildContext context,
+    required bool checkValid,
+    required bool isBox,
+  }) async {
     setState(() {
       isOpenAlertDialog = true;
     });
@@ -150,6 +150,7 @@ class _InputWidgetState extends State<InputWidget> {
       builder: (BuildContext context) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
+          final PalletsBloc blocPallet = context.read<PalletsBloc>();
           return AlertDialog(
             backgroundColor: Colors.grey[200],
             key: keyForAlertDialog ?? _alertDialogKey,
@@ -189,15 +190,17 @@ class _InputWidgetState extends State<InputWidget> {
                               try {
                                 final TypeOfStateSend isSend =
                                     await onSubmittedTextField(
-                                        context: context,
-                                        value: value,
-                                        bloc: bloc);
+                                  context: context,
+                                  value: value,
+                                );
 
                                 if (isSend == TypeOfStateSend.send ||
                                     isSend == TypeOfStateSend.errorTimeout) {
                                   if (isBox) {
                                     sendBoxAndOpenPalletDialog(
-                                        context: context, bloc: bloc);
+                                      context: context,
+                                      // dialogContext: dialogContext,
+                                    );
                                     setState(() {
                                       isShowError = false;
                                     });
@@ -207,15 +210,14 @@ class _InputWidgetState extends State<InputWidget> {
                                         _isLoading = true;
                                       });
                                       await _showAlertDialogChangeDateRelease(
-                                          bloc: context.read<PalletCubit>(),
                                           context: context);
 
-                                      final bool isSendPallet =
-                                          await bloc.postBarcodes();
+                                      // final bool isSendPallet =
+                                      //     await bloc.postBarcodes(); // РЕАЛИЗОВАТЬ ОТПРАВКУ ПАЛЛЕТ.
 
                                       Navigator.of(context).pop();
                                       _showSendPalletDialog(context, null);
-                                      context.read<PalletCubit>().clearPallet();
+                                      // context.read<PalletCubit>().clearPallet();// РЕАЛИЗОВАТЬ УДАЛЕНИЕ
                                       setState(() {
                                         _isLoading = false;
                                         isOpenAlertDialog = false;
@@ -280,25 +282,36 @@ class _InputWidgetState extends State<InputWidget> {
     );
   }
 
-  void sendBoxAndOpenPalletDialog(
-      {required BuildContext context, required PalletCubit bloc}) {
+  void sendBoxAndOpenPalletDialog({
+    required BuildContext context,
+  }) {
     setState(() {
       isOpenAlertDialog = false;
     });
     Navigator.pop(context);
-    if (bloc.state.countBarcodes % (countAllBarcodesPerPallet - 1) == 0 &&
-        countBoxesPerPallet == bloc.state.countBox) {
+    final PalletsBloc blocPallet = context.read<PalletsBloc>();
+
+    if ((blocPallet.state as PalletsStateLoaded).countBarcodes %
+                (countAllBarcodesPerPallet - 1) ==
+            0 &&
+        countBoxesPerPallet ==
+            (blocPallet.state as PalletsStateLoaded).countBox) {
       setState(() {
         isOpenAlertDialog = true;
       });
 
-      _showDialogChekBarcodeForPalletsOrBox(_alertDialogKeyTwo,
-          checkValid: false, context: context, isBox: false, bloc: bloc);
+      _showDialogChekBarcodeForPalletsOrBox(
+        _alertDialogKeyTwo,
+        checkValid: false,
+        context: context,
+        isBox: false,
+      );
     }
   }
 
-  Future<void> _showAlertDialogChangeDateRelease(
-      {required BuildContext context, required PalletCubit bloc}) async {
+  Future<void> _showAlertDialogChangeDateRelease({
+    required BuildContext context,
+  }) async {
     bool showTextField = false;
 
     final String formattedText = dateOfRelease;
@@ -334,7 +347,7 @@ class _InputWidgetState extends State<InputWidget> {
                         onPressed: () {
                           dateOfRelease =
                               _controllerForAlertChangeDateRelease.text;
-                          bloc.changeDateRelease(dateOfRelease: dateOfRelease);
+                          // bloc.changeDateRelease(dateOfRelease: dateOfRelease); // РЕАЛИЗОВАТЬ СМЕНУ ДАТЫ ПРОИЗВОДСТВА
                           setState(() {
                             showTextField = false;
                           });
@@ -382,83 +395,99 @@ class _InputWidgetState extends State<InputWidget> {
         }));
   }
 
-  Future<bool> _sendText(
-      {required String barcode,
-      required TypeOfBarcode typeBarcode,
-      required PalletCubit bloc}) async {
+  Future<bool> _sendText({
+    required String barcode,
+    required TypeOfBarcode typeBarcode,
+  }) async {
     // setState(() {
     //   // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
     //   _textEditingController.clear();
     // });
     if (isErrorSendPallet) return false;
 
-    String formattedDateTime = createDateNow();
+    final PalletsBloc blocPallet = context.read<PalletsBloc>();
+    final statePalletsBloc = blocPallet.state as PalletsStateLoaded;
 
-    bloc.createUnit(barcode: barcode, formattedDateTime: formattedDateTime);
+    // bloc.createUnit(barcode: barcode, formattedDateTime: formattedDateTime);//ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
     // Проверка на отправку не полной палеты
     if (isSendNotColpetePallet) {
       if (typeBarcode == TypeOfBarcode.pallet) {
         setState(() {
           isSendNotColpetePallet = false;
         });
-        bloc.createPallet(text: barcode);
+        // bloc.createPallet(text: barcode);
+        blocPallet.add(PalletsEvent.createPallet(barcode: barcode));
         return true;
       } else {
-        bloc.deleteCurrentUnitOrAllUnitsInBox(
-            deleteAll: false, lastBarcode: barcode);
+        //ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
+        // bloc.deleteCurrentUnitOrAllUnitsInBox(
+        //     deleteAll: false, lastBarcode: barcode);
         return false;
       }
     }
 
     // Проверка на палету
-    if ((bloc.state.countBarcodes % (countAllBarcodesPerPallet) == 0)) {
-      if (typeBarcode == TypeOfBarcode.pallet) {
-        bloc.createPallet(text: barcode);
+    if (typeBarcode == TypeOfBarcode.pallet) {
+      if ((statePalletsBloc.countBarcodes % (countAllBarcodesPerPallet - 1) ==
+          0)) {
+        // bloc.createPallet(text: barcode);
+        blocPallet.add(PalletsEvent.createPallet(barcode: barcode));
+
         return true;
       } else {
-        bloc.deleteCurrentUnitOrAllUnitsInBox(
-            deleteAll: false, lastBarcode: barcode);
+        //ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
+        // bloc.deleteCurrentUnitOrAllUnitsInBox(
+        //     deleteAll: false, lastBarcode: barcode);
         return false;
       }
     }
 
     // Проверка на коробку
-    else if ((bloc.state.unit.length == (countUnitsPerBox + 1))) {
+    else if ((statePalletsBloc.units.length == (countUnitsPerBox))) {
       if (typeBarcode == TypeOfBarcode.box) {
-        bloc.createBox(item: barcode);
+        // bloc.createBox(item: barcode);
+        blocPallet.add(PalletsEvent.createBox(barcode: barcode));
+        return true;
+
         // await bloc.postIntermediateBarcodes();
 
-        try {
-          // await bloc.postBarcodes(); // ЗАКОММЕНТИРОВАНО ПОКА НЕ НАДО СЛАТЬ КАЖДУЮ ОТПИКАННУЮ КОРОБКУ
-          await bloc.savePalletsInCash(
-              modelListPallets:
-                  modelListPallets); // ДОБАВЛЕННО ПОКА НЕ НАДО СЛАТЬ КАЖДУЮ ОТПИКАННУЮ КОРОБКУ
+        //ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
+        // try {
+        //   // await bloc.postBarcodes(); // ЗАКОММЕНТИРОВАНО ПОКА НЕ НАДО СЛАТЬ КАЖДУЮ ОТПИКАННУЮ КОРОБКУ
+        //   await bloc.savePalletsInCash(
+        //       modelListPallets:
+        //           modelListPallets); // ДОБАВЛЕННО ПОКА НЕ НАДО СЛАТЬ КАЖДУЮ ОТПИКАННУЮ КОРОБКУ
 
-          return true;
-        } catch (e) {
-          rethrow;
-        }
+        //   return true;
+        // } catch (e) {
+        //   rethrow;
+        // }
+        //ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
       } else {
-        bloc.deleteCurrentUnitOrAllUnitsInBox(
-            deleteAll: false, lastBarcode: barcode);
+        //ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
+        // bloc.deleteCurrentUnitOrAllUnitsInBox(
+        //     deleteAll: false, lastBarcode: barcode);
         return false;
       }
 
       // Проверка на наличие штрихкода еденицы, в полученном списке штрихкодов честного знака
     } else {
       if (typeBarcode == TypeOfBarcode.unit) {
-        if (bloc.state.unit.length == countUnitsPerBox) {
-          _showDialogChekBarcodeForPalletsOrBox(null,
-              checkValid: false,
-              context: context,
-              isBox: true,
-              bloc:
-                  bloc); // Вызов окна скана коробки, сразу после скана последней штучки в коробке
+        if (statePalletsBloc.units.length == countUnitsPerBox - 1) {
+          _showDialogChekBarcodeForPalletsOrBox(
+            null,
+            checkValid: false,
+            context: context,
+            isBox: true,
+          ); // Вызов окна скана коробки, сразу после скана последней штучки в коробке
         }
+        blocPallet.add(PalletsEvent.createUnit(barcode: barcode));
+
         return true;
       } else {
-        bloc.deleteCurrentUnitOrAllUnitsInBox(
-            deleteAll: false, lastBarcode: barcode);
+        //ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
+        // bloc.deleteCurrentUnitOrAllUnitsInBox(
+        //     deleteAll: false, lastBarcode: barcode);
         return false;
       }
     }
@@ -502,18 +531,17 @@ class _InputWidgetState extends State<InputWidget> {
   }
 
   bool checkDublicateBarcodeInPallet({required String barcode}) {
-    final PalletCubit bloc = context.read<PalletCubit>();
-
-    // if (barcode == '4630097264533')
-    //   return false; // ЗАГЛУШКА НА ДУБЛИКАТ ШТУЧКИ, УБРАТЬ В РЕЛИЗЕ
-    final bool isDuplicate = bloc.state.allBarcodeHistory.contains(barcode);
+    final PalletsBloc blocPallet = context.read<PalletsBloc>();
+    final bool isDuplicate = (blocPallet.state as PalletsStateLoaded)
+        .allBarcodeHistory
+        .contains(barcode);
     return isDuplicate;
   }
 
-  Future<TypeOfStateSend> onSubmittedTextField(
-      {required String value,
-      required BuildContext context,
-      required PalletCubit bloc}) async {
+  Future<TypeOfStateSend> onSubmittedTextField({
+    required String value,
+    required BuildContext context,
+  }) async {
     setState(() {
       // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
       _textEditingController.clear();
@@ -530,7 +558,9 @@ class _InputWidgetState extends State<InputWidget> {
       } else {
         try {
           final bool isSend = await _sendText(
-              barcode: value, typeBarcode: typeBarcode, bloc: bloc);
+            barcode: value,
+            typeBarcode: typeBarcode,
+          );
           if (isSend == true) {
             return TypeOfStateSend.send;
           } else {
@@ -543,144 +573,131 @@ class _InputWidgetState extends State<InputWidget> {
     }
   }
 
-  void chnageStateIsNewRelease() {
-    setState(() {
-      _textEditingController.clear();
-      isNewRelease = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // setState(() {
-    //   isNewRelease =
-    //       false; //Заглушка на код карточик разлицва ПОТОМ УБРАТЬ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // });
-    final PalletCubit bloc = context.watch<PalletCubit>();
-    return isNewRelease
-        ? FirstScreen(
-            textEditingController: _textEditingController,
-            showSendPalletDialog: _showSendPalletDialog,
-            chnageStateIsNewRelease: chnageStateIsNewRelease,
-            barcodeService: bloc.barcodeService,
-          )
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (!isOpenAlertDialog)
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child:
+    final PalletsBloc blocPallet = context.read<PalletsBloc>();
+    final stateBlocPallet = blocPallet.state as PalletsStateLoaded;
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            if (!isOpenAlertDialog)
+              Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child:
 
-                        //  TextFormField(
-                        //   focusNode: myFocusNode,
-                        //   autofocus: true,
-                        //   controller: _textEditingController,
-                        //   onFieldSubmitted: (value) {
-                        //     _sendText(value);
-                        //   },
-                        // ) // Для веб браузера, тк неь клавиатуры
-                        InputWithKeyboardControl(
-                      focusNode: myFocusNode,
-                      onSubmitted: (String value) async {
-                        await onSubmittedTextField(
-                            context: context,
-                            value: value,
-                            bloc: context.read<PalletCubit>());
-                      },
-                      autofocus: true,
-                      controller: _textEditingController,
-                      width: 300,
-                      startShowKeyboard: false,
-                      buttonColorEnabled: Colors.blue,
-                      buttonColorDisabled: Colors.black,
-                    ),
+                      //  TextFormField(
+                      //   focusNode: myFocusNode,
+                      //   autofocus: true,
+                      //   controller: _textEditingController,
+                      //   onFieldSubmitted: (value) {
+                      //     _sendText(value);
+                      //   },
+                      // ) // Для веб браузера, тк неь клавиатуры
+                      InputWithKeyboardControl(
+                    focusNode: myFocusNode,
+                    onSubmitted: (String value) async {
+                      await onSubmittedTextField(
+                        context: context,
+                        value: value,
+                      );
+                    },
+                    autofocus: true,
+                    controller: _textEditingController,
+                    width: 300,
+                    startShowKeyboard: false,
+                    buttonColorEnabled: Colors.blue,
+                    buttonColorDisabled: Colors.black,
                   ),
                 ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
+              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: () async {
+                    _showDeleteDialog(
+                      context: context,
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                    size: 30,
+                  ),
+                ),
+                const SizedBox(
+                  width: 15,
+                ),
+                ElevatedButton.icon(
                     onPressed: () async {
-                      _showDeleteDialog(context: context, bloc: bloc);
+                      // try {
+                      //   // Проверка на отправку полной палеты
+                      //   if (stateBlocPallet.listPallets.listModelsPallet.last.boxes
+                      //               .length ==
+                      //           countBoxesPerPallet ||
+                      //       stateBlocPallet
+                      //               .listPallets.listModelsPallet.last.barcode !=
+                      //           'Будущая палета') {
+                      //     final bool isSendPallet = await blocPallet
+                      //         .postBarcodes(); // Реализовать отправку списка паллет
+                      //     if (isSendPallet) {
+                      //       _showSendPalletDialog(context, null);
+                      //       if (!context.mounted) return;
+                      //       context.read<PalletCubit>().clearPallet();
+                      //       setState(() {
+                      //         isErrorSendPallet = false;
+                      //       });
+                      //     }
+                      //   } else if (stateBlocPallet
+                      //       .listPallets.listModelsPallet.last.boxes.isNotEmpty) {
+                      //     setState(() {
+                      //       isSendNotColpetePallet = true;
+                      //       isErrorSendPallet = false;
+                      //     });
+                      //     if (stateBlocPallet
+                      //             .listPallets.listModelsPallet.last.barcode ==
+                      //         'Будущая палета') {
+                      //       _showDialogChekBarcodeForPalletsOrBox(
+                      //         null,
+                      //         checkValid: false,
+                      //         context: context,
+                      //         isBox: false,
+                      //       );
+                      //     } else {
+                      //       // _sendText(pallets.barcode);
+                      //       // await onSubmittedTextField(
+                      //       //     context: context, value: pallets.barcode);
+                      //     }
+                      //   } else {
+                      //     _showSendPalletDialog(context,
+                      //         'Нужна хотябы одна коробка для отправки палеты!');
+                      //   }
+                      // } catch (e) {
+                      //   setState(() {
+                      //     isErrorSendPallet = true;
+                      //   });
+                      //   final String message =
+                      //       e.toString().replaceAll('Exception: ', '');
+                      //   _showSendPalletDialog(context, message);
+                      // }
                     },
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                      size: 30,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  ElevatedButton.icon(
-                      onPressed: () async {
-                        // if (bloc.state.pallets.boxes.isNotEmpty) {
-                        //   setState(() {
-                        //     isOpenAlertDialog = true;
-                        //   });
-                        //   await _showAlertDialogChangeDateRelease(
-                        //     context: context,
-                        //     bloc: context.read<PalletCubit>(),
-                        //   );
-                        // }
-                        try {
-                          // Проверка на отправку полной палеты
-                          if (bloc.state.pallets.boxes.length ==
-                                  countBoxesPerPallet ||
-                              bloc.state.pallets.barcode != 'Будущая палета') {
-                            final bool isSendPallet = await bloc.postBarcodes();
-                            if (isSendPallet) {
-                              _showSendPalletDialog(context, null);
-                              if (!context.mounted) return;
-                              context.read<PalletCubit>().clearPallet();
-                              setState(() {
-                                isErrorSendPallet = false;
-                              });
-                            }
-                          } else if (bloc.state.pallets.boxes.isNotEmpty) {
-                            setState(() {
-                              isSendNotColpetePallet = true;
-                              isErrorSendPallet = false;
-                            });
-                            if (bloc.state.pallets.barcode ==
-                                'Будущая палета') {
-                              _showDialogChekBarcodeForPalletsOrBox(null,
-                                  checkValid: false,
-                                  context: context,
-                                  isBox: false,
-                                  bloc: bloc);
-                            } else {
-                              // _sendText(pallets.barcode);
-                              // await onSubmittedTextField(
-                              //     context: context, value: pallets.barcode);
-                            }
-                          } else {
-                            _showSendPalletDialog(context,
-                                'Нужна хотябы одна коробка для отправки палеты!');
-                          }
-                        } catch (e) {
-                          setState(() {
-                            isErrorSendPallet = true;
-                          });
-                          final String message =
-                              e.toString().replaceAll('Exception: ', '');
-                          _showSendPalletDialog(context, message);
-                        }
-                      },
-                      icon: const Icon(Icons.call_made, color: Colors.green),
-                      label: const Text('Отправить палету')),
-                ],
-              ),
-              TwoTabWidget(
-                scrollController: _scrollController,
-                myFocusNode: myFocusNode,
-                checkDublicateBarcodeInPallet: checkDublicateBarcodeInPallet,
-              ),
-            ],
-          );
+                    icon: const Icon(Icons.call_made, color: Colors.green),
+                    label: const Text('Отправить палету')),
+              ],
+            ),
+            TwoTabWidget(
+              scrollController: _scrollController,
+              myFocusNode: myFocusNode,
+              checkDublicateBarcodeInPallet: checkDublicateBarcodeInPallet,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -733,19 +750,20 @@ class _BoxWidgetState extends State<BoxWidget> {
             const Spacer(),
             IconButton(
                 onPressed: () async {
-                  widget.myFocusNode.nextFocus();
+                  // ЗАККОМЕНТИРОВАННО НА ВРЕМЯ  ЭКРАН РЕДАКТИРОВАНИЯ КОРОБКИ
+                  // widget.myFocusNode.nextFocus();
 
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RefactorBoxScreen(
-                        box: widget.box,
-                        checkDublicateBarcodeInPallet:
-                            widget.checkDublicateBarcodeInPallet,
-                      ),
-                    ),
-                  );
-                  widget.myFocusNode.requestFocus();
+                  // await Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => RefactorBoxScreen(
+                  //       box: widget.box,
+                  //       checkDublicateBarcodeInPallet:
+                  //           widget.checkDublicateBarcodeInPallet,
+                  //     ),
+                  //   ),
+                  // );
+                  // widget.myFocusNode.requestFocus();
                 },
                 icon: const Icon(Icons.edit)),
           ],
@@ -774,44 +792,102 @@ class ModelsPalletWidget extends StatelessWidget {
   final InputWithKeyboardControlFocusNode myFocusNode;
   final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
 
-  const ModelsPalletWidget(
-      {super.key,
-      required this.myFocusNode,
-      required this.checkDublicateBarcodeInPallet});
+  const ModelsPalletWidget({
+    Key? key,
+    required this.myFocusNode,
+    required this.checkDublicateBarcodeInPallet,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final PalletCubit bloc = context.watch<PalletCubit>();
+    return BlocBuilder<PalletsBloc, PalletsState>(
+      builder: (context, state) {
+        final List<ExpansionTile> expansionTiles =
+            (state as PalletsStateLoaded).listPallets.listModelsPallet.map(
+          (pallet) {
+            final String partNamePallet =
+                pallet.boxes.length == countBoxesPerPallet
+                    ? pallet.barcode
+                    : '(неполная палета)';
+            final String namePalletInHistory =
+                'Палета $partNamePallet ${pallet.boxes.length}/$countBoxesPerPallet \n ${pallet.dateRelease}';
 
-    final String partNamePallet =
-        bloc.state.pallets.boxes.length == countBoxesPerPallet
-            ? bloc.state.pallets.barcode
-            : '(неполная палета)';
-    final String namePalletInHistory =
-        'Палета $partNamePallet ${bloc.state.pallets.boxes.length}/$countBoxesPerPallet\n ${bloc.state.pallets.dateRelease}';
-    return ExpansionTile(
-      title: Text(namePalletInHistory),
-      children: <Widget>[
-        ListTile(
-          title: const Text('Коробки:'),
-          subtitle: Column(
-            children: bloc.state.pallets.boxes
-                .asMap()
-                .entries
-                .map((box) => BoxWidget(
-                      box: box.value,
-                      myFocusNode: myFocusNode,
-                      checkDublicateBarcodeInPallet:
-                          checkDublicateBarcodeInPallet,
-                      indexBox: box.key,
-                    ))
-                .toList(),
-          ),
-        ),
-      ],
+            return ExpansionTile(
+              title: Text(namePalletInHistory),
+              children: [
+                ListTile(
+                  title: const Text('Коробки:'),
+                  subtitle: Column(
+                    children: pallet.boxes
+                        .asMap()
+                        .entries
+                        .map(
+                          (box) => BoxWidget(
+                            box: box.value,
+                            myFocusNode: myFocusNode,
+                            indexBox: box.key,
+                            checkDublicateBarcodeInPallet:
+                                checkDublicateBarcodeInPallet,
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              ],
+            );
+          },
+        ).toList();
+
+        return Column(
+          children: expansionTiles.reversed.toList(),
+        );
+      },
     );
   }
 }
+
+// class ModelsPalletWidget extends StatelessWidget {
+//   final InputWithKeyboardControlFocusNode myFocusNode;
+//   final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
+
+//   const ModelsPalletWidget(
+//       {super.key,
+//       required this.myFocusNode,
+//       required this.checkDublicateBarcodeInPallet});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final PalletCubit bloc = context.watch<PalletCubit>();
+
+//     final String partNamePallet =
+//         bloc.state.pallets.boxes.length == countBoxesPerPallet
+//             ? bloc.state.pallets.barcode
+//             : '(неполная палета)';
+//     final String namePalletInHistory =
+//         'Палета $partNamePallet ${bloc.state.pallets.boxes.length}/$countBoxesPerPallet';
+//     return ExpansionTile(
+//       title: Text(namePalletInHistory),
+//       children: <Widget>[
+//         ListTile(
+//           title: const Text('Коробки:'),
+//           subtitle: Column(
+//             children: bloc.state.pallets.boxes
+//                 .asMap()
+//                 .entries
+//                 .map((box) => BoxWidget(
+//                       box: box.value,
+//                       myFocusNode: myFocusNode,
+//                       checkDublicateBarcodeInPallet:
+//                           checkDublicateBarcodeInPallet,
+//                       indexBox: box.key,
+//                     ))
+//                 .toList(),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 class TwoTabWidget extends StatelessWidget {
   final InputWithKeyboardControlFocusNode myFocusNode;
@@ -872,12 +948,13 @@ class CurrentHistoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PalletCubit bloc = context.watch<PalletCubit>();
+    final PalletsBloc blocPallet = context.watch<PalletsBloc>();
+    final statePalletsBloc = blocPallet.state as PalletsStateLoaded;
     return SizedBox(
       height: MediaQuery.of(context).size.height / 3.5,
       child: ListView.builder(
         controller: scrollController,
-        itemCount: bloc.state.unit.length,
+        itemCount: statePalletsBloc.units.length,
         itemBuilder: (BuildContext context, int index) {
           // scrollController.jumpTo(scrollController.position
           //     .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
@@ -893,7 +970,8 @@ class CurrentHistoryWidget extends StatelessWidget {
                             .read<PalletCubit>()
                             .deleteCurrentUnitOrAllUnitsInBox(
                                 deleteAll: false,
-                                lastBarcode: bloc.state.unit[index].barcode);
+                                lastBarcode:
+                                    statePalletsBloc.units[index].barcode);
                       },
                       icon: const Icon(Icons.close),
                       color: Colors.red,
