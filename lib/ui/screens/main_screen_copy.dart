@@ -332,7 +332,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                     formattedText: formattedText,
                   )
                 : Text(
-                    'Дата производства $dateOfRelease. Вы уверены?',
+                    'Дата розлива следующей паллеты: $dateOfRelease. Вы уверены?',
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 20),
                   ),
@@ -347,7 +347,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                         onPressed: () {
                           dateOfRelease =
                               _controllerForAlertChangeDateRelease.text;
-                          // bloc.changeDateRelease(dateOfRelease: dateOfRelease); // РЕАЛИЗОВАТЬ СМЕНУ ДАТЫ ПРОИЗВОДСТВА
+                          // bloc.changeDateRelease(dateOfRelease: dateOfRelease); // РЕАЛИЗОВАТЬ СМЕНУ ДАТЫ ПРОИЗВОДСТВА  У НОВОЙ ПАЛЛЕТЫ, ПОСЛЕ ОТПРАВКИ ТЕКУЩЕЙ
                           setState(() {
                             showTextField = false;
                           });
@@ -845,49 +845,6 @@ class ModelsPalletWidget extends StatelessWidget {
     );
   }
 }
-
-// class ModelsPalletWidget extends StatelessWidget {
-//   final InputWithKeyboardControlFocusNode myFocusNode;
-//   final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
-
-//   const ModelsPalletWidget(
-//       {super.key,
-//       required this.myFocusNode,
-//       required this.checkDublicateBarcodeInPallet});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final PalletCubit bloc = context.watch<PalletCubit>();
-
-//     final String partNamePallet =
-//         bloc.state.pallets.boxes.length == countBoxesPerPallet
-//             ? bloc.state.pallets.barcode
-//             : '(неполная палета)';
-//     final String namePalletInHistory =
-//         'Палета $partNamePallet ${bloc.state.pallets.boxes.length}/$countBoxesPerPallet';
-//     return ExpansionTile(
-//       title: Text(namePalletInHistory),
-//       children: <Widget>[
-//         ListTile(
-//           title: const Text('Коробки:'),
-//           subtitle: Column(
-//             children: bloc.state.pallets.boxes
-//                 .asMap()
-//                 .entries
-//                 .map((box) => BoxWidget(
-//                       box: box.value,
-//                       myFocusNode: myFocusNode,
-//                       checkDublicateBarcodeInPallet:
-//                           checkDublicateBarcodeInPallet,
-//                       indexBox: box.key,
-//                     ))
-//                 .toList(),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
 
 class TwoTabWidget extends StatelessWidget {
   final InputWithKeyboardControlFocusNode myFocusNode;

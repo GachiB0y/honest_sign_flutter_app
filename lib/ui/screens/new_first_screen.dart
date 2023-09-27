@@ -136,6 +136,7 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
 
       // await barcodeService.getBarcodesBoxes();
       // await barcodeService.getBarcodesPallets();
+      dateOfRelease = _controller.text;
       context.read<PalletsBloc>().add(const PalletsEvent.fetch());
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const MainScreenCopy()));

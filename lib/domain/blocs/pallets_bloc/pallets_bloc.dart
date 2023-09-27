@@ -35,62 +35,28 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     });
   }
 
-  // bool checkDublicateBarcodeInPallet({required String barcode}) {
-  //   final bool isDuplicate =
-  //       (state as PalletsStateLoaded).allBarcodeHistory.contains(barcode);
-  //   return isDuplicate;
-  // }
+//ИЛИ СДЕЛАТЬ ОТПРАВКУ, А ПОТОМ СМЕНУ ДАТЫ РЕЛИЗА ПОДУМАТЬ!!!
+  void onChangeDateRelease(
+    Emitter<PalletsState> emit, {
+    required String dateRelease,
+  }) {
+    final ModelsPallet modelsPallet = (state as PalletsStateLoaded)
+        .listPallets
+        .listModelsPallet
+        .last
+        .copyWith(dateRelease: dateOfRelease);
+    final List<ModelsPallet> listModelPallets =
+        (state as PalletsStateLoaded).listPallets.listModelsPallet;
+    listModelPallets.removeLast();
+    listModelPallets.add(modelsPallet);
 
-  // TypeOfBarcode isValidBarcode(String barcode) {
-  //   bool isContains = setPallets.contains(barcode);
-  //   if (barcode.length == 18 && barcode.startsWith('1') || isContains) {
-  //     return TypeOfBarcode.pallet;
-  //   } else {
-  //     isContains = setBoxs.contains(barcode);
-  //     if (barcode.length == 18 && barcode.startsWith('0') || isContains) {
-  //       return TypeOfBarcode.box;
-  //     } else {
-  //       if (barcode.length >= 2 // ЗАглушка на тест вместо 37
-  //           ) {
-  //         return TypeOfBarcode.unit;
-  //       } else {
-  //         return TypeOfBarcode.undefined;
-  //       }
-  //     }
-  //   }
-  // }
-
-  // Future<TypeOfStateSend> onSubmittedTextField({
-  //   required Emitter<PalletsState> emit,
-  //   required PalletsEventOnSubmited event,
-  // }) async {
-  //   final isDuplicate = checkDublicateBarcodeInPallet(barcode: event.barcode);
-  //   if (isDuplicate) {
-  //     return TypeOfStateSend.duplicate;
-  //   } else {
-  //     final TypeOfBarcode typeBarcode = isValidBarcode(event.barcode);
-
-  //     switch (typeBarcode) {
-  //       case TypeOfBarcode.pallet:
-  //         {
-  //           onCreatePallet(event, emit);
-  //           return TypeOfStateSend.send;
-  //         }
-  //       case TypeOfBarcode.box:
-  //         {
-  //           onCreateBox(event, emit);
-  //           return TypeOfStateSend.send;
-  //         }
-  //       case TypeOfBarcode.unit:
-  //         {
-  //           onCreateUnit(event, emit);
-  //           return TypeOfStateSend.send;
-  //         }
-  //       default:
-  //         return TypeOfStateSend.notValid;
-  //     }
-  //   }
-  // }
+    ListPallets listPallets = (state as PalletsStateLoaded)
+        .listPallets
+        .copyWith(listModelsPallet: listModelPallets);
+    final newState =
+        (state as PalletsStateLoaded).copyWith(listPallets: listPallets);
+    emit(newState);
+  }
 
   void onCreatePallet(
       PalletsEventCreatePallet event, Emitter<PalletsState> emit) {
@@ -124,7 +90,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         barcode: 'Будущая палета',
         date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
         boxes: [],
-        dateRelease: '',
+        dateRelease: dateOfRelease,
         status: 'NotFull');
 
     listNewModelPallets.add(pallet);
@@ -194,19 +160,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         .copyWith(listModelsPallet: listModelsPallet);
 
     late final PalletsState newState;
-    // if ((state as PalletsStateLoaded).countBarcodes %
-    //             (countAllBarcodesPerPallet - 2) ==
-    //         0 &&
-    //     countBoxesPerPallet == (state as PalletsStateLoaded).countBox + 1) {
-    //   newState = PalletsState.loaded(
-    //       listPallets: listPallets,
-    //       units: [],
-    //       allBarcodeHistory: newAllBarcodeHistory,
-    //       countBarcodes: newAllBarcodeHistory.length,
-    //       maxIndexUnitInBox: (state as PalletsStateLoaded).maxIndexUnitInBox,
-    //       countBox: newCountBox,
-    //       currentTypeBarcode: TypeOfBarcode.pallet);
-    // } else {
+
     newState = PalletsState.loaded(
         listPallets: listPallets,
         units: [],
@@ -215,7 +169,6 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         maxIndexUnitInBox: (state as PalletsStateLoaded).maxIndexUnitInBox,
         countBox: newCountBox,
         currentBarcodeHistory: newCurrentBarcodeHistory);
-    // }
 
     emit(newState);
   }
@@ -264,16 +217,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         (state as PalletsStateLoaded).listPallets.copyWith();
 
     late final PalletsState newState;
-    // if (listUnits.length == countUnitsPerBox) {
-    //   newState = PalletsState.loaded(
-    //       listPallets: listPallets,
-    //       allBarcodeHistory: newAllBarcodeHistory,
-    //       countBarcodes: newCountBarcodes,
-    //       countBox: newcountBox,
-    //       maxIndexUnitInBox: maxIndexUnitInBox,
-    //       currentTypeBarcode: TypeOfBarcode.box,
-    //       units: listUnits);
-    // } else {
+
     newState = PalletsState.loaded(
       listPallets: listPallets,
       allBarcodeHistory: newAllBarcodeHistory,
@@ -283,18 +227,9 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
       units: listUnits,
       currentBarcodeHistory: newCurrentBarcodeHistory,
     );
-    // }
 
     emit(newState);
   }
-
-  // Set<String> onNewBarcodeInHistory(PalletsEvent event) {
-  //   //Добавляем в список отсканированных кодов
-  //   final Set<String> newAllBarcodeHistory =
-  //       Set<String>.from((state as PalletsStateLoaded).allBarcodeHistory);
-  //   newAllBarcodeHistory.add(event.barcode);
-  //   return newAllBarcodeHistory;
-  // }
 
   Future<void> onPalletsEventFetch(Emitter<PalletsState> emit) async {
     emit(const PalletsState.loading());
@@ -304,7 +239,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
           barcode: 'Будущая палета',
           date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
           boxes: [],
-          dateRelease: '',
+          dateRelease: dateOfRelease,
           status: 'NotFull');
       final List<ModelsPallet> listModelsPallet = [pallet];
       final ListPallets listPallets =
