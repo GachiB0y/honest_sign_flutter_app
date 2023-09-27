@@ -234,13 +234,13 @@ void main() {
             barcode: barcodePallet,
             date: dateNow,
             boxes: [boxOne, boxTwo],
-            dateRelease: '11.11.1111',
+            dateRelease: dateOfRelease,
             status: 'Full');
         final ModelsPallet newPallet = ModelsPallet(
             barcode: 'Будущая палета',
             date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
             boxes: [],
-            dateRelease: '',
+            dateRelease: dateOfRelease,
             status: 'NotFull');
 
         listModelPallet.add(pallet);
@@ -256,7 +256,7 @@ void main() {
                 ModelsPallet(
                   barcode: 'Будущая палета',
                   date: dateNow,
-                  dateRelease: '11.11.1111',
+                  dateRelease: dateOfRelease,
                   status: 'NotFull',
                   boxes: [boxOne, boxTwo],
                 ),
