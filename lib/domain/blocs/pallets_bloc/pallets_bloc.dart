@@ -37,8 +37,123 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         onClearAllCurrentUnits(emit);
       } else if (event is PalletsEventClearCurrentUnitsByBarcode) {
         onClearCurrentUnitsByBarcode(event, emit);
+      } else if (event is PalletsEventDeleteBoxByIndex) {
+        onDeleteBoxByIndex(event, emit);
+      } else if (event is PalletsEventClearBoxByIndex) {
+        onClearBoxByIndex(event, emit);
       }
     });
+  }
+
+  void onClearBoxByIndex(
+    PalletsEventClearBoxByIndex event,
+    Emitter<PalletsState> emit,
+  ) {
+    final Set<String> newAllBarcodeHistory = {
+      ...(state as PalletsStateLoaded).allBarcodeHistory
+    };
+    for (var element in (state as PalletsStateLoaded)
+        .listPallets
+        .listModelsPallet[event.indexPallet]
+        .boxes[event.indexBox]
+        .items) {
+      newAllBarcodeHistory.remove(element.barcode);
+    }
+    final Set<String> newCurrentBarcodeHistory = {
+      ...(state as PalletsStateLoaded).currentBarcodeHistory
+    };
+    for (var element in (state as PalletsStateLoaded)
+        .listPallets
+        .listModelsPallet[event.indexPallet]
+        .boxes[event.indexBox]
+        .items) {
+      newCurrentBarcodeHistory.remove(element.barcode);
+    }
+    final int newCountBarcodes = (state as PalletsStateLoaded).countBarcodes -
+        (state as PalletsStateLoaded)
+            .listPallets
+            .listModelsPallet[event.indexPallet]
+            .boxes[event.indexBox]
+            .items
+            .length;
+    final ModelsPallet newPallets = (state as PalletsStateLoaded)
+        .listPallets
+        .listModelsPallet[event.indexPallet];
+    newPallets.boxes[event.indexBox].items.clear();
+    final List<ModelsPallet> listModelPallets = clearBox(
+        [...(state as PalletsStateLoaded).listPallets.listModelsPallet],
+        event.indexPallet,
+        event.indexBox);
+
+    final ListPallets listPallets = (state as PalletsStateLoaded)
+        .listPallets
+        .copyWith(listModelsPallet: listModelPallets);
+
+    final newState = (state as PalletsStateLoaded).copyWith(
+        listPallets: listPallets,
+        allBarcodeHistory: newAllBarcodeHistory,
+        countBarcodes: newCountBarcodes,
+        currentBarcodeHistory: newCurrentBarcodeHistory);
+    emit(newState);
+  }
+
+  void onDeleteBoxByIndex(
+    PalletsEventDeleteBoxByIndex event,
+    Emitter<PalletsState> emit,
+  ) {
+    final Set<String> newAllBarcodeHistory = {
+      ...(state as PalletsStateLoaded).allBarcodeHistory
+    };
+    newAllBarcodeHistory.remove(event.barcodeBox);
+    final Set<String> newCurrentBarcodeHistory = {
+      ...(state as PalletsStateLoaded).currentBarcodeHistory
+    };
+    newCurrentBarcodeHistory.remove(event.barcodeBox);
+
+    final int newCountBarcodes =
+        (state as PalletsStateLoaded).countBarcodes - 1;
+    final int newCountBox = (state as PalletsStateLoaded).countBox - 1;
+
+    final List<ModelsPallet> listModelPallets = removeBox(
+        [...(state as PalletsStateLoaded).listPallets.listModelsPallet],
+        event.indexPallet,
+        event.indexBox);
+
+    final ListPallets listPallets = (state as PalletsStateLoaded)
+        .listPallets
+        .copyWith(listModelsPallet: listModelPallets);
+
+    final newState = (state as PalletsStateLoaded).copyWith(
+        listPallets: listPallets,
+        allBarcodeHistory: newAllBarcodeHistory,
+        countBarcodes: newCountBarcodes,
+        currentBarcodeHistory: newCurrentBarcodeHistory,
+        countBox: newCountBox);
+    emit(newState);
+  }
+
+  List<ModelsPallet> clearBox(
+      List<ModelsPallet> pallets, int palletIndex, int boxIndex) {
+    if (palletIndex >= 0 && palletIndex < pallets.length) {
+      ModelsPallet pallet = pallets[palletIndex];
+      if (boxIndex >= 0 && boxIndex < pallet.boxes.length) {
+        pallet.boxes[boxIndex].items.clear();
+      }
+    }
+
+    return pallets;
+  }
+
+  List<ModelsPallet> removeBox(
+      List<ModelsPallet> pallets, int palletIndex, int boxIndex) {
+    if (palletIndex >= 0 && palletIndex < pallets.length) {
+      ModelsPallet pallet = pallets[palletIndex];
+      if (boxIndex >= 0 && boxIndex < pallet.boxes.length) {
+        pallet.boxes.removeAt(boxIndex);
+      }
+    }
+
+    return pallets;
   }
 
   void onClearAllCurrentUnits(Emitter<PalletsState> emit) {
