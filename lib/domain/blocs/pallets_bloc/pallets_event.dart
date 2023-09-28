@@ -6,7 +6,8 @@ class PalletsEvent with _$PalletsEvent {
   // const factory PalletsEvent.onSubmited({
   //   required String barcode,
   // }) = PalletsEventOnSubmited;
-
+  const factory PalletsEvent.changeDateRelease() =
+      PalletsEventChangeDateRelease;
   const factory PalletsEvent.createUnit({
     required String barcode,
   }) = PalletsEventCreateUnit;

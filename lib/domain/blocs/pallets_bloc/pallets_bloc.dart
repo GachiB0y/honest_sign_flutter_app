@@ -31,22 +31,22 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         onCreateBox(event, emit);
       } else if (event is PalletsEventCreatePallet) {
         onCreatePallet(event, emit);
+      } else if (event is PalletsEventChangeDateRelease) {
+        onChangeDateRelease(emit);
       }
     });
   }
 
 //ИЛИ СДЕЛАТЬ ОТПРАВКУ, А ПОТОМ СМЕНУ ДАТЫ РЕЛИЗА ПОДУМАТЬ!!!
-  void onChangeDateRelease(
-    Emitter<PalletsState> emit, {
-    required String dateRelease,
-  }) {
+  void onChangeDateRelease(Emitter<PalletsState> emit) {
     final ModelsPallet modelsPallet = (state as PalletsStateLoaded)
         .listPallets
         .listModelsPallet
         .last
         .copyWith(dateRelease: dateOfRelease);
-    final List<ModelsPallet> listModelPallets =
-        (state as PalletsStateLoaded).listPallets.listModelsPallet;
+    final List<ModelsPallet> listModelPallets = [
+      ...(state as PalletsStateLoaded).listPallets.listModelsPallet
+    ];
     listModelPallets.removeLast();
     listModelPallets.add(modelsPallet);
 

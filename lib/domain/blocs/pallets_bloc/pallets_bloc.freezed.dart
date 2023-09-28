@@ -19,6 +19,7 @@ mixin _$PalletsEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() changeDateRelease,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -27,6 +28,7 @@ mixin _$PalletsEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? changeDateRelease,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -35,6 +37,7 @@ mixin _$PalletsEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? changeDateRelease,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -44,6 +47,8 @@ mixin _$PalletsEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventChangeDateRelease value)
+        changeDateRelease,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -52,6 +57,7 @@ mixin _$PalletsEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -60,6 +66,7 @@ mixin _$PalletsEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -125,6 +132,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() changeDateRelease,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -136,6 +144,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? changeDateRelease,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -147,6 +156,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? changeDateRelease,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -162,6 +172,8 @@ class _$PalletsEventFetch implements PalletsEventFetch {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventChangeDateRelease value)
+        changeDateRelease,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -173,6 +185,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -184,6 +197,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -198,6 +212,131 @@ class _$PalletsEventFetch implements PalletsEventFetch {
 
 abstract class PalletsEventFetch implements PalletsEvent {
   const factory PalletsEventFetch() = _$PalletsEventFetch;
+}
+
+/// @nodoc
+abstract class _$$PalletsEventChangeDateReleaseCopyWith<$Res> {
+  factory _$$PalletsEventChangeDateReleaseCopyWith(
+          _$PalletsEventChangeDateRelease value,
+          $Res Function(_$PalletsEventChangeDateRelease) then) =
+      __$$PalletsEventChangeDateReleaseCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$PalletsEventChangeDateReleaseCopyWithImpl<$Res>
+    extends _$PalletsEventCopyWithImpl<$Res, _$PalletsEventChangeDateRelease>
+    implements _$$PalletsEventChangeDateReleaseCopyWith<$Res> {
+  __$$PalletsEventChangeDateReleaseCopyWithImpl(
+      _$PalletsEventChangeDateRelease _value,
+      $Res Function(_$PalletsEventChangeDateRelease) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
+  const _$PalletsEventChangeDateRelease();
+
+  @override
+  String toString() {
+    return 'PalletsEvent.changeDateRelease()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PalletsEventChangeDateRelease);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetch,
+    required TResult Function() changeDateRelease,
+    required TResult Function(String barcode) createUnit,
+    required TResult Function(String barcode) createBox,
+    required TResult Function(String barcode) createPallet,
+  }) {
+    return changeDateRelease();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetch,
+    TResult? Function()? changeDateRelease,
+    TResult? Function(String barcode)? createUnit,
+    TResult? Function(String barcode)? createBox,
+    TResult? Function(String barcode)? createPallet,
+  }) {
+    return changeDateRelease?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetch,
+    TResult Function()? changeDateRelease,
+    TResult Function(String barcode)? createUnit,
+    TResult Function(String barcode)? createBox,
+    TResult Function(String barcode)? createPallet,
+    required TResult orElse(),
+  }) {
+    if (changeDateRelease != null) {
+      return changeDateRelease();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventChangeDateRelease value)
+        changeDateRelease,
+    required TResult Function(PalletsEventCreateUnit value) createUnit,
+    required TResult Function(PalletsEventCreateBox value) createBox,
+    required TResult Function(PalletsEventCreatePallet value) createPallet,
+  }) {
+    return changeDateRelease(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventCreateUnit value)? createUnit,
+    TResult? Function(PalletsEventCreateBox value)? createBox,
+    TResult? Function(PalletsEventCreatePallet value)? createPallet,
+  }) {
+    return changeDateRelease?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventCreateUnit value)? createUnit,
+    TResult Function(PalletsEventCreateBox value)? createBox,
+    TResult Function(PalletsEventCreatePallet value)? createPallet,
+    required TResult orElse(),
+  }) {
+    if (changeDateRelease != null) {
+      return changeDateRelease(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class PalletsEventChangeDateRelease implements PalletsEvent {
+  const factory PalletsEventChangeDateRelease() =
+      _$PalletsEventChangeDateRelease;
 }
 
 /// @nodoc
@@ -266,6 +405,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() changeDateRelease,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -277,6 +417,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? changeDateRelease,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -288,6 +429,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? changeDateRelease,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -303,6 +445,8 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventChangeDateRelease value)
+        changeDateRelease,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -314,6 +458,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -325,6 +470,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -413,6 +559,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() changeDateRelease,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -424,6 +571,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? changeDateRelease,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -435,6 +583,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? changeDateRelease,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -450,6 +599,8 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventChangeDateRelease value)
+        changeDateRelease,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -461,6 +612,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -472,6 +624,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -561,6 +714,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() changeDateRelease,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -572,6 +726,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? changeDateRelease,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -583,6 +738,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? changeDateRelease,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -598,6 +754,8 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventChangeDateRelease value)
+        changeDateRelease,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -609,6 +767,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -620,6 +779,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,

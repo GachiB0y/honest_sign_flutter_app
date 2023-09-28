@@ -323,6 +323,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
       builder: (BuildContext context) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
+          final PalletsBloc blocPallet = context.read<PalletsBloc>();
           return AlertDialog(
             elevation: 3.0,
             content: showTextField
@@ -347,6 +348,8 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                         onPressed: () {
                           dateOfRelease =
                               _controllerForAlertChangeDateRelease.text;
+                          blocPallet
+                              .add(const PalletsEvent.changeDateRelease());
                           // bloc.changeDateRelease(dateOfRelease: dateOfRelease); // РЕАЛИЗОВАТЬ СМЕНУ ДАТЫ ПРОИЗВОДСТВА  У НОВОЙ ПАЛЛЕТЫ, ПОСЛЕ ОТПРАВКИ ТЕКУЩЕЙ
                           setState(() {
                             showTextField = false;
