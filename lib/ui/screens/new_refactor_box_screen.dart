@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
+import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar_dublicate.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
-import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
+import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 
 class RefactorBoxScreen extends StatefulWidget {
   final Box box;
@@ -34,13 +34,39 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final PalletCubit bloc = context.read<PalletCubit>();
-      indexBox = bloc.state.pallets.boxes.indexOf(widget.box);
+      // final PalletCubit bloc = context.read<PalletCubit>();
+      // indexBox = bloc.state.pallets.boxes.indexOf(widget.box);
+      final PalletsBloc blocPallet = context.read<PalletsBloc>();
+      final stateBloc = blocPallet.state as PalletsStateLoaded;
+      findBoxIndex(stateBloc.listPallets.listModelsPallet, widget.box);
     });
   }
 
+  void findBoxIndex(List<ModelsPallet> pallets, Box box) {
+    int palletIndex = -1;
+    int boxIndex = -1;
+
+    for (int i = 0; i < pallets.length; i++) {
+      ModelsPallet pallet = pallets[i];
+      if (pallet.boxes.contains(box)) {
+        palletIndex = i;
+        boxIndex = pallet.boxes.indexOf(box);
+        break;
+      }
+    }
+
+    if (palletIndex != -1 && boxIndex != -1) {
+      setState(() {
+        indexPallet = palletIndex;
+        indexBox = boxIndex;
+      });
+    } else {
+      print("Коробка не найдена");
+    }
+  }
+
   Future<void> _showWindowConfirmationChange(
-      {required BuildContext context, required PalletCubit bloc}) async {
+      {required BuildContext context}) async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -78,11 +104,8 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     setState(() {
                       isDeleteBox = true;
                     });
-                    bloc.clearBoxByIndex(indexBox: indexBox);
-                    bloc.deleteBox(indexBox: indexBox);
-                    // await bloc.postIntermediateBarcodes();
-                    // await bloc.postBarcodes();
-
+                    // bloc.clearBoxByIndex(indexBox: indexBox);
+                    // bloc.deleteBox(indexBox: indexBox);
                     Navigator.pop(context);
                   },
                 ),
@@ -96,7 +119,8 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final PalletCubit bloc = context.read<PalletCubit>();
+    final PalletsBloc blocPallet = context.watch<PalletsBloc>();
+    final stateBlocPallet = blocPallet.state as PalletsStateLoaded;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -109,7 +133,12 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                       autofocus: true,
                       controller: _textEditingController,
                       onSubmitted: (String value) async {
-                        if (bloc.state.pallets.boxes[indexBox].items.length ==
+                        if (stateBlocPallet
+                                .listPallets
+                                .listModelsPallet[indexPallet]
+                                .boxes[indexBox]
+                                .items
+                                .length ==
                             countUnitsPerBox) {
                           setState(() {
                             _textEditingController.clear();
@@ -122,7 +151,11 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                             CustomSnackBarDudlicateBarcode
                                 .showSnackBarForDuplicateBarcode(context);
                           } else {
-                            if (bloc.state.pallets.boxes[indexBox].items
+                            if (stateBlocPallet
+                                        .listPallets
+                                        .listModelsPallet[indexPallet]
+                                        .boxes[indexBox]
+                                        .items
                                         .length +
                                     1 ==
                                 countUnitsPerBox) {
@@ -131,12 +164,11 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                               });
                             }
                             String formattedDateTime = createDateNow();
-                            bloc.createUnitByIndexBox(
-                                barcode: value,
-                                formattedDateTime: formattedDateTime,
-                                indexBox: indexBox);
-                            // await bloc.postIntermediateBarcodes();
-                            // await bloc.postBarcodes();
+                            // blocPallet.createUnitByIndexBox(
+                            //     barcode: value,
+                            //     formattedDateTime: formattedDateTime,
+                            //     indexBox: indexBox);
+                            //СОЗДАТЬ ШТУЧКУ ПО ИНДЕКСУ В КОРОБКУ
                           }
 
                           setState(() {
@@ -161,7 +193,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                 label: const Text('Наполнить коробку')),
             ElevatedButton.icon(
                 onPressed: () {
-                  bloc.clearBoxByIndex(indexBox: indexBox);
+                  // blocPallet.clearBoxByIndex(indexBox: indexBox);
                   setState(() {
                     isDeleteUnit = true;
                   });
@@ -179,7 +211,8 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                   if (widget.box.items.isEmpty ||
                       widget.box.items.length != countUnitsPerBox) {
                     await _showWindowConfirmationChange(
-                        context: context, bloc: bloc);
+                      context: context,
+                    );
                   }
 
                   if (isExit) {
@@ -205,10 +238,18 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
             ),
             Expanded(
               child: ListView.builder(
-                  itemCount: bloc.state.pallets.boxes[indexBox].items
+                  itemCount: stateBlocPallet
+                      .listPallets
+                      .listModelsPallet[indexPallet]
+                      .boxes[indexBox]
+                      .items
                       .length, // widget.box.items.length,
                   itemBuilder: (BuildContext context, int index) => ItemWidget(
-                        item: bloc.state.pallets.boxes[indexBox].items[index],
+                        item: stateBlocPallet
+                            .listPallets
+                            .listModelsPallet[indexPallet]
+                            .boxes[indexBox]
+                            .items[index],
                         index: index,
                       )),
             )

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
+
 import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar_dublicate.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_date_widget.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
-import 'package:honest_sign_flutter_app/ui/screens/refactor_box_screen.dart';
+import 'package:honest_sign_flutter_app/ui/screens/new_refactor_box_screen.dart';
 
 enum TypeOfBarcode { unit, box, pallet, undefined }
 
@@ -72,8 +72,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                // bloc.deleteCurrentUnitOrAllUnitsInBox(
-                //     deleteAll: true, lastBarcode: null); //РЕАЛИЗОВАТЬ УДАЛЕНИЕ
+                blocPallet.add(const PalletsEventClearAllCurrentUnits());
 
                 Navigator.pop(dialogContext); // закрыть Алерт диалог
               },
@@ -754,19 +753,19 @@ class _BoxWidgetState extends State<BoxWidget> {
             IconButton(
                 onPressed: () async {
                   // ЗАККОМЕНТИРОВАННО НА ВРЕМЯ  ЭКРАН РЕДАКТИРОВАНИЯ КОРОБКИ
-                  // widget.myFocusNode.nextFocus();
+                  widget.myFocusNode.nextFocus();
 
-                  // await Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => RefactorBoxScreen(
-                  //       box: widget.box,
-                  //       checkDublicateBarcodeInPallet:
-                  //           widget.checkDublicateBarcodeInPallet,
-                  //     ),
-                  //   ),
-                  // );
-                  // widget.myFocusNode.requestFocus();
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RefactorBoxScreen(
+                        box: widget.box,
+                        checkDublicateBarcodeInPallet:
+                            widget.checkDublicateBarcodeInPallet,
+                      ),
+                    ),
+                  );
+                  widget.myFocusNode.requestFocus();
                 },
                 icon: const Icon(Icons.edit)),
           ],
@@ -923,15 +922,13 @@ class CurrentHistoryWidget extends StatelessWidget {
                 '${index + 1}. Бутылка ${index + 1}.',
                 style: const TextStyle(fontSize: 18),
               ),
-              trailing: index + 1 == maxIndexUnitInBox //bloc.state.unit.length
+              trailing: index + 1 ==
+                      statePalletsBloc
+                          .maxIndexUnitInBox //bloc.state.unit.length
                   ? IconButton(
                       onPressed: () {
-                        context
-                            .read<PalletCubit>()
-                            .deleteCurrentUnitOrAllUnitsInBox(
-                                deleteAll: false,
-                                lastBarcode:
-                                    statePalletsBloc.units[index].barcode);
+                        blocPallet.add(PalletsEventClearCurrentUnitsByBarcode(
+                            barcode: statePalletsBloc.units[index].barcode));
                       },
                       icon: const Icon(Icons.close),
                       color: Colors.red,

@@ -52,7 +52,7 @@ class _FirstScreenState extends State<FirstScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Text(
             isShowDateInput
-                ? 'Введите дату производства'
+                ? 'Введите дату производства первой паллеты'
                 : 'Введите номер карты Розлива, для получения данных!',
             style: const TextStyle(fontSize: 20),
           ),

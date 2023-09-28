@@ -6,6 +6,11 @@ class PalletsEvent with _$PalletsEvent {
   // const factory PalletsEvent.onSubmited({
   //   required String barcode,
   // }) = PalletsEventOnSubmited;
+
+  const factory PalletsEvent.clearAllCurrentUnits() =
+      PalletsEventClearAllCurrentUnits;
+  const factory PalletsEvent.clearCurrentUnitsByBarcode(
+      {required String barcode}) = PalletsEventClearCurrentUnitsByBarcode;
   const factory PalletsEvent.changeDateRelease() =
       PalletsEventChangeDateRelease;
   const factory PalletsEvent.createUnit({

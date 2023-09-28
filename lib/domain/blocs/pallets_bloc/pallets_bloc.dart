@@ -33,8 +33,59 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         onCreatePallet(event, emit);
       } else if (event is PalletsEventChangeDateRelease) {
         onChangeDateRelease(emit);
+      } else if (event is PalletsEventClearAllCurrentUnits) {
+        onClearAllCurrentUnits(emit);
+      } else if (event is PalletsEventClearCurrentUnitsByBarcode) {
+        onClearCurrentUnitsByBarcode(event, emit);
       }
     });
+  }
+
+  void onClearAllCurrentUnits(Emitter<PalletsState> emit) {
+    final int newCountBarcodes = (state as PalletsStateLoaded).countBarcodes -
+        (state as PalletsStateLoaded).units.length;
+    final Set<String> newAllBarcodeHistory =
+        Set<String>.from((state as PalletsStateLoaded).allBarcodeHistory);
+    for (var element in (state as PalletsStateLoaded).units) {
+      newAllBarcodeHistory.remove(element.barcode);
+    }
+    final Set<String> newCurrentBarcodeHistory =
+        Set<String>.from((state as PalletsStateLoaded).currentBarcodeHistory);
+    for (var element in (state as PalletsStateLoaded).units) {
+      newCurrentBarcodeHistory.remove(element.barcode);
+    }
+
+    final newState = (state as PalletsStateLoaded).copyWith(
+        units: [],
+        countBarcodes: newCountBarcodes,
+        allBarcodeHistory: newAllBarcodeHistory,
+        currentBarcodeHistory: newCurrentBarcodeHistory);
+    emit(newState);
+  }
+
+  void onClearCurrentUnitsByBarcode(
+      PalletsEventClearCurrentUnitsByBarcode event,
+      Emitter<PalletsState> emit) {
+    final int newCountBarcodes =
+        (state as PalletsStateLoaded).countBarcodes - 1;
+    final Set<String> newAllBarcodeHistory =
+        Set<String>.from((state as PalletsStateLoaded).allBarcodeHistory);
+    newAllBarcodeHistory.remove(event.barcode);
+    final Set<String> newCurrentBarcodeHistory =
+        Set<String>.from((state as PalletsStateLoaded).currentBarcodeHistory);
+    newCurrentBarcodeHistory.remove(event.barcode);
+    final List<Item> newUnit = [...(state as PalletsStateLoaded).units];
+    newUnit.removeLast();
+
+    int maxIndexUnitInBox = (state as PalletsStateLoaded).maxIndexUnitInBox - 1;
+
+    final newState = (state as PalletsStateLoaded).copyWith(
+        units: newUnit,
+        countBarcodes: newCountBarcodes,
+        allBarcodeHistory: newAllBarcodeHistory,
+        currentBarcodeHistory: newCurrentBarcodeHistory,
+        maxIndexUnitInBox: maxIndexUnitInBox);
+    emit(newState);
   }
 
 //ИЛИ СДЕЛАТЬ ОТПРАВКУ, А ПОТОМ СМЕНУ ДАТЫ РЕЛИЗА ПОДУМАТЬ!!!
@@ -192,7 +243,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
       }
     }
 
-    int maxIndexUnitInBox = 0;
+    int maxIndexUnitInBox = (state as PalletsStateLoaded).maxIndexUnitInBox;
     if (listUnits.length == 1) {
       maxIndexUnitInBox = 1;
     } else if (!(listUnits.length == maxIndexUnitInBox)) {
