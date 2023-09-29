@@ -19,6 +19,7 @@ mixin _$PalletsEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() sendBarcodes,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -35,6 +36,7 @@ mixin _$PalletsEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? sendBarcodes,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -51,6 +53,7 @@ mixin _$PalletsEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? sendBarcodes,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -68,6 +71,7 @@ mixin _$PalletsEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -88,6 +92,7 @@ mixin _$PalletsEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -104,6 +109,7 @@ mixin _$PalletsEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -177,6 +183,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() sendBarcodes,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -196,6 +203,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? sendBarcodes,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -215,6 +223,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? sendBarcodes,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -238,6 +247,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -261,6 +271,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -280,6 +291,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -302,6 +314,179 @@ class _$PalletsEventFetch implements PalletsEventFetch {
 
 abstract class PalletsEventFetch implements PalletsEvent {
   const factory PalletsEventFetch() = _$PalletsEventFetch;
+}
+
+/// @nodoc
+abstract class _$$PalletsEventSendBarcodesCopyWith<$Res> {
+  factory _$$PalletsEventSendBarcodesCopyWith(_$PalletsEventSendBarcodes value,
+          $Res Function(_$PalletsEventSendBarcodes) then) =
+      __$$PalletsEventSendBarcodesCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$PalletsEventSendBarcodesCopyWithImpl<$Res>
+    extends _$PalletsEventCopyWithImpl<$Res, _$PalletsEventSendBarcodes>
+    implements _$$PalletsEventSendBarcodesCopyWith<$Res> {
+  __$$PalletsEventSendBarcodesCopyWithImpl(_$PalletsEventSendBarcodes _value,
+      $Res Function(_$PalletsEventSendBarcodes) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
+  const _$PalletsEventSendBarcodes();
+
+  @override
+  String toString() {
+    return 'PalletsEvent.sendBarcodes()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PalletsEventSendBarcodes);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetch,
+    required TResult Function() sendBarcodes,
+    required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
+    required TResult Function(int indexBox, int indexPallet, String barcodeBox)
+        deleteBoxByIndex,
+    required TResult Function(int indexBox, int indexPallet, String barcode)
+        createUnitByIndex,
+    required TResult Function() clearAllCurrentUnits,
+    required TResult Function(String barcode) clearCurrentUnitsByBarcode,
+    required TResult Function() changeDateRelease,
+    required TResult Function(String barcode) createUnit,
+    required TResult Function(String barcode) createBox,
+    required TResult Function(String barcode) createPallet,
+  }) {
+    return sendBarcodes();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetch,
+    TResult? Function()? sendBarcodes,
+    TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
+    TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
+        deleteBoxByIndex,
+    TResult? Function(int indexBox, int indexPallet, String barcode)?
+        createUnitByIndex,
+    TResult? Function()? clearAllCurrentUnits,
+    TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
+    TResult? Function()? changeDateRelease,
+    TResult? Function(String barcode)? createUnit,
+    TResult? Function(String barcode)? createBox,
+    TResult? Function(String barcode)? createPallet,
+  }) {
+    return sendBarcodes?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetch,
+    TResult Function()? sendBarcodes,
+    TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
+    TResult Function(int indexBox, int indexPallet, String barcodeBox)?
+        deleteBoxByIndex,
+    TResult Function(int indexBox, int indexPallet, String barcode)?
+        createUnitByIndex,
+    TResult Function()? clearAllCurrentUnits,
+    TResult Function(String barcode)? clearCurrentUnitsByBarcode,
+    TResult Function()? changeDateRelease,
+    TResult Function(String barcode)? createUnit,
+    TResult Function(String barcode)? createBox,
+    TResult Function(String barcode)? createPallet,
+    required TResult orElse(),
+  }) {
+    if (sendBarcodes != null) {
+      return sendBarcodes();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
+    required TResult Function(PalletsEventClearBoxByIndex value)
+        clearBoxByIndex,
+    required TResult Function(PalletsEventDeleteBoxByIndex value)
+        deleteBoxByIndex,
+    required TResult Function(PalletsEventCreateUnitByIndex value)
+        createUnitByIndex,
+    required TResult Function(PalletsEventClearAllCurrentUnits value)
+        clearAllCurrentUnits,
+    required TResult Function(PalletsEventClearCurrentUnitsByBarcode value)
+        clearCurrentUnitsByBarcode,
+    required TResult Function(PalletsEventChangeDateRelease value)
+        changeDateRelease,
+    required TResult Function(PalletsEventCreateUnit value) createUnit,
+    required TResult Function(PalletsEventCreateBox value) createBox,
+    required TResult Function(PalletsEventCreatePallet value) createPallet,
+  }) {
+    return sendBarcodes(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
+    TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
+    TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
+    TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
+    TResult? Function(PalletsEventClearAllCurrentUnits value)?
+        clearAllCurrentUnits,
+    TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
+        clearCurrentUnitsByBarcode,
+    TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventCreateUnit value)? createUnit,
+    TResult? Function(PalletsEventCreateBox value)? createBox,
+    TResult? Function(PalletsEventCreatePallet value)? createPallet,
+  }) {
+    return sendBarcodes?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
+    TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
+    TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
+    TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
+    TResult Function(PalletsEventClearAllCurrentUnits value)?
+        clearAllCurrentUnits,
+    TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
+        clearCurrentUnitsByBarcode,
+    TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventCreateUnit value)? createUnit,
+    TResult Function(PalletsEventCreateBox value)? createBox,
+    TResult Function(PalletsEventCreatePallet value)? createPallet,
+    required TResult orElse(),
+  }) {
+    if (sendBarcodes != null) {
+      return sendBarcodes(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class PalletsEventSendBarcodes implements PalletsEvent {
+  const factory PalletsEventSendBarcodes() = _$PalletsEventSendBarcodes;
 }
 
 /// @nodoc
@@ -383,6 +568,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() sendBarcodes,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -402,6 +588,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? sendBarcodes,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -421,6 +608,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? sendBarcodes,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -444,6 +632,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -467,6 +656,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -486,6 +676,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -609,6 +800,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() sendBarcodes,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -628,6 +820,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? sendBarcodes,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -647,6 +840,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? sendBarcodes,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -670,6 +864,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -693,6 +888,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -712,6 +908,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -835,6 +1032,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() sendBarcodes,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -854,6 +1052,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? sendBarcodes,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -873,6 +1072,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? sendBarcodes,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -896,6 +1096,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -919,6 +1120,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -938,6 +1140,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1015,6 +1218,7 @@ class _$PalletsEventClearAllCurrentUnits
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() sendBarcodes,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -1034,6 +1238,7 @@ class _$PalletsEventClearAllCurrentUnits
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? sendBarcodes,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1053,6 +1258,7 @@ class _$PalletsEventClearAllCurrentUnits
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? sendBarcodes,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1076,6 +1282,7 @@ class _$PalletsEventClearAllCurrentUnits
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -1099,6 +1306,7 @@ class _$PalletsEventClearAllCurrentUnits
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1118,6 +1326,7 @@ class _$PalletsEventClearAllCurrentUnits
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1214,6 +1423,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() sendBarcodes,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -1233,6 +1443,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? sendBarcodes,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1252,6 +1463,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? sendBarcodes,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1275,6 +1487,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -1298,6 +1511,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1317,6 +1531,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1391,6 +1606,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() sendBarcodes,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -1410,6 +1626,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? sendBarcodes,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1429,6 +1646,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? sendBarcodes,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1452,6 +1670,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -1475,6 +1694,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1494,6 +1714,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1585,6 +1806,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() sendBarcodes,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -1604,6 +1826,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? sendBarcodes,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1623,6 +1846,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? sendBarcodes,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1646,6 +1870,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -1669,6 +1894,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1688,6 +1914,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1784,6 +2011,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() sendBarcodes,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -1803,6 +2031,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? sendBarcodes,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1822,6 +2051,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? sendBarcodes,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1845,6 +2075,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -1868,6 +2099,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1887,6 +2119,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1984,6 +2217,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
+    required TResult Function() sendBarcodes,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -2003,6 +2237,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetch,
+    TResult? Function()? sendBarcodes,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -2022,6 +2257,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
+    TResult Function()? sendBarcodes,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -2045,6 +2281,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -2068,6 +2305,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -2087,6 +2325,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,

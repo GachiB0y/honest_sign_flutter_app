@@ -43,8 +43,22 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         onClearBoxByIndex(event, emit);
       } else if (event is PalletsEventCreateUnitByIndex) {
         onCreateUnitByIndex(event, emit);
+      } else if (event is PalletsEventSendBarcodes) {
+        await onSendBarcodes();
       }
     });
+  }
+
+  Future<bool> onSendBarcodes() async {
+    try {
+      if (state is PalletsStateLoaded) {
+        return await palletsRepository.sendBarcodes(
+            listPallets: (state as PalletsStateLoaded).listPallets);
+      }
+      return false;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   void onCreateUnitByIndex(
@@ -119,11 +133,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
             .boxes[event.indexBox]
             .items
             .length;
-    // final ModelsPallet newPallets = (state as PalletsStateLoaded)
-    //     .listPallets
-    //     .listModelsPallet[event.indexPallet]
-    //     .copyWith();
-    // newPallets.boxes[event.indexBox].items.clear();
+
     final copyList = [
       ...(state as PalletsStateLoaded).listPallets.listModelsPallet
     ];
@@ -328,7 +338,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     final List<ModelsPallet> listNewModelPallets = [
       ...(state as PalletsStateLoaded).listPallets.listModelsPallet
     ];
-    //Удаляем и добавляем новую паллету в списко паллет
+    //Удаляем и добавляем новую паллету в список паллет
     listNewModelPallets.removeLast();
     listNewModelPallets.add(newPallet);
 
@@ -347,8 +357,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     listNewModelPallets.add(pallet);
 
     // В модель лист паллет добавляем полную паллету и новую паллету в списке
-    // final ListPallets listPallets =
-    //     ListPallets(listModelsPallet: listNewModelPallets);
+
     ListPallets listPallets = (state as PalletsStateLoaded)
         .listPallets
         .copyWith(listModelsPallet: listNewModelPallets);

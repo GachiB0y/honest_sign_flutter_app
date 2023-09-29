@@ -3,6 +3,7 @@ part of 'pallets_bloc.dart';
 @freezed
 class PalletsEvent with _$PalletsEvent {
   const factory PalletsEvent.fetch() = PalletsEventFetch;
+  const factory PalletsEvent.sendBarcodes() = PalletsEventSendBarcodes;
   // const factory PalletsEvent.onSubmited({
   //   required String barcode,
   // }) = PalletsEventOnSubmited;

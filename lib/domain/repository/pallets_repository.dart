@@ -1,8 +1,8 @@
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
-import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
+import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 
 abstract class PalletsRepository {
-  Future<bool> postBarcodes({required ModelsPallet pallets});
+  Future<bool> sendBarcodes({required ListPallets listPallets});
 }
 
 class PalletsRepositoryImpl implements PalletsRepository {
@@ -13,9 +13,9 @@ class PalletsRepositoryImpl implements PalletsRepository {
   final BarcodeService _palletsProvider;
 
   @override
-  Future<bool> postBarcodes({required ModelsPallet pallets}) {
+  Future<bool> sendBarcodes({required ListPallets listPallets}) {
     try {
-      return _palletsProvider.postBarcodes(pallets: pallets);
+      return _palletsProvider.sendBarcodes(listPallets: listPallets);
     } catch (e) {
       rethrow;
     }

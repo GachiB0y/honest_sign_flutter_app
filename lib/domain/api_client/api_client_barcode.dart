@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
+import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart'
+    as newEntity;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -14,6 +16,7 @@ abstract class BarcodeService {
   Future<bool> getBarcodesBoxes();
   Future<bool> getBarcodesPallets();
   Future<bool> postBarcodes({required ModelsPallet pallets});
+  Future<bool> sendBarcodes({required newEntity.ListPallets listPallets});
   Future<bool> sendPallets({required ListPallets listPallets});
   Future<bool> checkInternetConnection();
   Future<void> savePalletsInCash(
@@ -130,8 +133,85 @@ class BarcodeServiceImpl extends BarcodeService {
   }
 
   @override
+  Future<bool> sendBarcodes(
+      {required newEntity.ListPallets listPallets}) async {
+    var headers = {
+      'Content-Type': 'text/plain',
+      'Authorization': 'Basic R3Jhc3NFeGNoYW5nZTphbG9iQTY0'
+    };
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cardssssssss'));
+
+    // final copyPallets = pallets.copyWith();
+
+    // bool isNewPallet = true;
+
+    // if (pallets.status == 'NotFull') {
+    //   modelListPallets.listPallets.forEach((element) {
+    //     if (element.status == pallets.status) {
+    //       isNewPallet = false;
+    //     } else {
+    //       isNewPallet = true;
+    //     }
+    //   });
+    //   if (isNewPallet) {
+    //     modelListPallets.listPallets.add(pallets);
+    //   }
+    // } else {
+    //   // modelListPallets.listPallets.removeLast();
+    //   final isConatins = modelListPallets.listPallets.contains(copyPallets);
+    //   if (!isConatins) {
+    //     modelListPallets.listPallets.add(copyPallets);
+    //   }
+    // }
+
+    final bodyTwo = jsonEncode(listPallets.toJson());
+    await savePalletsInCashNew(
+        modelListPallets: listPallets, fileName: 'palletCashNew');
+
+    final isConnect = await checkInternetConnection();
+    if (isConnect) {
+      try {
+        request.body =
+            '''{"CardId":"$numberCardConst","Action":"Update","Pallets":$bodyTwo}''';
+        request.headers.addAll(headers);
+
+        http.StreamedResponse response =
+            await request.send().timeout(const Duration(seconds: 8));
+
+        if (response.statusCode == 200) {
+          return true;
+        } else {
+          throw Exception('Ошибка отправки палеты!');
+        }
+      } on TimeoutException {
+        throw Exception('Время отправки выше 8 секунд.');
+      } catch (e) {
+        rethrow;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  @override
   Future<void> savePalletsInCash(
       {required ListPallets modelListPallets, required String fileName}) async {
+    if (await Permission.storage.request().isGranted) {
+      final file = await createFile('$fileName.json');
+      final jsonStr = json.encode(modelListPallets.toJson());
+      await file.writeAsString(jsonStr);
+    } else {
+      print('ERROR');
+    }
+  }
+
+  @override
+  Future<void> savePalletsInCashNew(
+      {required newEntity.ListPallets modelListPallets,
+      required String fileName}) async {
     if (await Permission.storage.request().isGranted) {
       final file = await createFile('$fileName.json');
       final jsonStr = json.encode(modelListPallets.toJson());

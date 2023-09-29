@@ -70,8 +70,6 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
-        final PalletsBloc blocPallet = context.read<PalletsBloc>();
-
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return AlertDialog(
