@@ -743,6 +743,7 @@ class BoxWidget extends StatefulWidget {
 class _BoxWidgetState extends State<BoxWidget> {
   @override
   Widget build(BuildContext context) {
+    final PalletsBloc blocPallet = context.read<PalletsBloc>();
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
       return ExpansionTile(
@@ -764,7 +765,16 @@ class _BoxWidgetState extends State<BoxWidget> {
                             widget.checkDublicateBarcodeInPallet,
                       ),
                     ),
-                  );
+                  ).then((result) {
+                    if (result != null) {
+                      blocPallet.add(PalletsEventClearBoxByIndex(
+                          indexBox: result.$1, indexPallet: result.$2));
+                      blocPallet.add(PalletsEventDeleteBoxByIndex(
+                          indexBox: result.$1,
+                          indexPallet: result.$2,
+                          barcodeBox: widget.box.barcode));
+                    }
+                  });
                   widget.myFocusNode.requestFocus();
                 },
                 icon: const Icon(Icons.edit)),

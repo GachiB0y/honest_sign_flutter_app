@@ -15,7 +15,11 @@ class PalletsEvent with _$PalletsEvent {
     required int indexPallet,
     required String barcodeBox,
   }) = PalletsEventDeleteBoxByIndex;
-
+  const factory PalletsEvent.createUnitByIndex({
+    required int indexBox,
+    required int indexPallet,
+    required String barcode,
+  }) = PalletsEventCreateUnitByIndex;
   const factory PalletsEvent.clearAllCurrentUnits() =
       PalletsEventClearAllCurrentUnits;
   const factory PalletsEvent.clearCurrentUnitsByBarcode(

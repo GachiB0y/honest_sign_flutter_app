@@ -41,8 +41,51 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         onDeleteBoxByIndex(event, emit);
       } else if (event is PalletsEventClearBoxByIndex) {
         onClearBoxByIndex(event, emit);
+      } else if (event is PalletsEventCreateUnitByIndex) {
+        onCreateUnitByIndex(event, emit);
       }
     });
+  }
+
+  void onCreateUnitByIndex(
+    PalletsEventCreateUnitByIndex event,
+    Emitter<PalletsState> emit,
+  ) {
+    //Создаем дату сканирования шк
+    String formattedDateTime = createDateNow();
+    final Item item = Item(
+      barcode: event.barcode,
+      date: formattedDateTime,
+    );
+    final int newCountBarcodes =
+        (state as PalletsStateLoaded).countBarcodes + 1;
+    final Set<String> newAllBarcodeHistory =
+        Set<String>.from((state as PalletsStateLoaded).allBarcodeHistory);
+    newAllBarcodeHistory.add(event.barcode);
+    final Set<String> newCurrentBarcodeHistory =
+        Set<String>.from((state as PalletsStateLoaded).currentBarcodeHistory);
+    newCurrentBarcodeHistory.add(event.barcode);
+
+    final copyList = [
+      ...(state as PalletsStateLoaded).listPallets.listModelsPallet
+    ];
+
+    final List<ModelsPallet> listModelPallets = addUnitByIndex(
+        pallets: copyList,
+        item: item,
+        palletIndex: event.indexPallet,
+        boxIndex: event.indexBox);
+
+    final ListPallets listPallets = (state as PalletsStateLoaded)
+        .listPallets
+        .copyWith(listModelsPallet: listModelPallets);
+
+    final newState = (state as PalletsStateLoaded).copyWith(
+        listPallets: listPallets,
+        allBarcodeHistory: newAllBarcodeHistory,
+        countBarcodes: newCountBarcodes,
+        currentBarcodeHistory: newCurrentBarcodeHistory);
+    emit(newState);
   }
 
   void onClearBoxByIndex(
@@ -76,14 +119,16 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
             .boxes[event.indexBox]
             .items
             .length;
-    final ModelsPallet newPallets = (state as PalletsStateLoaded)
-        .listPallets
-        .listModelsPallet[event.indexPallet];
-    newPallets.boxes[event.indexBox].items.clear();
-    final List<ModelsPallet> listModelPallets = clearBox(
-        [...(state as PalletsStateLoaded).listPallets.listModelsPallet],
-        event.indexPallet,
-        event.indexBox);
+    // final ModelsPallet newPallets = (state as PalletsStateLoaded)
+    //     .listPallets
+    //     .listModelsPallet[event.indexPallet]
+    //     .copyWith();
+    // newPallets.boxes[event.indexBox].items.clear();
+    final copyList = [
+      ...(state as PalletsStateLoaded).listPallets.listModelsPallet
+    ];
+    final List<ModelsPallet> listModelPallets =
+        clearBox(copyList, event.indexPallet, event.indexBox);
 
     final ListPallets listPallets = (state as PalletsStateLoaded)
         .listPallets
@@ -137,7 +182,42 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     if (palletIndex >= 0 && palletIndex < pallets.length) {
       ModelsPallet pallet = pallets[palletIndex];
       if (boxIndex >= 0 && boxIndex < pallet.boxes.length) {
-        pallet.boxes[boxIndex].items.clear();
+        final List<Item> copyListItems =
+            List.from(pallet.boxes[boxIndex].items);
+        copyListItems.clear();
+        final Box newBox =
+            pallet.boxes[boxIndex].copyWith(items: copyListItems);
+        final copyBoxes = [...pallet.boxes];
+        copyBoxes.removeAt(boxIndex);
+        copyBoxes.insert(boxIndex, newBox);
+        final newModelsPallet = pallet.copyWith(boxes: copyBoxes);
+        pallets.removeAt(palletIndex);
+        pallets.insert(palletIndex, newModelsPallet);
+      }
+    }
+
+    return pallets;
+  }
+
+  List<ModelsPallet> addUnitByIndex(
+      {required List<ModelsPallet> pallets,
+      required int palletIndex,
+      required int boxIndex,
+      required Item item}) {
+    if (palletIndex >= 0 && palletIndex < pallets.length) {
+      ModelsPallet pallet = pallets[palletIndex];
+      if (boxIndex >= 0 && boxIndex < pallet.boxes.length) {
+        final List<Item> copyListItems =
+            List.from(pallet.boxes[boxIndex].items);
+        copyListItems.add(item);
+        final Box newBox =
+            pallet.boxes[boxIndex].copyWith(items: copyListItems);
+        final copyBoxes = [...pallet.boxes];
+        copyBoxes.removeAt(boxIndex);
+        copyBoxes.insert(boxIndex, newBox);
+        final newModelsPallet = pallet.copyWith(boxes: copyBoxes);
+        pallets.removeAt(palletIndex);
+        pallets.insert(palletIndex, newModelsPallet);
       }
     }
 
@@ -149,7 +229,12 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     if (palletIndex >= 0 && palletIndex < pallets.length) {
       ModelsPallet pallet = pallets[palletIndex];
       if (boxIndex >= 0 && boxIndex < pallet.boxes.length) {
-        pallet.boxes.removeAt(boxIndex);
+        final copyBoxes = [...pallet.boxes];
+        copyBoxes.removeAt(boxIndex);
+
+        final newModelsPallet = pallet.copyWith(boxes: copyBoxes);
+        pallets.removeAt(palletIndex);
+        pallets.insert(palletIndex, newModelsPallet);
       }
     }
 

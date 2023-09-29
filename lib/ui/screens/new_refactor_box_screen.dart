@@ -70,6 +70,8 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
+        final PalletsBloc blocPallet = context.read<PalletsBloc>();
+
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return AlertDialog(
@@ -104,8 +106,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                     setState(() {
                       isDeleteBox = true;
                     });
-                    // bloc.clearBoxByIndex(indexBox: indexBox);
-                    // bloc.deleteBox(indexBox: indexBox);
+
                     Navigator.pop(context);
                   },
                 ),
@@ -163,12 +164,11 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                                 isShowInput = false;
                               });
                             }
-                            String formattedDateTime = createDateNow();
-                            // blocPallet.createUnitByIndexBox(
-                            //     barcode: value,
-                            //     formattedDateTime: formattedDateTime,
-                            //     indexBox: indexBox);
-                            //СОЗДАТЬ ШТУЧКУ ПО ИНДЕКСУ В КОРОБКУ
+
+                            blocPallet.add(PalletsEvent.createUnitByIndex(
+                                indexBox: indexBox,
+                                indexPallet: indexPallet,
+                                barcode: value));
                           }
 
                           setState(() {
@@ -193,7 +193,9 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                 label: const Text('Наполнить коробку')),
             ElevatedButton.icon(
                 onPressed: () {
-                  // blocPallet.clearBoxByIndex(indexBox: indexBox);
+                  blocPallet.add(PalletsEventClearBoxByIndex(
+                      indexBox: indexBox, indexPallet: indexPallet));
+
                   setState(() {
                     isDeleteUnit = true;
                   });
@@ -208,16 +210,21 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                   setState(() {
                     isExit = true;
                   });
-                  if (widget.box.items.isEmpty ||
-                      widget.box.items.length != countUnitsPerBox) {
+                  var res = null;
+                  if (stateBlocPallet.listPallets.listModelsPallet[indexPallet]
+                          .boxes[indexBox].items.isEmpty ||
+                      stateBlocPallet.listPallets.listModelsPallet[indexPallet]
+                              .boxes[indexBox].items.length !=
+                          countUnitsPerBox) {
                     await _showWindowConfirmationChange(
                       context: context,
                     );
+                    res = (indexBox, indexPallet);
                   }
 
                   if (isExit) {
                     // await bloc.postBarcodes(); ЗАкомментировано на время, пока не можем оотправлять имзенения каждой коробки
-                    Navigator.pop(context);
+                    Navigator.pop(context, res);
                   }
                 },
                 icon: const Icon(
@@ -237,21 +244,26 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                  itemCount: stateBlocPallet
-                      .listPallets
-                      .listModelsPallet[indexPallet]
-                      .boxes[indexBox]
-                      .items
-                      .length, // widget.box.items.length,
-                  itemBuilder: (BuildContext context, int index) => ItemWidget(
+              child: stateBlocPallet.listPallets.listModelsPallet[indexPallet]
+                      .boxes.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: stateBlocPallet
+                          .listPallets
+                          .listModelsPallet[indexPallet]
+                          .boxes[indexBox]
+                          .items
+                          .length, // widget.box.items.length,
+                      itemBuilder: (BuildContext context, int index) =>
+                          ItemWidget(
                         item: stateBlocPallet
                             .listPallets
                             .listModelsPallet[indexPallet]
                             .boxes[indexBox]
                             .items[index],
                         index: index,
-                      )),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             )
           ],
         ),
