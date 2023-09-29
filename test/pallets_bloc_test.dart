@@ -1,6 +1,7 @@
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.dart';
+import 'package:honest_sign_flutter_app/domain/data_provider/session_data_provider.dart';
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 import 'package:honest_sign_flutter_app/domain/repository/pallets_repository.dart';
 
@@ -15,8 +16,11 @@ void main() {
 
     setUp(() {
       const BarcodeService palletsProvider = BarcodeServiceImpl();
-      final PalletsRepository palletsRepository =
-          PalletsRepositoryImpl(palletsProvider: palletsProvider);
+      const SessionDataProvdier sessionDataProvdier =
+          SessionDataProvdierDefault();
+      final PalletsRepository palletsRepository = PalletsRepositoryImpl(
+          palletsProvider: palletsProvider,
+          sessionDataProvdier: sessionDataProvdier);
 
       palletsBloc = PalletsBloc(palletsRepository: palletsRepository);
     });

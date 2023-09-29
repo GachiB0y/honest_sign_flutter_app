@@ -17,10 +17,13 @@ abstract class BarcodeService {
   Future<bool> getBarcodesPallets();
   Future<bool> postBarcodes({required ModelsPallet pallets});
   Future<bool> sendBarcodes({required newEntity.ListPallets listPallets});
-  Future<bool> sendPallets({required ListPallets listPallets});
+
   Future<bool> checkInternetConnection();
   Future<void> savePalletsInCash(
       {required ListPallets modelListPallets, required String fileName});
+  Future<void> savePalletsInCashNew(
+      {required newEntity.ListPallets modelListPallets,
+      required String fileName});
   Future<File> createFile(String fileName);
   Future<bool> getInfoForBarcodeRelease({required String numberCard});
 }
@@ -144,32 +147,9 @@ class BarcodeServiceImpl extends BarcodeService {
         Uri.parse(
             'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cardssssssss'));
 
-    // final copyPallets = pallets.copyWith();
-
-    // bool isNewPallet = true;
-
-    // if (pallets.status == 'NotFull') {
-    //   modelListPallets.listPallets.forEach((element) {
-    //     if (element.status == pallets.status) {
-    //       isNewPallet = false;
-    //     } else {
-    //       isNewPallet = true;
-    //     }
-    //   });
-    //   if (isNewPallet) {
-    //     modelListPallets.listPallets.add(pallets);
-    //   }
-    // } else {
-    //   // modelListPallets.listPallets.removeLast();
-    //   final isConatins = modelListPallets.listPallets.contains(copyPallets);
-    //   if (!isConatins) {
-    //     modelListPallets.listPallets.add(copyPallets);
-    //   }
-    // }
-
     final bodyTwo = jsonEncode(listPallets.toJson());
-    await savePalletsInCashNew(
-        modelListPallets: listPallets, fileName: 'palletCashNew');
+    // await savePalletsInCashNew(
+    //     modelListPallets: listPallets, fileName: 'palletCashNew');
 
     final isConnect = await checkInternetConnection();
     if (isConnect) {
@@ -270,11 +250,5 @@ class BarcodeServiceImpl extends BarcodeService {
     } else {
       throw Exception('Ошибка получения данных о разливе!');
     }
-  }
-
-  @override
-  Future<bool> sendPallets({required ListPallets listPallets}) {
-    // TODO: implement sendPallets
-    throw UnimplementedError();
   }
 }

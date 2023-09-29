@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.dart';
@@ -578,118 +579,139 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
   Widget build(BuildContext context) {
     final PalletsBloc blocPallet = context.read<PalletsBloc>();
     final stateBlocPallet = blocPallet.state as PalletsStateLoaded;
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            if (!isOpenAlertDialog)
-              Align(
-                alignment: Alignment.topCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child:
+    return BlocListener<PalletsBloc, PalletsState>(
+      listener: (context, state) {
+        // Обработайте событие закрытия приложения из вашего BLoC
+        if (state is PalletsStateCloseApp) {
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              if (!isOpenAlertDialog)
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child:
 
-                      //  TextFormField(
-                      //   focusNode: myFocusNode,
-                      //   autofocus: true,
-                      //   controller: _textEditingController,
-                      //   onFieldSubmitted: (value) {
-                      //     _sendText(value);
-                      //   },
-                      // ) // Для веб браузера, тк неь клавиатуры
-                      InputWithKeyboardControl(
-                    focusNode: myFocusNode,
-                    onSubmitted: (String value) async {
-                      await onSubmittedTextField(
+                        //  TextFormField(
+                        //   focusNode: myFocusNode,
+                        //   autofocus: true,
+                        //   controller: _textEditingController,
+                        //   onFieldSubmitted: (value) {
+                        //     _sendText(value);
+                        //   },
+                        // ) // Для веб браузера, тк неь клавиатуры
+                        InputWithKeyboardControl(
+                      focusNode: myFocusNode,
+                      onSubmitted: (String value) async {
+                        await onSubmittedTextField(
+                          context: context,
+                          value: value,
+                        );
+                      },
+                      autofocus: true,
+                      controller: _textEditingController,
+                      width: 300,
+                      startShowKeyboard: false,
+                      buttonColorEnabled: Colors.blue,
+                      buttonColorDisabled: Colors.black,
+                    ),
+                  ),
+                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () async {
+                      _showDeleteDialog(
                         context: context,
-                        value: value,
                       );
                     },
-                    autofocus: true,
-                    controller: _textEditingController,
-                    width: 300,
-                    startShowKeyboard: false,
-                    buttonColorEnabled: Colors.blue,
-                    buttonColorDisabled: Colors.black,
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                      size: 30,
+                    ),
                   ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  ElevatedButton.icon(
+                      onPressed: () async {
+                        try {
+                          // Проверка на отправку полной палеты
+                          if (stateBlocPallet.listPallets.listModelsPallet.last
+                                      .boxes.length ==
+                                  countBoxesPerPallet ||
+                              stateBlocPallet.listPallets.listModelsPallet.last
+                                      .barcode !=
+                                  'Будущая палета') {
+                            blocPallet.add(const PalletsEventSendBarcodes());
+
+                            _showSendPalletDialog(context, null);
+                            if (!context.mounted) return;
+
+                            setState(() {
+                              isErrorSendPallet = false;
+                            });
+                          } else if (stateBlocPallet.listPallets
+                              .listModelsPallet.last.boxes.isNotEmpty) {
+                            setState(() {
+                              isSendNotColpetePallet = true;
+                              isErrorSendPallet = false;
+                            });
+                            if (stateBlocPallet.listPallets.listModelsPallet
+                                    .last.barcode ==
+                                'Будущая палета') {
+                              _showDialogChekBarcodeForPalletsOrBox(
+                                null,
+                                checkValid: false,
+                                context: context,
+                                isBox: false,
+                              );
+                            }
+                          } else {
+                            _showSendPalletDialog(context,
+                                'Нужна хотябы одна коробка для отправки палеты!');
+                          }
+                        } catch (e) {
+                          setState(() {
+                            isErrorSendPallet = true;
+                          });
+                          final String message =
+                              e.toString().replaceAll('Exception: ', '');
+                          _showSendPalletDialog(context, message);
+                        }
+                      },
+                      icon: const Icon(Icons.call_made, color: Colors.green),
+                      label: const Text('Отправить палету')),
+                ],
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  blocPallet.add(const PalletsEvent.completeBottling());
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.red[200]),
+                ),
+                icon: const Icon(Icons.exit_to_app, color: Colors.red),
+                label: const Text(
+                  'ЗАВЕРШИТЬ РОЗЛИВ',
+                  style: TextStyle(color: Colors.black),
                 ),
               ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: () async {
-                    _showDeleteDialog(
-                      context: context,
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.delete,
-                    color: Colors.red,
-                    size: 30,
-                  ),
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                ElevatedButton.icon(
-                    onPressed: () async {
-                      try {
-                        // Проверка на отправку полной палеты
-                        if (stateBlocPallet.listPallets.listModelsPallet.last
-                                    .boxes.length ==
-                                countBoxesPerPallet ||
-                            stateBlocPallet.listPallets.listModelsPallet.last
-                                    .barcode !=
-                                'Будущая палета') {
-                          blocPallet.add(const PalletsEventSendBarcodes());
-
-                          _showSendPalletDialog(context, null);
-                          if (!context.mounted) return;
-
-                          setState(() {
-                            isErrorSendPallet = false;
-                          });
-                        } else if (stateBlocPallet.listPallets.listModelsPallet
-                            .last.boxes.isNotEmpty) {
-                          setState(() {
-                            isSendNotColpetePallet = true;
-                            isErrorSendPallet = false;
-                          });
-                          if (stateBlocPallet
-                                  .listPallets.listModelsPallet.last.barcode ==
-                              'Будущая палета') {
-                            _showDialogChekBarcodeForPalletsOrBox(
-                              null,
-                              checkValid: false,
-                              context: context,
-                              isBox: false,
-                            );
-                          }
-                        } else {
-                          _showSendPalletDialog(context,
-                              'Нужна хотябы одна коробка для отправки палеты!');
-                        }
-                      } catch (e) {
-                        setState(() {
-                          isErrorSendPallet = true;
-                        });
-                        final String message =
-                            e.toString().replaceAll('Exception: ', '');
-                        _showSendPalletDialog(context, message);
-                      }
-                    },
-                    icon: const Icon(Icons.call_made, color: Colors.green),
-                    label: const Text('Отправить палету')),
-              ],
-            ),
-            TwoTabWidget(
-              scrollController: _scrollController,
-              myFocusNode: myFocusNode,
-              checkDublicateBarcodeInPallet: checkDublicateBarcodeInPallet,
-            ),
-          ],
+              TwoTabWidget(
+                scrollController: _scrollController,
+                myFocusNode: myFocusNode,
+                checkDublicateBarcodeInPallet: checkDublicateBarcodeInPallet,
+              ),
+            ],
+          ),
         ),
       ),
     );

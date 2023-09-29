@@ -28,7 +28,11 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
       } else if (event is PalletsEventCreateUnit) {
         onCreateUnit(event, emit);
       } else if (event is PalletsEventCreateBox) {
-        onCreateBox(event, emit);
+        await onCreateBox(event, emit);
+        await palletsRepository.saveState(
+            numberCard: numberCardConst,
+            palletState:
+                (state as PalletsStateLoaded)); // ЗАПИСЬ СОСТОЯНИЯ В ХРАНИЛИЩЕ
       } else if (event is PalletsEventCreatePallet) {
         onCreatePallet(event, emit);
       } else if (event is PalletsEventChangeDateRelease) {
@@ -45,13 +49,24 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         onCreateUnitByIndex(event, emit);
       } else if (event is PalletsEventSendBarcodes) {
         await onSendBarcodes();
+      } else if (event is PalletsEventCompleteBottling) {
+        await onCompleteBottling();
+        emit(const PalletsStateCloseApp());
       }
     });
+  }
+  Future<void> onCompleteBottling() async {
+    await palletsRepository.deleteState(
+      numberCard: numberCardConst,
+    );
   }
 
   Future<bool> onSendBarcodes() async {
     try {
       if (state is PalletsStateLoaded) {
+        await palletsRepository.saveState(
+            numberCard: numberCardConst,
+            palletState: (state as PalletsStateLoaded));
         return await palletsRepository.sendBarcodes(
             listPallets: (state as PalletsStateLoaded).listPallets);
       }
@@ -377,7 +392,8 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     emit(newState);
   }
 
-  void onCreateBox(PalletsEventCreateBox event, Emitter<PalletsState> emit) {
+  Future<void> onCreateBox(
+      PalletsEventCreateBox event, Emitter<PalletsState> emit) async {
     String formattedDateTime = createDateNow();
 
     final List<Item> copyUnits = [...(state as PalletsStateLoaded).units];
@@ -494,27 +510,43 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
   Future<void> onPalletsEventFetch(Emitter<PalletsState> emit) async {
     emit(const PalletsState.loading());
     try {
+      final statePallet = await palletsRepository.loadState(
+        numberCard: numberCardConst,
+      );
+      if (statePallet != null) {
+        final newState = PalletsState.loaded(
+            listPallets: statePallet.listPallets,
+            allBarcodeHistory: statePallet.allBarcodeHistory,
+            countBarcodes: statePallet.countBarcodes,
+            countBox: statePallet.countBox,
+            maxIndexUnitInBox: statePallet.maxIndexUnitInBox,
+            units: statePallet.units,
+            currentBarcodeHistory: statePallet.currentBarcodeHistory);
+
+        emit(newState);
+      } else {
+        final ModelsPallet pallet = ModelsPallet(
+            barcode: 'Будущая палета',
+            date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
+            boxes: [],
+            dateRelease: dateOfRelease,
+            status: 'NotFull');
+        final List<ModelsPallet> listModelsPallet = [pallet];
+        final ListPallets listPallets =
+            ListPallets(listModelsPallet: listModelsPallet);
+
+        final newState = PalletsState.loaded(
+            listPallets: listPallets,
+            allBarcodeHistory: {},
+            countBarcodes: 0,
+            countBox: 0,
+            maxIndexUnitInBox: 0,
+            units: [],
+            currentBarcodeHistory: {});
+
+        emit(newState);
+      }
       // Дописать функционал восстановления из кэша( ходить в файлик и смотреть пуст он или нет)
-      final ModelsPallet pallet = ModelsPallet(
-          barcode: 'Будущая палета',
-          date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
-          boxes: [],
-          dateRelease: dateOfRelease,
-          status: 'NotFull');
-      final List<ModelsPallet> listModelsPallet = [pallet];
-      final ListPallets listPallets =
-          ListPallets(listModelsPallet: listModelsPallet);
-
-      final newState = PalletsState.loaded(
-          listPallets: listPallets,
-          allBarcodeHistory: {},
-          countBarcodes: 0,
-          countBox: 0,
-          maxIndexUnitInBox: 0,
-          units: [],
-          currentBarcodeHistory: {});
-
-      emit(newState);
     } on TimeoutException {
       emit(const PalletsState.error(errorText: 'Время ожидания истекло!'));
     } catch (e) {

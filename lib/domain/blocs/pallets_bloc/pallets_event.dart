@@ -4,6 +4,7 @@ part of 'pallets_bloc.dart';
 class PalletsEvent with _$PalletsEvent {
   const factory PalletsEvent.fetch() = PalletsEventFetch;
   const factory PalletsEvent.sendBarcodes() = PalletsEventSendBarcodes;
+  const factory PalletsEvent.completeBottling() = PalletsEventCompleteBottling;
   // const factory PalletsEvent.onSubmited({
   //   required String barcode,
   // }) = PalletsEventOnSubmited;

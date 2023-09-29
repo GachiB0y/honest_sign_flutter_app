@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallet_cubit.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.dart';
+import 'package:honest_sign_flutter_app/domain/data_provider/session_data_provider.dart';
 import 'package:honest_sign_flutter_app/domain/repository/pallets_repository.dart';
 
 import 'package:honest_sign_flutter_app/ui/screens/main_screen.dart';
@@ -20,8 +21,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final PalletsRepository palletsRepository =
-      PalletsRepositoryImpl(palletsProvider: const BarcodeServiceImpl());
+  final PalletsRepository palletsRepository = PalletsRepositoryImpl(
+      palletsProvider: const BarcodeServiceImpl(),
+      sessionDataProvdier: const SessionDataProvdierDefault());
 
   @override
   Widget build(BuildContext context) {

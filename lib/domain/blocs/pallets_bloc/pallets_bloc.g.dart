@@ -18,6 +18,18 @@ Map<String, dynamic> _$$PalletsStateLoadingToJson(
       'runtimeType': instance.$type,
     };
 
+_$PalletsStateCloseApp _$$PalletsStateCloseAppFromJson(
+        Map<String, dynamic> json) =>
+    _$PalletsStateCloseApp(
+      $type: json['runtimeType'] as String?,
+    );
+
+Map<String, dynamic> _$$PalletsStateCloseAppToJson(
+        _$PalletsStateCloseApp instance) =>
+    <String, dynamic>{
+      'runtimeType': instance.$type,
+    };
+
 _$PalletsStateLoaded _$$PalletsStateLoadedFromJson(Map<String, dynamic> json) =>
     _$PalletsStateLoaded(
       listPallets:
