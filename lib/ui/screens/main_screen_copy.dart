@@ -594,7 +594,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                     children: [
                       CircularProgressIndicator(),
                       SizedBox(width: 16),
-                      Text("Идет отправка..."),
+                      Text("Идет отправка...", style: TextStyle(fontSize: 18)),
                     ],
                   ),
                 );
@@ -611,7 +611,8 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(state.errorText!),
+                      Text(state.errorText!,
+                          style: const TextStyle(fontSize: 18)),
                       const SizedBox(width: 16),
                       TextButton(
                           onPressed: () {
@@ -736,7 +737,42 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
               ),
               ElevatedButton.icon(
                 onPressed: () {
-                  blocPallet.add(const PalletsEvent.completeBottling());
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(
+                              'Вы точно хотите завершить розлив?',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            const SizedBox(width: 16),
+                            TextButton(
+                                onPressed: () {
+                                  blocPallet.add(
+                                      const PalletsEvent.completeBottling());
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text(
+                                  'ДА',
+                                  style: TextStyle(fontSize: 18),
+                                )),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text(
+                                  'НЕТ',
+                                  style: TextStyle(fontSize: 18),
+                                )),
+                          ],
+                        ),
+                      );
+                    },
+                  );
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.red[200]),
