@@ -108,7 +108,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
             children: [
               Text(
                 message == null
-                    ? 'Палета отправлена успешно!'
+                    ? 'Палета отправлена!'
                     : '$message Повторите попытку.',
                 style: const TextStyle(fontSize: 18),
               ),
@@ -578,12 +578,52 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
   @override
   Widget build(BuildContext context) {
     final PalletsBloc blocPallet = context.read<PalletsBloc>();
-    final stateBlocPallet = blocPallet.state as PalletsStateLoaded;
+
     return BlocListener<PalletsBloc, PalletsState>(
       listener: (context, state) {
-        // Обработайте событие закрытия приложения из вашего BLoC
         if (state is PalletsStateCloseApp) {
           SystemNavigator.pop();
+        } else if (state is PalletsStateLoaded) {
+          if (state.isLoading != null && state.isLoading == true) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return const AlertDialog(
+                  content: Row(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(width: 16),
+                      Text("Идет отправка..."),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
+          if (state.errorText != null && state.errorText!.length > 6) {
+            Navigator.pop(context);
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(state.errorText!),
+                      const SizedBox(width: 16),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('OK')),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
         }
       },
       child: Scaffold(
@@ -643,6 +683,8 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                   ),
                   ElevatedButton.icon(
                       onPressed: () async {
+                        final stateBlocPallet =
+                            blocPallet.state as PalletsStateLoaded;
                         try {
                           // Проверка на отправку полной палеты
                           if (stateBlocPallet.listPallets.listModelsPallet.last
@@ -947,9 +989,7 @@ class CurrentHistoryWidget extends StatelessWidget {
                 '${index + 1}. Бутылка ${index + 1}.',
                 style: const TextStyle(fontSize: 18),
               ),
-              trailing: index + 1 ==
-                      statePalletsBloc
-                          .maxIndexUnitInBox //bloc.state.unit.length
+              trailing: index + 1 == statePalletsBloc.maxIndexUnitInBox
                   ? IconButton(
                       onPressed: () {
                         blocPallet.add(PalletsEventClearCurrentUnitsByBarcode(

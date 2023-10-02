@@ -12,6 +12,8 @@ class PalletsState with _$PalletsState {
     required int countBarcodes,
     required int maxIndexUnitInBox,
     required int countBox,
+    bool? isLoading,
+    String? errorText,
   }) = PalletsStateLoaded;
   const factory PalletsState.error({String? errorText}) = PalletsStateError;
 

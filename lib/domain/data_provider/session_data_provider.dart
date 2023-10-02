@@ -85,13 +85,17 @@ class SessionDataProvdierDefault implements SessionDataProvdier {
 
   @override
   Future<void> deleteState({required String numberCard}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('listPallets_$numberCard');
-    await prefs.remove('units_$numberCard');
-    await prefs.remove('allBarcodeHistory_$numberCard');
-    await prefs.remove('currentBarcodeHistoryJson_$numberCard');
-    await prefs.remove('countBox_$numberCard');
-    await prefs.remove('countBarcode_$numberCard');
-    await prefs.remove('maxIndex_$numberCard');
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('listPallets_$numberCard');
+      await prefs.remove('units_$numberCard');
+      await prefs.remove('allBarcodeHistory_$numberCard');
+      await prefs.remove('currentBarcodeHistoryJson_$numberCard');
+      await prefs.remove('countBox_$numberCard');
+      await prefs.remove('countBarcode_$numberCard');
+      await prefs.remove('maxIndex_$numberCard');
+    } catch (e) {
+      rethrow;
+    }
   }
 }

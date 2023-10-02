@@ -131,8 +131,8 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
   Future<void> onSubmitedAnGetInfoForBarcodeRelease(
       BuildContext context) async {
     try {
-      // await barcodeService.getInfoForBarcodeRelease(
-      //     numberCard: numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
+      await barcodeService.getInfoForBarcodeRelease(
+          numberCard: numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
 
       // await barcodeService.getBarcodesBoxes();
       // await barcodeService.getBarcodesPallets();

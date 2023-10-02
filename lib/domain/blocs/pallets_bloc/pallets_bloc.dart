@@ -48,27 +48,59 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
       } else if (event is PalletsEventCreateUnitByIndex) {
         onCreateUnitByIndex(event, emit);
       } else if (event is PalletsEventSendBarcodes) {
-        await onSendBarcodes();
+        await onSendBarcodes(isDone: false);
       } else if (event is PalletsEventCompleteBottling) {
-        await onCompleteBottling();
-        emit(const PalletsStateCloseApp());
+        await onCompleteBottling(emit);
+      } else if (state is PalletsEventRemoveErrorText) {
+        final newStateNoError = (state as PalletsStateLoaded)
+            .copyWith(isLoading: false, errorText: null);
+        emit(newStateNoError);
       }
     });
   }
-  Future<void> onCompleteBottling() async {
-    await palletsRepository.deleteState(
-      numberCard: numberCardConst,
-    );
+
+  Future<void> onCompleteBottling(Emitter<PalletsState> emit) async {
+    try {
+      final newStateLoading = (state as PalletsStateLoaded)
+          .copyWith(isLoading: true, errorText: null);
+      emit(newStateLoading);
+      final isSend = await onSendBarcodes(isDone: true); //Отправляем паллеты
+      if (isSend) {
+        await onCompleteBottlingClearState(); //Отчищаем стейт
+        emit(const PalletsStateCloseApp()); //Закрываем приложение
+      } else {
+        final newStateError = (state as PalletsStateLoaded).copyWith(
+            isLoading: false, errorText: 'Ошибка соеденения с инетернетом!');
+        emit(newStateError);
+      }
+    } catch (e) {
+      final String message = e.toString().replaceAll('Exception: ', '');
+      final newStateError = (state as PalletsStateLoaded)
+          .copyWith(isLoading: false, errorText: message);
+      emit(newStateError);
+    }
   }
 
-  Future<bool> onSendBarcodes() async {
+  Future<void> onCompleteBottlingClearState() async {
+    try {
+      await palletsRepository.deleteState(
+        numberCard: numberCardConst,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> onSendBarcodes({required bool isDone}) async {
     try {
       if (state is PalletsStateLoaded) {
         await palletsRepository.saveState(
             numberCard: numberCardConst,
             palletState: (state as PalletsStateLoaded));
-        return await palletsRepository.sendBarcodes(
-            listPallets: (state as PalletsStateLoaded).listPallets);
+        final isSend = await palletsRepository.sendBarcodes(
+            listPallets: (state as PalletsStateLoaded).listPallets,
+            isDone: isDone);
+        return isSend;
       }
       return false;
     } catch (e) {
@@ -536,13 +568,14 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
             ListPallets(listModelsPallet: listModelsPallet);
 
         final newState = PalletsState.loaded(
-            listPallets: listPallets,
-            allBarcodeHistory: {},
-            countBarcodes: 0,
-            countBox: 0,
-            maxIndexUnitInBox: 0,
-            units: [],
-            currentBarcodeHistory: {});
+          listPallets: listPallets,
+          allBarcodeHistory: {},
+          countBarcodes: 0,
+          countBox: 0,
+          maxIndexUnitInBox: 0,
+          units: [],
+          currentBarcodeHistory: {},
+        );
 
         emit(newState);
       }

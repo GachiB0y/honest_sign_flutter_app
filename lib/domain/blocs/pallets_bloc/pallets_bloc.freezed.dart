@@ -21,6 +21,7 @@ mixin _$PalletsEvent {
     required TResult Function() fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -39,6 +40,7 @@ mixin _$PalletsEvent {
     TResult? Function()? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -57,6 +59,7 @@ mixin _$PalletsEvent {
     TResult Function()? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -77,6 +80,8 @@ mixin _$PalletsEvent {
     required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventCompleteBottling value)
         completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -99,6 +104,7 @@ mixin _$PalletsEvent {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -117,6 +123,7 @@ mixin _$PalletsEvent {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -192,6 +199,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     required TResult Function() fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -213,6 +221,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     TResult? Function()? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -234,6 +243,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     TResult Function()? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -260,6 +270,8 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventCompleteBottling value)
         completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -285,6 +297,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -306,6 +319,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -372,6 +386,7 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
     required TResult Function() fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -393,6 +408,7 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
     TResult? Function()? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -414,6 +430,7 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
     TResult Function()? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -440,6 +457,8 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
     required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventCompleteBottling value)
         completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -465,6 +484,7 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -486,6 +506,7 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -554,6 +575,7 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
     required TResult Function() fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -575,6 +597,7 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
     TResult? Function()? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -596,6 +619,7 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
     TResult Function()? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -622,6 +646,8 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
     required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventCompleteBottling value)
         completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -647,6 +673,7 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -668,6 +695,7 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -690,6 +718,195 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
 
 abstract class PalletsEventCompleteBottling implements PalletsEvent {
   const factory PalletsEventCompleteBottling() = _$PalletsEventCompleteBottling;
+}
+
+/// @nodoc
+abstract class _$$PalletsEventRemoveErrorTextCopyWith<$Res> {
+  factory _$$PalletsEventRemoveErrorTextCopyWith(
+          _$PalletsEventRemoveErrorText value,
+          $Res Function(_$PalletsEventRemoveErrorText) then) =
+      __$$PalletsEventRemoveErrorTextCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$PalletsEventRemoveErrorTextCopyWithImpl<$Res>
+    extends _$PalletsEventCopyWithImpl<$Res, _$PalletsEventRemoveErrorText>
+    implements _$$PalletsEventRemoveErrorTextCopyWith<$Res> {
+  __$$PalletsEventRemoveErrorTextCopyWithImpl(
+      _$PalletsEventRemoveErrorText _value,
+      $Res Function(_$PalletsEventRemoveErrorText) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$PalletsEventRemoveErrorText implements PalletsEventRemoveErrorText {
+  const _$PalletsEventRemoveErrorText();
+
+  @override
+  String toString() {
+    return 'PalletsEvent.removeErrorText()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PalletsEventRemoveErrorText);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetch,
+    required TResult Function() sendBarcodes,
+    required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
+    required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
+    required TResult Function(int indexBox, int indexPallet, String barcodeBox)
+        deleteBoxByIndex,
+    required TResult Function(int indexBox, int indexPallet, String barcode)
+        createUnitByIndex,
+    required TResult Function() clearAllCurrentUnits,
+    required TResult Function(String barcode) clearCurrentUnitsByBarcode,
+    required TResult Function() changeDateRelease,
+    required TResult Function(String barcode) createUnit,
+    required TResult Function(String barcode) createBox,
+    required TResult Function(String barcode) createPallet,
+  }) {
+    return removeErrorText();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetch,
+    TResult? Function()? sendBarcodes,
+    TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
+    TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
+    TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
+        deleteBoxByIndex,
+    TResult? Function(int indexBox, int indexPallet, String barcode)?
+        createUnitByIndex,
+    TResult? Function()? clearAllCurrentUnits,
+    TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
+    TResult? Function()? changeDateRelease,
+    TResult? Function(String barcode)? createUnit,
+    TResult? Function(String barcode)? createBox,
+    TResult? Function(String barcode)? createPallet,
+  }) {
+    return removeErrorText?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetch,
+    TResult Function()? sendBarcodes,
+    TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
+    TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
+    TResult Function(int indexBox, int indexPallet, String barcodeBox)?
+        deleteBoxByIndex,
+    TResult Function(int indexBox, int indexPallet, String barcode)?
+        createUnitByIndex,
+    TResult Function()? clearAllCurrentUnits,
+    TResult Function(String barcode)? clearCurrentUnitsByBarcode,
+    TResult Function()? changeDateRelease,
+    TResult Function(String barcode)? createUnit,
+    TResult Function(String barcode)? createBox,
+    TResult Function(String barcode)? createPallet,
+    required TResult orElse(),
+  }) {
+    if (removeErrorText != null) {
+      return removeErrorText();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
+    required TResult Function(PalletsEventCompleteBottling value)
+        completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
+    required TResult Function(PalletsEventClearBoxByIndex value)
+        clearBoxByIndex,
+    required TResult Function(PalletsEventDeleteBoxByIndex value)
+        deleteBoxByIndex,
+    required TResult Function(PalletsEventCreateUnitByIndex value)
+        createUnitByIndex,
+    required TResult Function(PalletsEventClearAllCurrentUnits value)
+        clearAllCurrentUnits,
+    required TResult Function(PalletsEventClearCurrentUnitsByBarcode value)
+        clearCurrentUnitsByBarcode,
+    required TResult Function(PalletsEventChangeDateRelease value)
+        changeDateRelease,
+    required TResult Function(PalletsEventCreateUnit value) createUnit,
+    required TResult Function(PalletsEventCreateBox value) createBox,
+    required TResult Function(PalletsEventCreatePallet value) createPallet,
+  }) {
+    return removeErrorText(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
+    TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
+    TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
+    TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
+    TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
+    TResult? Function(PalletsEventClearAllCurrentUnits value)?
+        clearAllCurrentUnits,
+    TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
+        clearCurrentUnitsByBarcode,
+    TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventCreateUnit value)? createUnit,
+    TResult? Function(PalletsEventCreateBox value)? createBox,
+    TResult? Function(PalletsEventCreatePallet value)? createPallet,
+  }) {
+    return removeErrorText?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
+    TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
+    TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
+    TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
+    TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
+    TResult Function(PalletsEventClearAllCurrentUnits value)?
+        clearAllCurrentUnits,
+    TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
+        clearCurrentUnitsByBarcode,
+    TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventCreateUnit value)? createUnit,
+    TResult Function(PalletsEventCreateBox value)? createBox,
+    TResult Function(PalletsEventCreatePallet value)? createPallet,
+    required TResult orElse(),
+  }) {
+    if (removeErrorText != null) {
+      return removeErrorText(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class PalletsEventRemoveErrorText implements PalletsEvent {
+  const factory PalletsEventRemoveErrorText() = _$PalletsEventRemoveErrorText;
 }
 
 /// @nodoc
@@ -773,6 +990,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
     required TResult Function() fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -794,6 +1012,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
     TResult? Function()? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -815,6 +1034,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
     TResult Function()? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -841,6 +1061,8 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
     required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventCompleteBottling value)
         completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -866,6 +1088,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -887,6 +1110,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1012,6 +1236,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
     required TResult Function() fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -1033,6 +1258,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
     TResult? Function()? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1054,6 +1280,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
     TResult Function()? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1080,6 +1307,8 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
     required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventCompleteBottling value)
         completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -1105,6 +1334,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1126,6 +1356,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1251,6 +1482,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
     required TResult Function() fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -1272,6 +1504,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
     TResult? Function()? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1293,6 +1526,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
     TResult Function()? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1319,6 +1553,8 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
     required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventCompleteBottling value)
         completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -1344,6 +1580,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1365,6 +1602,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1444,6 +1682,7 @@ class _$PalletsEventClearAllCurrentUnits
     required TResult Function() fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -1465,6 +1704,7 @@ class _$PalletsEventClearAllCurrentUnits
     TResult? Function()? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1486,6 +1726,7 @@ class _$PalletsEventClearAllCurrentUnits
     TResult Function()? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1512,6 +1753,8 @@ class _$PalletsEventClearAllCurrentUnits
     required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventCompleteBottling value)
         completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -1537,6 +1780,7 @@ class _$PalletsEventClearAllCurrentUnits
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1558,6 +1802,7 @@ class _$PalletsEventClearAllCurrentUnits
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1656,6 +1901,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
     required TResult Function() fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -1677,6 +1923,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
     TResult? Function()? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1698,6 +1945,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
     TResult Function()? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1724,6 +1972,8 @@ class _$PalletsEventClearCurrentUnitsByBarcode
     required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventCompleteBottling value)
         completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -1749,6 +1999,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1770,6 +2021,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1846,6 +2098,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
     required TResult Function() fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -1867,6 +2120,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
     TResult? Function()? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1888,6 +2142,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
     TResult Function()? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -1914,6 +2169,8 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
     required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventCompleteBottling value)
         completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -1939,6 +2196,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -1960,6 +2218,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -2053,6 +2312,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     required TResult Function() fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -2074,6 +2334,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     TResult? Function()? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -2095,6 +2356,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     TResult Function()? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -2121,6 +2383,8 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventCompleteBottling value)
         completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -2146,6 +2410,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -2167,6 +2432,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -2265,6 +2531,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     required TResult Function() fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -2286,6 +2553,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     TResult? Function()? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -2307,6 +2575,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     TResult Function()? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -2333,6 +2602,8 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventCompleteBottling value)
         completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -2358,6 +2629,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -2379,6 +2651,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -2478,6 +2751,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
     required TResult Function() fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
     required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
     required TResult Function(int indexBox, int indexPallet, String barcodeBox)
         deleteBoxByIndex,
@@ -2499,6 +2773,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
     TResult? Function()? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
     TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -2520,6 +2795,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
     TResult Function()? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
     TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
     TResult Function(int indexBox, int indexPallet, String barcodeBox)?
         deleteBoxByIndex,
@@ -2546,6 +2822,8 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
     required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
     required TResult Function(PalletsEventCompleteBottling value)
         completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
     required TResult Function(PalletsEventClearBoxByIndex value)
         clearBoxByIndex,
     required TResult Function(PalletsEventDeleteBoxByIndex value)
@@ -2571,6 +2849,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
     TResult? Function(PalletsEventFetch value)? fetch,
     TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -2592,6 +2871,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
     TResult Function(PalletsEventFetch value)? fetch,
     TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
     TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
     TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
     TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
     TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
@@ -2652,7 +2932,9 @@ mixin _$PalletsState {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)
+            int countBox,
+            bool? isLoading,
+            String? errorText)
         loaded,
     required TResult Function(String? errorText) error,
   }) =>
@@ -2668,7 +2950,9 @@ mixin _$PalletsState {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)?
+            int countBox,
+            bool? isLoading,
+            String? errorText)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) =>
@@ -2684,7 +2968,9 @@ mixin _$PalletsState {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)?
+            int countBox,
+            bool? isLoading,
+            String? errorText)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),
@@ -2791,7 +3077,9 @@ class _$PalletsStateLoading implements PalletsStateLoading {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)
+            int countBox,
+            bool? isLoading,
+            String? errorText)
         loaded,
     required TResult Function(String? errorText) error,
   }) {
@@ -2810,7 +3098,9 @@ class _$PalletsStateLoading implements PalletsStateLoading {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)?
+            int countBox,
+            bool? isLoading,
+            String? errorText)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) {
@@ -2829,7 +3119,9 @@ class _$PalletsStateLoading implements PalletsStateLoading {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)?
+            int countBox,
+            bool? isLoading,
+            String? errorText)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),
@@ -2947,7 +3239,9 @@ class _$PalletsStateCloseApp implements PalletsStateCloseApp {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)
+            int countBox,
+            bool? isLoading,
+            String? errorText)
         loaded,
     required TResult Function(String? errorText) error,
   }) {
@@ -2966,7 +3260,9 @@ class _$PalletsStateCloseApp implements PalletsStateCloseApp {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)?
+            int countBox,
+            bool? isLoading,
+            String? errorText)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) {
@@ -2985,7 +3281,9 @@ class _$PalletsStateCloseApp implements PalletsStateCloseApp {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)?
+            int countBox,
+            bool? isLoading,
+            String? errorText)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),
@@ -3061,7 +3359,9 @@ abstract class _$$PalletsStateLoadedCopyWith<$Res> {
       Set<String> currentBarcodeHistory,
       int countBarcodes,
       int maxIndexUnitInBox,
-      int countBox});
+      int countBox,
+      bool? isLoading,
+      String? errorText});
 
   $ListPalletsCopyWith<$Res> get listPallets;
 }
@@ -3084,6 +3384,8 @@ class __$$PalletsStateLoadedCopyWithImpl<$Res>
     Object? countBarcodes = null,
     Object? maxIndexUnitInBox = null,
     Object? countBox = null,
+    Object? isLoading = freezed,
+    Object? errorText = freezed,
   }) {
     return _then(_$PalletsStateLoaded(
       listPallets: null == listPallets
@@ -3114,6 +3416,14 @@ class __$$PalletsStateLoadedCopyWithImpl<$Res>
           ? _value.countBox
           : countBox // ignore: cast_nullable_to_non_nullable
               as int,
+      isLoading: freezed == isLoading
+          ? _value.isLoading
+          : isLoading // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      errorText: freezed == errorText
+          ? _value.errorText
+          : errorText // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 
@@ -3137,6 +3447,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
       required this.countBarcodes,
       required this.maxIndexUnitInBox,
       required this.countBox,
+      this.isLoading,
+      this.errorText,
       final String? $type})
       : _units = units,
         _allBarcodeHistory = allBarcodeHistory,
@@ -3180,13 +3492,17 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
   final int maxIndexUnitInBox;
   @override
   final int countBox;
+  @override
+  final bool? isLoading;
+  @override
+  final String? errorText;
 
   @JsonKey(name: 'runtimeType')
   final String $type;
 
   @override
   String toString() {
-    return 'PalletsState.loaded(listPallets: $listPallets, units: $units, allBarcodeHistory: $allBarcodeHistory, currentBarcodeHistory: $currentBarcodeHistory, countBarcodes: $countBarcodes, maxIndexUnitInBox: $maxIndexUnitInBox, countBox: $countBox)';
+    return 'PalletsState.loaded(listPallets: $listPallets, units: $units, allBarcodeHistory: $allBarcodeHistory, currentBarcodeHistory: $currentBarcodeHistory, countBarcodes: $countBarcodes, maxIndexUnitInBox: $maxIndexUnitInBox, countBox: $countBox, isLoading: $isLoading, errorText: $errorText)';
   }
 
   @override
@@ -3206,7 +3522,11 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
             (identical(other.maxIndexUnitInBox, maxIndexUnitInBox) ||
                 other.maxIndexUnitInBox == maxIndexUnitInBox) &&
             (identical(other.countBox, countBox) ||
-                other.countBox == countBox));
+                other.countBox == countBox) &&
+            (identical(other.isLoading, isLoading) ||
+                other.isLoading == isLoading) &&
+            (identical(other.errorText, errorText) ||
+                other.errorText == errorText));
   }
 
   @JsonKey(ignore: true)
@@ -3219,7 +3539,9 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
       const DeepCollectionEquality().hash(_currentBarcodeHistory),
       countBarcodes,
       maxIndexUnitInBox,
-      countBox);
+      countBox,
+      isLoading,
+      errorText);
 
   @JsonKey(ignore: true)
   @override
@@ -3240,12 +3562,14 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)
+            int countBox,
+            bool? isLoading,
+            String? errorText)
         loaded,
     required TResult Function(String? errorText) error,
   }) {
     return loaded(listPallets, units, allBarcodeHistory, currentBarcodeHistory,
-        countBarcodes, maxIndexUnitInBox, countBox);
+        countBarcodes, maxIndexUnitInBox, countBox, isLoading, errorText);
   }
 
   @override
@@ -3260,12 +3584,22 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)?
+            int countBox,
+            bool? isLoading,
+            String? errorText)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) {
-    return loaded?.call(listPallets, units, allBarcodeHistory,
-        currentBarcodeHistory, countBarcodes, maxIndexUnitInBox, countBox);
+    return loaded?.call(
+        listPallets,
+        units,
+        allBarcodeHistory,
+        currentBarcodeHistory,
+        countBarcodes,
+        maxIndexUnitInBox,
+        countBox,
+        isLoading,
+        errorText);
   }
 
   @override
@@ -3280,14 +3614,24 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)?
+            int countBox,
+            bool? isLoading,
+            String? errorText)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),
   }) {
     if (loaded != null) {
-      return loaded(listPallets, units, allBarcodeHistory,
-          currentBarcodeHistory, countBarcodes, maxIndexUnitInBox, countBox);
+      return loaded(
+          listPallets,
+          units,
+          allBarcodeHistory,
+          currentBarcodeHistory,
+          countBarcodes,
+          maxIndexUnitInBox,
+          countBox,
+          isLoading,
+          errorText);
     }
     return orElse();
   }
@@ -3345,7 +3689,9 @@ abstract class PalletsStateLoaded implements PalletsState {
       required final Set<String> currentBarcodeHistory,
       required final int countBarcodes,
       required final int maxIndexUnitInBox,
-      required final int countBox}) = _$PalletsStateLoaded;
+      required final int countBox,
+      final bool? isLoading,
+      final String? errorText}) = _$PalletsStateLoaded;
 
   factory PalletsStateLoaded.fromJson(Map<String, dynamic> json) =
       _$PalletsStateLoaded.fromJson;
@@ -3357,6 +3703,8 @@ abstract class PalletsStateLoaded implements PalletsState {
   int get countBarcodes;
   int get maxIndexUnitInBox;
   int get countBox;
+  bool? get isLoading;
+  String? get errorText;
   @JsonKey(ignore: true)
   _$$PalletsStateLoadedCopyWith<_$PalletsStateLoaded> get copyWith =>
       throw _privateConstructorUsedError;
@@ -3444,7 +3792,9 @@ class _$PalletsStateError implements PalletsStateError {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)
+            int countBox,
+            bool? isLoading,
+            String? errorText)
         loaded,
     required TResult Function(String? errorText) error,
   }) {
@@ -3463,7 +3813,9 @@ class _$PalletsStateError implements PalletsStateError {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)?
+            int countBox,
+            bool? isLoading,
+            String? errorText)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) {
@@ -3482,7 +3834,9 @@ class _$PalletsStateError implements PalletsStateError {
             Set<String> currentBarcodeHistory,
             int countBarcodes,
             int maxIndexUnitInBox,
-            int countBox)?
+            int countBox,
+            bool? isLoading,
+            String? errorText)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),

@@ -4,7 +4,8 @@ import 'package:honest_sign_flutter_app/domain/data_provider/session_data_provid
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 
 abstract class PalletsRepository {
-  Future<bool> sendBarcodes({required ListPallets listPallets});
+  Future<bool> sendBarcodes(
+      {required ListPallets listPallets, required bool isDone});
   Future<void> saveState(
       {required String numberCard, required PalletsStateLoaded palletState});
   Future<PalletsStateLoaded?> loadState({required String numberCard});
@@ -21,9 +22,11 @@ class PalletsRepositoryImpl implements PalletsRepository {
   final BarcodeService _palletsProvider;
   final SessionDataProvdier _sessionDataProvdier;
   @override
-  Future<bool> sendBarcodes({required ListPallets listPallets}) {
+  Future<bool> sendBarcodes(
+      {required ListPallets listPallets, required bool isDone}) async {
     try {
-      return _palletsProvider.sendBarcodes(listPallets: listPallets);
+      return await _palletsProvider.sendBarcodes(
+          listPallets: listPallets, isDone: isDone);
     } catch (e) {
       rethrow;
     }

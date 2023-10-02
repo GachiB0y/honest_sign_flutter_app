@@ -16,7 +16,8 @@ abstract class BarcodeService {
   Future<bool> getBarcodesBoxes();
   Future<bool> getBarcodesPallets();
   Future<bool> postBarcodes({required ModelsPallet pallets});
-  Future<bool> sendBarcodes({required newEntity.ListPallets listPallets});
+  Future<bool> sendBarcodes(
+      {required newEntity.ListPallets listPallets, required bool isDone});
 
   Future<bool> checkInternetConnection();
   Future<void> savePalletsInCash(
@@ -137,7 +138,8 @@ class BarcodeServiceImpl extends BarcodeService {
 
   @override
   Future<bool> sendBarcodes(
-      {required newEntity.ListPallets listPallets}) async {
+      {required newEntity.ListPallets listPallets,
+      required bool isDone}) async {
     var headers = {
       'Content-Type': 'text/plain',
       'Authorization': 'Basic R3Jhc3NFeGNoYW5nZTphbG9iQTY0'
@@ -145,17 +147,15 @@ class BarcodeServiceImpl extends BarcodeService {
     var request = http.Request(
         'POST',
         Uri.parse(
-            'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cardssssssss'));
+            'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cards'));
 
     final bodyTwo = jsonEncode(listPallets.toJson());
-    // await savePalletsInCashNew(
-    //     modelListPallets: listPallets, fileName: 'palletCashNew');
 
     final isConnect = await checkInternetConnection();
     if (isConnect) {
       try {
         request.body =
-            '''{"CardId":"$numberCardConst","Action":"Update","Pallets":$bodyTwo}''';
+            '''{"CardId":"$numberCardConst","Action":"Update","IsDone":$isDone,"Pallets":$bodyTwo}''';
         request.headers.addAll(headers);
 
         http.StreamedResponse response =
@@ -164,10 +164,10 @@ class BarcodeServiceImpl extends BarcodeService {
         if (response.statusCode == 200) {
           return true;
         } else {
-          throw Exception('Ошибка отправки палеты!');
+          throw Exception('Ошибка отправки палеты!\nОбратитесь к мастеру!');
         }
       } on TimeoutException {
-        throw Exception('Время отправки выше 8 секунд.');
+        throw Exception('Время отправки выше 8 секунд.\nОбратитесь к мастеру!');
       } catch (e) {
         rethrow;
       }
