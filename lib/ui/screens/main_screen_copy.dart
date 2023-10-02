@@ -907,6 +907,7 @@ class ModelsPalletWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PalletsBloc, PalletsState>(
       builder: (context, state) {
+        int indexPallet = 1;
         final List<ExpansionTile> expansionTiles =
             (state as PalletsStateLoaded).listPallets.listModelsPallet.map(
           (pallet) {
@@ -915,7 +916,7 @@ class ModelsPalletWidget extends StatelessWidget {
                     ? pallet.barcode
                     : '(неполная палета)';
             final String namePalletInHistory =
-                'Палета $partNamePallet ${pallet.boxes.length}/$countBoxesPerPallet \n ${pallet.dateRelease}';
+                '${indexPallet++} .Палета $partNamePallet ${pallet.boxes.length}/$countBoxesPerPallet \n ${pallet.dateRelease}';
 
             return ExpansionTile(
               title: Text(namePalletInHistory),

@@ -5,7 +5,8 @@ part 'new_entity.g.dart';
 @freezed
 class ListPallets with _$ListPallets {
   const factory ListPallets({
-    required List<ModelsPallet> listModelsPallet,
+    // ignore: invalid_annotation_target
+    @JsonKey(name: 'listPallets') required List<ModelsPallet> listModelsPallet,
   }) = _ListPallets;
 
   factory ListPallets.fromJson(Map<String, dynamic> json) =>

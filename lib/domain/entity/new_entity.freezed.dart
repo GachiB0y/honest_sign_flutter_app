@@ -20,6 +20,8 @@ ListPallets _$ListPalletsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ListPallets {
+// ignore: invalid_annotation_target
+  @JsonKey(name: 'listPallets')
   List<ModelsPallet> get listModelsPallet => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -34,7 +36,8 @@ abstract class $ListPalletsCopyWith<$Res> {
           ListPallets value, $Res Function(ListPallets) then) =
       _$ListPalletsCopyWithImpl<$Res, ListPallets>;
   @useResult
-  $Res call({List<ModelsPallet> listModelsPallet});
+  $Res call(
+      {@JsonKey(name: 'listPallets') List<ModelsPallet> listModelsPallet});
 }
 
 /// @nodoc
@@ -69,7 +72,8 @@ abstract class _$$_ListPalletsCopyWith<$Res>
       __$$_ListPalletsCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<ModelsPallet> listModelsPallet});
+  $Res call(
+      {@JsonKey(name: 'listPallets') List<ModelsPallet> listModelsPallet});
 }
 
 /// @nodoc
@@ -97,14 +101,19 @@ class __$$_ListPalletsCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_ListPallets implements _ListPallets {
-  const _$_ListPallets({required final List<ModelsPallet> listModelsPallet})
+  const _$_ListPallets(
+      {@JsonKey(name: 'listPallets')
+      required final List<ModelsPallet> listModelsPallet})
       : _listModelsPallet = listModelsPallet;
 
   factory _$_ListPallets.fromJson(Map<String, dynamic> json) =>
       _$$_ListPalletsFromJson(json);
 
+// ignore: invalid_annotation_target
   final List<ModelsPallet> _listModelsPallet;
+// ignore: invalid_annotation_target
   @override
+  @JsonKey(name: 'listPallets')
   List<ModelsPallet> get listModelsPallet {
     if (_listModelsPallet is EqualUnmodifiableListView)
       return _listModelsPallet;
@@ -147,12 +156,14 @@ class _$_ListPallets implements _ListPallets {
 
 abstract class _ListPallets implements ListPallets {
   const factory _ListPallets(
-      {required final List<ModelsPallet> listModelsPallet}) = _$_ListPallets;
+      {@JsonKey(name: 'listPallets')
+      required final List<ModelsPallet> listModelsPallet}) = _$_ListPallets;
 
   factory _ListPallets.fromJson(Map<String, dynamic> json) =
       _$_ListPallets.fromJson;
 
-  @override
+  @override // ignore: invalid_annotation_target
+  @JsonKey(name: 'listPallets')
   List<ModelsPallet> get listModelsPallet;
   @override
   @JsonKey(ignore: true)
