@@ -9,6 +9,8 @@ class PalletsEvent with _$PalletsEvent {
   // const factory PalletsEvent.onSubmited({
   //   required String barcode,
   // }) = PalletsEventOnSubmited;
+  const factory PalletsEvent.deletePalletByIndex({required int indexPallet}) =
+      PalletsEventDeletePalletByIndex;
 
   const factory PalletsEvent.clearBoxByIndex(
       {required int indexBox,

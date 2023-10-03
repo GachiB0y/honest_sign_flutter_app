@@ -51,12 +51,59 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         await onSendBarcodes(isDone: false);
       } else if (event is PalletsEventCompleteBottling) {
         await onCompleteBottling(emit);
-      } else if (state is PalletsEventRemoveErrorText) {
-        final newStateNoError = (state as PalletsStateLoaded)
-            .copyWith(isLoading: false, errorText: null);
-        emit(newStateNoError);
+        // ЗАКОММЕНИТРОВАНО НА ВРЕМЯ ПРОВЕРКИ ОШИБОК ПО СОСТОЯНИЕ ЕРРОРТЕКСТ
+        // } else if (event is PalletsEventRemoveErrorText) {
+        //   final newStateNoError = (state as PalletsStateLoaded)
+        //       .copyWith(isLoading: false, errorText: null);
+        //   emit(newStateNoError);
+      } else if (event is PalletsEventDeletePalletByIndex) {
+        onDeletePalletByIndex(event, emit);
       }
     });
+  }
+
+  void onDeletePalletByIndex(
+      PalletsEventDeletePalletByIndex event, Emitter<PalletsState> emit) {
+    final ModelsPallet modelsPallet = (state as PalletsStateLoaded)
+        .listPallets
+        .listModelsPallet[event.indexPallet];
+
+    final Set<String> newAllBarcodeHistory = {
+      ...(state as PalletsStateLoaded).allBarcodeHistory
+    };
+
+    final Set<String> newCurrentBarcodeHistory = {
+      ...(state as PalletsStateLoaded).currentBarcodeHistory
+    };
+
+    for (var box in modelsPallet.boxes) {
+      newAllBarcodeHistory.remove(box.barcode);
+      newCurrentBarcodeHistory.remove(box.barcode);
+
+      for (var item in box.items) {
+        newCurrentBarcodeHistory.remove(item.barcode);
+        newAllBarcodeHistory.remove(item.barcode);
+      }
+    }
+
+    newCurrentBarcodeHistory.remove(modelsPallet.barcode);
+    newAllBarcodeHistory.remove(modelsPallet.barcode);
+
+    final List<ModelsPallet> newListModelsPallet = [
+      ...(state as PalletsStateLoaded).listPallets.listModelsPallet
+    ];
+    newListModelsPallet.removeAt(event.indexPallet);
+
+    final newListPallets = (state as PalletsStateLoaded)
+        .listPallets
+        .copyWith(listModelsPallet: newListModelsPallet);
+
+    final newState = (state as PalletsStateLoaded).copyWith(
+        listPallets: newListPallets,
+        currentBarcodeHistory: newCurrentBarcodeHistory,
+        allBarcodeHistory: newAllBarcodeHistory,
+        countBarcodes: newCurrentBarcodeHistory.length);
+    emit(newState);
   }
 
   Future<void> onCompleteBottling(Emitter<PalletsState> emit) async {

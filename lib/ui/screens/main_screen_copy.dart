@@ -347,8 +347,8 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                         onPressed: () {
                           dateOfRelease =
                               _controllerForAlertChangeDateRelease.text;
-                          blocPallet
-                              .add(const PalletsEvent.changeDateRelease());
+                          // blocPallet
+                          //     .add(const PalletsEvent.changeDateRelease());
 
                           setState(() {
                             showTextField = false;
@@ -845,32 +845,33 @@ class _BoxWidgetState extends State<BoxWidget> {
             Text('Коробка №${widget.indexBox + 1}\n ${widget.box.barcode}'),
             const Spacer(),
             IconButton(
-                onPressed: () async {
-                  // ЗАККОМЕНТИРОВАННО НА ВРЕМЯ  ЭКРАН РЕДАКТИРОВАНИЯ КОРОБКИ
-                  widget.myFocusNode.nextFocus();
+              onPressed: () async {
+                // ЗАККОМЕНТИРОВАННО НА ВРЕМЯ  ЭКРАН РЕДАКТИРОВАНИЯ КОРОБКИ
+                widget.myFocusNode.nextFocus();
 
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RefactorBoxScreen(
-                        box: widget.box,
-                        checkDublicateBarcodeInPallet:
-                            widget.checkDublicateBarcodeInPallet,
-                      ),
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RefactorBoxScreen(
+                      box: widget.box,
+                      checkDublicateBarcodeInPallet:
+                          widget.checkDublicateBarcodeInPallet,
                     ),
-                  ).then((result) {
-                    if (result != null) {
-                      blocPallet.add(PalletsEventClearBoxByIndex(
-                          indexBox: result.$1, indexPallet: result.$2));
-                      blocPallet.add(PalletsEventDeleteBoxByIndex(
-                          indexBox: result.$1,
-                          indexPallet: result.$2,
-                          barcodeBox: widget.box.barcode));
-                    }
-                  });
-                  widget.myFocusNode.requestFocus();
-                },
-                icon: const Icon(Icons.edit)),
+                  ),
+                ).then((result) {
+                  if (result != null) {
+                    blocPallet.add(PalletsEventClearBoxByIndex(
+                        indexBox: result.$1, indexPallet: result.$2));
+                    blocPallet.add(PalletsEventDeleteBoxByIndex(
+                        indexBox: result.$1,
+                        indexPallet: result.$2,
+                        barcodeBox: widget.box.barcode));
+                  }
+                });
+                widget.myFocusNode.requestFocus();
+              },
+              icon: const Icon(Icons.edit),
+            ),
           ],
         ),
         children: <Widget>[
@@ -907,20 +908,68 @@ class ModelsPalletWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PalletsBloc, PalletsState>(
       builder: (context, state) {
-        int indexPallet = 1;
+        int index = 1;
         final List<ExpansionTile> expansionTiles =
             (state as PalletsStateLoaded).listPallets.listModelsPallet.map(
           (pallet) {
+            final indexPallet = index++;
             final String partNamePallet =
                 pallet.boxes.length == countBoxesPerPallet
                     ? pallet.barcode
                     : '(неполная палета)';
             final String namePalletInHistory =
-                '${indexPallet++} .Палета $partNamePallet ${pallet.boxes.length}/$countBoxesPerPallet \n ${pallet.dateRelease}';
+                '$indexPallet. Палета $partNamePallet ${pallet.boxes.length}/$countBoxesPerPallet \n ${pallet.dateRelease}';
 
             return ExpansionTile(
               title: Text(namePalletInHistory),
               children: [
+                indexPallet == state.listPallets.listModelsPallet.length
+                    ? const SizedBox.shrink()
+                    : IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      'Вы точно хотите удалить \n Паллет №$indexPallet ',
+                                      style: const TextStyle(fontSize: 18),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    TextButton(
+                                        onPressed: () {
+                                          final indexInListPallets =
+                                              (indexPallet - 1);
+                                          context.read<PalletsBloc>().add(
+                                              PalletsEventDeletePalletByIndex(
+                                                  indexPallet:
+                                                      indexInListPallets));
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text(
+                                          'ДА',
+                                          style: TextStyle(fontSize: 18),
+                                        )),
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text(
+                                          'НЕТ',
+                                          style: TextStyle(fontSize: 18),
+                                        )),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
                 ListTile(
                   title: const Text('Коробки:'),
                   subtitle: Column(
