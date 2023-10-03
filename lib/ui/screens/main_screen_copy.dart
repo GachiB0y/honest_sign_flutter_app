@@ -347,8 +347,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                         onPressed: () {
                           dateOfRelease =
                               _controllerForAlertChangeDateRelease.text;
-                          // blocPallet
-                          //     .add(const PalletsEvent.changeDateRelease());
+                          blocPallet.add(const PalletsEventChangeDateRelease());
 
                           setState(() {
                             showTextField = false;
