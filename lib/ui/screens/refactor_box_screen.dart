@@ -46,48 +46,54 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
       builder: (BuildContext context) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-          return AlertDialog(
-            elevation: 3.0,
-            key: _windowConfirmationChangeKey,
-            content: const Text(
-              'Коробкая пустая/неполная.При выходе коробка будет удалена. Вы уверены?',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20),
-            ),
-            actions: <Widget>[
-              Center(
-                child: TextButton(
-                  child: const Text(
-                    'Нет',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
-                    setState(() => isExit = false);
-                    Navigator.of(_windowConfirmationChangeKey.currentContext!)
-                        .pop();
-                  },
-                ),
+          return WillPopScope(
+            onWillPop: () async {
+              // Возвращаем `false` для предотвращения закрытия диалогового окна
+              return false;
+            },
+            child: AlertDialog(
+              elevation: 3.0,
+              key: _windowConfirmationChangeKey,
+              content: const Text(
+                'Коробкая пустая/неполная.При выходе коробка будет удалена. Вы уверены?',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20),
               ),
-              Center(
-                child: TextButton(
-                  child: const Text(
-                    'Да',
-                    style: TextStyle(fontSize: 20),
+              actions: <Widget>[
+                Center(
+                  child: TextButton(
+                    child: const Text(
+                      'Нет',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      setState(() => isExit = false);
+                      Navigator.of(_windowConfirmationChangeKey.currentContext!)
+                          .pop();
+                    },
                   ),
-                  onPressed: () async {
-                    setState(() {
-                      isDeleteBox = true;
-                    });
-                    bloc.clearBoxByIndex(indexBox: indexBox);
-                    bloc.deleteBox(indexBox: indexBox);
-                    // await bloc.postIntermediateBarcodes();
-                    // await bloc.postBarcodes();
+                ),
+                Center(
+                  child: TextButton(
+                    child: const Text(
+                      'Да',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () async {
+                      setState(() {
+                        isDeleteBox = true;
+                      });
+                      bloc.clearBoxByIndex(indexBox: indexBox);
+                      bloc.deleteBox(indexBox: indexBox);
+                      // await bloc.postIntermediateBarcodes();
+                      // await bloc.postBarcodes();
 
-                    Navigator.pop(context);
-                  },
+                      Navigator.pop(context);
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         });
       },

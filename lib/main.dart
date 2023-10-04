@@ -42,12 +42,18 @@ class _MyAppState extends State<MyApp> {
         //     body: SafeArea(child: InputWidget())),
         //   '/refactor_box': (context) => RefactorBoxScreen(),
         // },
-        home: const Scaffold(
+        home: Scaffold(
           resizeToAvoidBottomInset: false,
           body: SafeArea(
             child:
                 // InputWidget()
-                FirstNewScreen(),
+                WillPopScope(
+                    onWillPop: () async {
+                      // Возвращаем `false` для предотвращения закрытия диалогового окна
+                      print('BACK');
+                      return false;
+                    },
+                    child: const FirstNewScreen()),
           ),
         ),
       ),

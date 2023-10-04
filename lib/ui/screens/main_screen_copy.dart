@@ -27,7 +27,6 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
 
   final ScrollController _scrollController = ScrollController();
 
-  bool isNewRelease = true;
   bool isSendNotColpetePallet = false;
   bool isErrorSendPallet = false;
   bool isOpenAlertDialog = false;
@@ -61,32 +60,38 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
       context: context,
       builder: (BuildContext dialogContext) {
         final PalletsBloc blocPallet = context.read<PalletsBloc>();
-        return AlertDialog(
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Вы точно хотите удалить все текущие штрихкоды?',
-                  style: TextStyle(fontSize: 18)),
+        return WillPopScope(
+          onWillPop: () async {
+            // Возвращаем `false` для предотвращения закрытия диалогового окна
+            return false;
+          },
+          child: AlertDialog(
+            content: const Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Вы точно хотите удалить все текущие штрихкоды?',
+                    style: TextStyle(fontSize: 18)),
+              ],
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  blocPallet.add(const PalletsEventClearAllCurrentUnits());
+
+                  Navigator.pop(dialogContext); // закрыть Алерт диалог
+                },
+                child: const Text('Да'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Обработка нажатия кнопки "Отмена"
+                  Navigator.pop(dialogContext);
+                },
+                child: const Text('Отмена'),
+              ),
             ],
           ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                blocPallet.add(const PalletsEventClearAllCurrentUnits());
-
-                Navigator.pop(dialogContext); // закрыть Алерт диалог
-              },
-              child: const Text('Да'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // Обработка нажатия кнопки "Отмена"
-                Navigator.pop(dialogContext);
-              },
-              child: const Text('Отмена'),
-            ),
-          ],
         );
       },
     );
@@ -101,33 +106,39 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
 
       context: context,
       builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                message == null
-                    ? 'Палета отправлена!'
-                    : '$message Повторите попытку.',
-                style: const TextStyle(fontSize: 18),
+        return WillPopScope(
+          onWillPop: () async {
+            // Возвращаем `false` для предотвращения закрытия диалогового окна
+            return false;
+          },
+          child: AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  message == null
+                      ? 'Палета отправлена!'
+                      : '$message Повторите попытку.',
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
+            ),
+            actions: [
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      isOpenAlertDialog = false;
+                    });
+
+                    Navigator.pop(dialogContext);
+                  },
+                  child: const Text('OK'),
+                ),
               ),
             ],
           ),
-          actions: [
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    isOpenAlertDialog = false;
-                  });
-
-                  Navigator.pop(dialogContext);
-                },
-                child: const Text('OK'),
-              ),
-            ),
-          ],
         );
       },
     );
@@ -136,7 +147,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
   Future<void> _showDialogChekBarcodeForPalletsOrBox(
     GlobalKey? keyForAlertDialog, {
     required BuildContext context,
-    required bool checkValid,
+    required bool isCompeleteBottling,
     required bool isBox,
   }) async {
     setState(() {
@@ -151,130 +162,145 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           final PalletsBloc blocPallet = context.read<PalletsBloc>();
-          return AlertDialog(
-            backgroundColor: Colors.grey[200],
-            key: keyForAlertDialog ?? _alertDialogKey,
-            elevation: 3.0,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _isLoading
-                    ? const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text('Идеет отправка, пожалуйста подождите!'),
-                          CircularProgressIndicator(),
-                        ],
-                      )
-                    : Column(
-                        children: [
-                          if (isShowError)
-                            const Text(
-                              'Штрих код не найден. Отсканируйте штрихкод!',
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w600),
+          return WillPopScope(
+            onWillPop: () async {
+              // Возвращаем `false` для предотвращения закрытия диалогового окна
+              return false;
+            },
+            child: AlertDialog(
+              backgroundColor: Colors.grey[200],
+              key: keyForAlertDialog ?? _alertDialogKey,
+              elevation: 3.0,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _isLoading
+                      ? const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text('Идеет отправка, пожалуйста подождите!'),
+                            CircularProgressIndicator(),
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            if (isShowError)
+                              const Text(
+                                'Штрих код не найден. Отсканируйте штрихкод!',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            SizedBox(
+                              height: 150,
+                              child: Text(
+                                isBox
+                                    ? 'Отсканируйте\n КОРОБКУ!'
+                                    : 'Отсканируйте\n ПАЛЛЕТ!',
+                                style: const TextStyle(fontSize: 24),
+                              ),
                             ),
-                          Text(
-                            isBox
-                                ? 'Отсканируйте коробку!'
-                                : 'Отсканируйте палету!',
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                          InputWithKeyboardControl(
-                            focusNode: myFocusNodeCheckBarcode,
-                            onSubmitted: (value) async {
-                              try {
-                                final TypeOfStateSend isSend =
-                                    await onSubmittedTextField(
-                                  context: context,
-                                  value: value,
-                                );
+                            InputWithKeyboardControl(
+                              focusNode: myFocusNodeCheckBarcode,
+                              onSubmitted: (value) async {
+                                try {
+                                  final TypeOfStateSend isSend =
+                                      await onSubmittedTextField(
+                                    context: context,
+                                    value: value,
+                                  );
 
-                                if (isSend == TypeOfStateSend.send ||
-                                    isSend == TypeOfStateSend.errorTimeout) {
-                                  if (isBox) {
-                                    sendBoxAndOpenPalletDialog(
-                                      context: context,
-                                    );
+                                  if (isSend == TypeOfStateSend.send ||
+                                      isSend == TypeOfStateSend.errorTimeout) {
+                                    if (isBox) {
+                                      sendBoxAndOpenPalletDialog(
+                                        context: context,
+                                      );
+                                      setState(() {
+                                        isShowError = false;
+                                      });
+                                    } else {
+                                      try {
+                                        setState(() {
+                                          _isLoading = true;
+                                        });
+
+                                        if (!isCompeleteBottling) {
+                                          await _showAlertDialogChangeDateRelease(
+                                              context: context);
+
+                                          blocPallet.add(
+                                              const PalletsEventSendBarcodes());
+                                          //  ОТПРАВКA ПАЛЛЕТ.
+                                          print('Паллета отправлена');
+                                        } // Если это завершение розлива, то не надо отправлять паллеты.
+
+                                        Navigator.of(context).pop();
+                                        // _showSendPalletDialog(context, null);
+
+                                        setState(() {
+                                          _isLoading = false;
+                                          isOpenAlertDialog = false;
+                                          _textEditingController.clear();
+                                          isErrorSendPallet = false;
+                                          isShowError = false;
+                                        });
+                                      } catch (e) {
+                                        setState(() {
+                                          isErrorSendPallet = true;
+                                          _isLoading = false;
+                                          isOpenAlertDialog = false;
+                                        });
+
+                                        final String message = e
+                                            .toString()
+                                            .replaceAll('Exception: ', '');
+                                        Navigator.pop(context);
+                                        _showSendPalletDialog(context, message);
+                                      }
+                                    }
+                                  } else if (isSend ==
+                                      TypeOfStateSend.duplicate) {
                                     setState(() {
                                       isShowError = false;
                                     });
-                                  } else {
-                                    try {
-                                      setState(() {
-                                        _isLoading = true;
-                                      });
-                                      await _showAlertDialogChangeDateRelease(
-                                          context: context);
-                                      blocPallet.add(
-                                          const PalletsEventSendBarcodes());
-                                      //  ОТПРАВКA ПАЛЛЕТ.
-
-                                      Navigator.of(context).pop();
-                                      _showSendPalletDialog(context, null);
-
-                                      setState(() {
-                                        _isLoading = false;
-                                        isOpenAlertDialog = false;
-                                        _textEditingController.clear();
-                                        isErrorSendPallet = false;
-                                        isShowError = false;
-                                      });
-                                    } catch (e) {
-                                      setState(() {
-                                        isErrorSendPallet = true;
-                                        _isLoading = false;
-                                        isOpenAlertDialog = false;
-                                      });
-
-                                      final String message = e
-                                          .toString()
-                                          .replaceAll('Exception: ', '');
-                                      Navigator.pop(context);
-                                      _showSendPalletDialog(context, message);
-                                    }
+                                  } else if (isSend ==
+                                          TypeOfStateSend.notValid ||
+                                      isSend == TypeOfStateSend.notSend) {
+                                    setState(() {
+                                      isShowError = true;
+                                    });
                                   }
-                                } else if (isSend ==
-                                    TypeOfStateSend.duplicate) {
-                                  setState(() {
-                                    isShowError = false;
-                                  });
-                                } else if (isSend == TypeOfStateSend.notValid ||
-                                    isSend == TypeOfStateSend.notSend) {
-                                  setState(() {
-                                    isShowError = true;
-                                  });
+                                } catch (e) {
+                                  Navigator.pop(context);
                                 }
-                              } catch (e) {
-                                Navigator.pop(context);
-                              }
-                            },
-                            autofocus: true,
-                            controller: _textEditingController,
-                            width: 300,
-                            startShowKeyboard: false,
-                            buttonColorEnabled: Colors.blue,
-                            buttonColorDisabled: Colors.black,
-                          ),
-                        ],
-                      ),
-              ],
+                              },
+                              autofocus: true,
+                              controller: _textEditingController,
+                              width: 300,
+                              startShowKeyboard: false,
+                              buttonColorEnabled: Colors.blue,
+                              buttonColorDisabled: Colors.black,
+                            ),
+                          ],
+                        ),
+                ],
+              ),
+              // actions: [
+              //   if (checkValid)
+              //     Center(
+              //       child: ElevatedButton(
+              //         onPressed: () {
+              //           Navigator.pop(context);
+              //         },
+              //         child: const Text('OK'),
+              //       ),
+              //     ),
+              // ],
             ),
-            actions: [
-              if (checkValid)
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('OK'),
-                  ),
-                ),
-            ],
           );
         });
       },
@@ -301,7 +327,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
 
       _showDialogChekBarcodeForPalletsOrBox(
         _alertDialogKeyTwo,
-        checkValid: false,
+        isCompeleteBottling: false,
         context: context,
         isBox: false,
       );
@@ -323,71 +349,78 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           final PalletsBloc blocPallet = context.read<PalletsBloc>();
-          return AlertDialog(
-            elevation: 3.0,
-            content: showTextField
-                ? BaseDateTextFieldWidget(
-                    callBack: null,
-                    controller: _controllerForAlertChangeDateRelease,
-                    formattedText: formattedText,
-                  )
-                : Text(
-                    'Дата розлива следующей паллеты: $dateOfRelease. Вы уверены?',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 20),
-                  ),
-            actions: showTextField
-                ? <Widget>[
-                    Center(
-                      child: TextButton(
-                        child: const Text(
-                          'Подтвердить',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        onPressed: () {
-                          dateOfRelease =
-                              _controllerForAlertChangeDateRelease.text;
-                          blocPallet.add(const PalletsEventChangeDateRelease());
-
-                          setState(() {
-                            showTextField = false;
-                          });
-                        },
-                      ),
+          return WillPopScope(
+            onWillPop: () async {
+              // Возвращаем `false` для предотвращения закрытия диалогового окна
+              return false;
+            },
+            child: AlertDialog(
+              elevation: 3.0,
+              content: showTextField
+                  ? BaseDateTextFieldWidget(
+                      callBack: null,
+                      controller: _controllerForAlertChangeDateRelease,
+                      formattedText: formattedText,
                     )
-                  ]
-                : <Widget>[
-                    Center(
-                      child: TextButton(
-                        child: const Text(
-                          'Нет',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _controllerForAlertChangeDateRelease =
-                                TextEditingController();
-                            showTextField = true;
-                            isOpenAlertDialog = true;
-                          });
-                        },
-                      ),
+                  : Text(
+                      'Дата розлива следующей паллеты: $dateOfRelease. Вы уверены?',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 20),
                     ),
-                    Center(
-                      child: TextButton(
-                        child: const Text(
-                          'Да',
-                          style: TextStyle(fontSize: 20),
+              actions: showTextField
+                  ? <Widget>[
+                      Center(
+                        child: TextButton(
+                          child: const Text(
+                            'Подтвердить',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          onPressed: () {
+                            dateOfRelease =
+                                _controllerForAlertChangeDateRelease.text;
+                            blocPallet
+                                .add(const PalletsEventChangeDateRelease());
+
+                            setState(() {
+                              showTextField = false;
+                            });
+                          },
                         ),
-                        onPressed: () {
-                          setState(() {
-                            isOpenAlertDialog = false;
-                            Navigator.of(context).pop();
-                          });
-                        },
+                      )
+                    ]
+                  : <Widget>[
+                      Center(
+                        child: TextButton(
+                          child: const Text(
+                            'Нет',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _controllerForAlertChangeDateRelease =
+                                  TextEditingController();
+                              showTextField = true;
+                              isOpenAlertDialog = true;
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                      Center(
+                        child: TextButton(
+                          child: const Text(
+                            'Да',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isOpenAlertDialog = false;
+                              Navigator.of(context).pop();
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+            ),
           );
         });
       },
@@ -409,20 +442,16 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
     final PalletsBloc blocPallet = context.read<PalletsBloc>();
     final statePalletsBloc = blocPallet.state as PalletsStateLoaded;
 
-    // bloc.createUnit(barcode: barcode, formattedDateTime: formattedDateTime);//ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
     // Проверка на отправку не полной палеты
     if (isSendNotColpetePallet) {
       if (typeBarcode == TypeOfBarcode.pallet) {
         setState(() {
           isSendNotColpetePallet = false;
         });
-        // bloc.createPallet(text: barcode);
+
         blocPallet.add(PalletsEvent.createPallet(barcode: barcode));
         return true;
       } else {
-        //ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
-        // bloc.deleteCurrentUnitOrAllUnitsInBox(
-        //     deleteAll: false, lastBarcode: barcode);
         return false;
       }
     }
@@ -431,14 +460,10 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
     if (typeBarcode == TypeOfBarcode.pallet) {
       if ((statePalletsBloc.countBarcodes % (countAllBarcodesPerPallet - 1) ==
           0)) {
-        // bloc.createPallet(text: barcode);
         blocPallet.add(PalletsEvent.createPallet(barcode: barcode));
 
         return true;
       } else {
-        //ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
-        // bloc.deleteCurrentUnitOrAllUnitsInBox(
-        //     deleteAll: false, lastBarcode: barcode);
         return false;
       }
     }
@@ -449,25 +474,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
         // bloc.createBox(item: barcode);
         blocPallet.add(PalletsEvent.createBox(barcode: barcode));
         return true;
-
-        // await bloc.postIntermediateBarcodes();
-
-        //ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
-        // try {
-        //   // await bloc.postBarcodes(); // ЗАКОММЕНТИРОВАНО ПОКА НЕ НАДО СЛАТЬ КАЖДУЮ ОТПИКАННУЮ КОРОБКУ
-        //   await bloc.savePalletsInCash(
-        //       modelListPallets:
-        //           modelListPallets); // ДОБАВЛЕННО ПОКА НЕ НАДО СЛАТЬ КАЖДУЮ ОТПИКАННУЮ КОРОБКУ
-
-        //   return true;
-        // } catch (e) {
-        //   rethrow;
-        // }
-        //ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
       } else {
-        //ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
-        // bloc.deleteCurrentUnitOrAllUnitsInBox(
-        //     deleteAll: false, lastBarcode: barcode);
         return false;
       }
 
@@ -477,7 +484,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
         if (statePalletsBloc.units.length == countUnitsPerBox - 1) {
           _showDialogChekBarcodeForPalletsOrBox(
             null,
-            checkValid: false,
+            isCompeleteBottling: false,
             context: context,
             isBox: true,
           ); // Вызов окна скана коробки, сразу после скана последней штучки в коробке
@@ -486,9 +493,6 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
 
         return true;
       } else {
-        //ЗАКОММЕНТИРОВАННО НА ВРЕМЯ
-        // bloc.deleteCurrentUnitOrAllUnitsInBox(
-        //     deleteAll: false, lastBarcode: barcode);
         return false;
       }
     }
@@ -588,13 +592,20 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return const AlertDialog(
-                  content: Row(
-                    children: [
-                      CircularProgressIndicator(),
-                      SizedBox(width: 16),
-                      Text("Идет отправка...", style: TextStyle(fontSize: 18)),
-                    ],
+                return WillPopScope(
+                  onWillPop: () async {
+                    // Возвращаем `false` для предотвращения закрытия диалогового окна
+                    return false;
+                  },
+                  child: const AlertDialog(
+                    content: Row(
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(width: 16),
+                        Text("Идет отправка...",
+                            style: TextStyle(fontSize: 18)),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -606,19 +617,25 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return AlertDialog(
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(state.errorText!,
-                          style: const TextStyle(fontSize: 18)),
-                      const SizedBox(width: 16),
-                      TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('OK')),
-                    ],
+                return WillPopScope(
+                  onWillPop: () async {
+                    // Возвращаем `false` для предотвращения закрытия диалогового окна
+                    return false;
+                  },
+                  child: AlertDialog(
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(state.errorText!,
+                            style: const TextStyle(fontSize: 18)),
+                        const SizedBox(width: 16),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('OK')),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -712,7 +729,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                                 nameFuturePallet) {
                               _showDialogChekBarcodeForPalletsOrBox(
                                 null,
-                                checkValid: false,
+                                isCompeleteBottling: false,
                                 context: context,
                                 isBox: false,
                               );
@@ -750,10 +767,48 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                             ),
                             const SizedBox(width: 16),
                             TextButton(
-                                onPressed: () {
-                                  blocPallet.add(
-                                      const PalletsEvent.completeBottling());
-                                  Navigator.of(context).pop();
+                                onPressed: () async {
+                                  final stateBlocPallet =
+                                      blocPallet.state as PalletsStateLoaded;
+
+                                  // Проверка на отправку полной палеты
+                                  if (stateBlocPallet
+                                              .listPallets
+                                              .listModelsPallet
+                                              .last
+                                              .boxes
+                                              .length ==
+                                          countBoxesPerPallet ||
+                                      stateBlocPallet.listPallets
+                                              .listModelsPallet.last.barcode !=
+                                          nameFuturePallet) {
+                                    blocPallet.add(const PalletsEvent
+                                        .completeBottling()); // ЗАВЕРШЕНИЕ РОЗЛИВА
+                                    Navigator.of(context).pop();
+                                  } else if (stateBlocPallet.listPallets
+                                      .listModelsPallet.last.boxes.isNotEmpty) {
+                                    setState(() {
+                                      isSendNotColpetePallet = true;
+                                      isErrorSendPallet = false;
+                                    });
+                                    if (stateBlocPallet.listPallets
+                                            .listModelsPallet.last.barcode ==
+                                        nameFuturePallet) {
+                                      await _showDialogChekBarcodeForPalletsOrBox(
+                                        null,
+                                        isCompeleteBottling: true,
+                                        context: context,
+                                        isBox: false,
+                                      );
+                                      blocPallet.add(const PalletsEvent
+                                          .completeBottling()); // ЗАВЕРШЕНИЕ РОЗЛИВА
+                                      print('ПОСЛЕ ЗАКРЫТИЯ ШК ПАЛЛЕТЫ');
+                                      Navigator.of(context).pop();
+                                    }
+                                  } else {
+                                    _showSendPalletDialog(context,
+                                        'Нужна хотябы одна коробка для отправки палеты!');
+                                  }
                                 },
                                 child: const Text(
                                   'ДА',
@@ -907,95 +962,99 @@ class ModelsPalletWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PalletsBloc, PalletsState>(
       builder: (context, state) {
-        int index = 1;
-        final List<ExpansionTile> expansionTiles =
-            (state as PalletsStateLoaded).listPallets.listModelsPallet.map(
-          (pallet) {
-            final indexPallet = index++;
-            final String partNamePallet =
-                // pallet.boxes.length == countBoxesPerPallet
-                pallet.barcode != nameFuturePallet
-                    ? pallet.barcode
-                    : '(неполная палета)';
-            final String namePalletInHistory =
-                '$indexPallet. Палета $partNamePallet ${pallet.boxes.length}/$countBoxesPerPallet \n ${pallet.dateRelease}';
+        if (state is PalletsStateLoaded) {
+          int index = 1;
+          final List<ExpansionTile> expansionTiles =
+              (state as PalletsStateLoaded).listPallets.listModelsPallet.map(
+            (pallet) {
+              final indexPallet = index++;
+              final String partNamePallet =
+                  // pallet.boxes.length == countBoxesPerPallet
+                  pallet.barcode != nameFuturePallet
+                      ? pallet.barcode
+                      : '(неполная палета)';
+              final String namePalletInHistory =
+                  '$indexPallet. Палета $partNamePallet ${pallet.boxes.length}/$countBoxesPerPallet \n ${pallet.dateRelease}';
 
-            return ExpansionTile(
-              title: Text(namePalletInHistory),
-              children: [
-                indexPallet == state.listPallets.listModelsPallet.length
-                    ? const SizedBox.shrink()
-                    : IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'Вы точно хотите удалить \n Паллет №$indexPallet ',
-                                      style: const TextStyle(fontSize: 18),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    TextButton(
-                                        onPressed: () {
-                                          final indexInListPallets =
-                                              (indexPallet - 1);
-                                          context.read<PalletsBloc>().add(
-                                              PalletsEventDeletePalletByIndex(
-                                                  indexPallet:
-                                                      indexInListPallets));
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text(
-                                          'ДА',
-                                          style: TextStyle(fontSize: 18),
-                                        )),
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text(
-                                          'НЕТ',
-                                          style: TextStyle(fontSize: 18),
-                                        )),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                ListTile(
-                  title: const Text('Коробки:'),
-                  subtitle: Column(
-                    children: pallet.boxes
-                        .asMap()
-                        .entries
-                        .map(
-                          (box) => BoxWidget(
-                            box: box.value,
-                            myFocusNode: myFocusNode,
-                            indexBox: box.key,
-                            checkDublicateBarcodeInPallet:
-                                checkDublicateBarcodeInPallet,
-                          ),
-                        )
-                        .toList(),
+              return ExpansionTile(
+                title: Text(namePalletInHistory),
+                children: [
+                  indexPallet == state.listPallets.listModelsPallet.length
+                      ? const SizedBox.shrink()
+                      : IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        'Вы точно хотите удалить \n Паллет №$indexPallet ',
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      TextButton(
+                                          onPressed: () {
+                                            final indexInListPallets =
+                                                (indexPallet - 1);
+                                            context.read<PalletsBloc>().add(
+                                                PalletsEventDeletePalletByIndex(
+                                                    indexPallet:
+                                                        indexInListPallets));
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text(
+                                            'ДА',
+                                            style: TextStyle(fontSize: 18),
+                                          )),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text(
+                                            'НЕТ',
+                                            style: TextStyle(fontSize: 18),
+                                          )),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                  ListTile(
+                    title: const Text('Коробки:'),
+                    subtitle: Column(
+                      children: pallet.boxes
+                          .asMap()
+                          .entries
+                          .map(
+                            (box) => BoxWidget(
+                              box: box.value,
+                              myFocusNode: myFocusNode,
+                              indexBox: box.key,
+                              checkDublicateBarcodeInPallet:
+                                  checkDublicateBarcodeInPallet,
+                            ),
+                          )
+                          .toList(),
+                    ),
                   ),
-                ),
-              ],
-            );
-          },
-        ).toList();
+                ],
+              );
+            },
+          ).toList();
 
-        return Column(
-          children: expansionTiles.reversed.toList(),
-        );
+          return Column(
+            children: expansionTiles.reversed.toList(),
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
       },
     );
   }
@@ -1061,32 +1120,36 @@ class CurrentHistoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PalletsBloc blocPallet = context.watch<PalletsBloc>();
-    final statePalletsBloc = blocPallet.state as PalletsStateLoaded;
-    return SizedBox(
-      height: MediaQuery.of(context).size.height / 3.5,
-      child: ListView.builder(
-        controller: scrollController,
-        itemCount: statePalletsBloc.units.length,
-        itemBuilder: (BuildContext context, int index) {
-          // scrollController.jumpTo(scrollController.position
-          //     .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
-          return ListTile(
-              title: Text(
-                '${index + 1}. Бутылка ${index + 1}.',
-                style: const TextStyle(fontSize: 18),
-              ),
-              trailing: index + 1 == statePalletsBloc.maxIndexUnitInBox
-                  ? IconButton(
-                      onPressed: () {
-                        blocPallet.add(PalletsEventClearCurrentUnitsByBarcode(
-                            barcode: statePalletsBloc.units[index].barcode));
-                      },
-                      icon: const Icon(Icons.close),
-                      color: Colors.red,
-                    )
-                  : null);
-        },
-      ),
-    );
+    if (blocPallet.state is PalletsStateLoaded) {
+      final statePalletsBloc = blocPallet.state as PalletsStateLoaded;
+      return SizedBox(
+        height: MediaQuery.of(context).size.height / 3.5,
+        child: ListView.builder(
+          controller: scrollController,
+          itemCount: statePalletsBloc.units.length,
+          itemBuilder: (BuildContext context, int index) {
+            // scrollController.jumpTo(scrollController.position
+            //     .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
+            return ListTile(
+                title: Text(
+                  '${index + 1}. Бутылка ${index + 1}.',
+                  style: const TextStyle(fontSize: 18),
+                ),
+                trailing: index + 1 == statePalletsBloc.maxIndexUnitInBox
+                    ? IconButton(
+                        onPressed: () {
+                          blocPallet.add(PalletsEventClearCurrentUnitsByBarcode(
+                              barcode: statePalletsBloc.units[index].barcode));
+                        },
+                        icon: const Icon(Icons.close),
+                        color: Colors.red,
+                      )
+                    : null);
+          },
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }
