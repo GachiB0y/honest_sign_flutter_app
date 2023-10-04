@@ -227,7 +227,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                                         setState(() {
                                           _isLoading = true;
                                         });
-
+// Если это завершение розлива, то не надо отправлять паллеты.
                                         if (!isCompeleteBottling) {
                                           await _showAlertDialogChangeDateRelease(
                                               context: context);
@@ -235,8 +235,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                                           blocPallet.add(
                                               const PalletsEventSendBarcodes());
                                           //  ОТПРАВКA ПАЛЛЕТ.
-                                          print('Паллета отправлена');
-                                        } // Если это завершение розлива, то не надо отправлять паллеты.
+                                        }
 
                                         Navigator.of(context).pop();
                                         // _showSendPalletDialog(context, null);
@@ -472,6 +471,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
     else if ((statePalletsBloc.units.length == (countUnitsPerBox))) {
       if (typeBarcode == TypeOfBarcode.box) {
         // bloc.createBox(item: barcode);
+
         blocPallet.add(PalletsEvent.createBox(barcode: barcode));
         return true;
       } else {
