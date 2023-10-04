@@ -24,7 +24,7 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
   bool isShowDateInput = false;
   String numberCard = numberCardConst;
 
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   String _formattedText = '';
 
@@ -72,57 +72,100 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                isShowDateInput
-                    ? 'Введите дату производства первой паллеты'
-                    : 'Введите номер карты Розлива, для получения данных!',
-                style: const TextStyle(fontSize: 20),
+    return BlocListener<PalletsBloc, PalletsState>(
+      listener: (context, state) {
+        if (state is PalletsStateLoaded) {
+          if (state.isNewRelease!) {
+            setState(() {
+              isShowDateInput = true;
+            });
+          } else {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                          'Продолжение розлива.\nПаллета №${state.listPallets.listModelsPallet.length}',
+                          style: const TextStyle(fontSize: 18)),
+                      const SizedBox(width: 16),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const MainScreenCopy()));
+                          },
+                          child: const Text('OK')),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  isShowDateInput
+                      ? 'Введите дату производства первой паллеты'
+                      : 'Введите номер карты Розлива, для получения данных!',
+                  style: const TextStyle(fontSize: 20),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: isShowDateInput
-                  ? Column(
-                      children: [
-                        BaseDateTextFieldWidget(
-                          controller: _controller,
-                          formattedText: _formattedText,
-                          callBack: onSubmitedAnGetInfoForBarcodeRelease,
-                        ),
-                        ElevatedButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                isShowDateInput = false;
-                              });
-                            },
-                            icon: const Icon(Icons.arrow_back),
-                            label: const Text('Назад')),
-                      ],
-                    )
-                  : TextFormField(
-                      keyboardType: TextInputType.number,
-                      autofocus: true,
-                      controller: textEditingController,
-                      onFieldSubmitted: (value) {
-                        if (value.isNotEmpty) {
-                          setState(() {
-                            numberCard = value;
-                            numberCardConst = value;
-                            isShowDateInput = true;
-                          });
-                        }
-                      },
-                    ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: isShowDateInput
+                    ? Column(
+                        children: [
+                          BaseDateTextFieldWidget(
+                            controller: _controller,
+                            formattedText: _formattedText,
+                            callBack: onSubmitedAnGetInfoForBarcodeRelease,
+                          ),
+                          ElevatedButton.icon(
+                              onPressed: () {
+                                setState(() {
+                                  isShowDateInput = false;
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_back),
+                              label: const Text('Назад')),
+                        ],
+                      )
+                    : TextFormField(
+                        keyboardType: TextInputType.number,
+                        autofocus: true,
+                        controller: textEditingController,
+                        onFieldSubmitted: (value) {
+                          if (value.isNotEmpty) {
+                            setState(() {
+                              numberCard = value;
+                              numberCardConst = value;
+                              // isShowDateInput = true;
+                            });
+                            context.read<PalletsBloc>().add(PalletsEvent.fetch(
+                                numberCard:
+                                    value)); // Достаем стейт или получаем новый
+                          }
+                        },
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -137,7 +180,8 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
       // await barcodeService.getBarcodesBoxes();
       // await barcodeService.getBarcodesPallets();
       dateOfRelease = _controller.text;
-      context.read<PalletsBloc>().add(const PalletsEvent.fetch());
+      // context.read<PalletsBloc>().add(const PalletsEvent.fetch());
+      context.read<PalletsBloc>().add(const PalletsEventChangeDateRelease());
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const MainScreenCopy()));
     } catch (e) {

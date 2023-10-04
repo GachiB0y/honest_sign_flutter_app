@@ -692,7 +692,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                                   countBoxesPerPallet ||
                               stateBlocPallet.listPallets.listModelsPallet.last
                                       .barcode !=
-                                  'Будущая палета') {
+                                  nameFuturePallet) {
                             blocPallet.add(const PalletsEventSendBarcodes());
 
                             _showSendPalletDialog(context, null);
@@ -709,7 +709,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                             });
                             if (stateBlocPallet.listPallets.listModelsPallet
                                     .last.barcode ==
-                                'Будущая палета') {
+                                nameFuturePallet) {
                               _showDialogChekBarcodeForPalletsOrBox(
                                 null,
                                 checkValid: false,
@@ -913,7 +913,8 @@ class ModelsPalletWidget extends StatelessWidget {
           (pallet) {
             final indexPallet = index++;
             final String partNamePallet =
-                pallet.boxes.length == countBoxesPerPallet
+                // pallet.boxes.length == countBoxesPerPallet
+                pallet.barcode != nameFuturePallet
                     ? pallet.barcode
                     : '(неполная палета)';
             final String namePalletInHistory =

@@ -147,7 +147,7 @@ class BarcodeServiceImpl extends BarcodeService {
     var request = http.Request(
         'POST',
         Uri.parse(
-            'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cardsssss'));
+            'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cards'));
 
     final bodyTwo = jsonEncode(listPallets.toJson());
 

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.dart';
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,6 +39,7 @@ class SessionDataProvdierDefault implements SessionDataProvdier {
     await prefs.setInt('countBarcode_$numberCard', palletState.countBarcodes);
     await prefs.setInt('countBox_$numberCard', palletState.countBox);
     await prefs.setInt('maxIndex_$numberCard', palletState.maxIndexUnitInBox);
+    await prefs.setString('dateofRelease_$numberCard', dateOfRelease);
   }
 
   @override
@@ -77,6 +79,8 @@ class SessionDataProvdierDefault implements SessionDataProvdier {
         maxIndexUnitInBox: maxIndex,
         countBox: countBox,
       );
+      dateOfRelease = prefs.getString('dateofRelease_$numberCard') ??
+          ''; // Получаем дату и записываем ее в глобальную переменную. Дальше нужно убрать ее из глобальных.
       return state;
     } else {
       return null;
@@ -94,6 +98,7 @@ class SessionDataProvdierDefault implements SessionDataProvdier {
       await prefs.remove('countBox_$numberCard');
       await prefs.remove('countBarcode_$numberCard');
       await prefs.remove('maxIndex_$numberCard');
+      await prefs.remove('dateofRelease_$numberCard');
     } catch (e) {
       rethrow;
     }

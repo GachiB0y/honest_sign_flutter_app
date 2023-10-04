@@ -14,6 +14,7 @@ class PalletsState with _$PalletsState {
     required int countBox,
     bool? isLoading,
     String? errorText,
+    bool? isNewRelease,
   }) = PalletsStateLoaded;
   const factory PalletsState.error({String? errorText}) = PalletsStateError;
 

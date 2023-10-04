@@ -630,7 +630,7 @@ class _InputWidgetState extends State<InputWidget> {
                           // Проверка на отправку полной палеты
                           if (bloc.state.pallets.boxes.length ==
                                   countBoxesPerPallet ||
-                              bloc.state.pallets.barcode != 'Будущая палета') {
+                              bloc.state.pallets.barcode != nameFuturePallet) {
                             final bool isSendPallet = await bloc.postBarcodes();
                             if (isSendPallet) {
                               _showSendPalletDialog(context, null);
@@ -646,7 +646,7 @@ class _InputWidgetState extends State<InputWidget> {
                               isErrorSendPallet = false;
                             });
                             if (bloc.state.pallets.barcode ==
-                                'Будущая палета') {
+                                nameFuturePallet) {
                               _showDialogChekBarcodeForPalletsOrBox(null,
                                   checkValid: false,
                                   context: context,

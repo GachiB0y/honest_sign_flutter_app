@@ -48,6 +48,7 @@ _$PalletsStateLoaded _$$PalletsStateLoadedFromJson(Map<String, dynamic> json) =>
       countBox: json['countBox'] as int,
       isLoading: json['isLoading'] as bool?,
       errorText: json['errorText'] as String?,
+      isNewRelease: json['isNewRelease'] as bool?,
       $type: json['runtimeType'] as String?,
     );
 
@@ -63,6 +64,7 @@ Map<String, dynamic> _$$PalletsStateLoadedToJson(
       'countBox': instance.countBox,
       'isLoading': instance.isLoading,
       'errorText': instance.errorText,
+      'isNewRelease': instance.isNewRelease,
       'runtimeType': instance.$type,
     };
 

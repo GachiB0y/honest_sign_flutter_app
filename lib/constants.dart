@@ -11,6 +11,7 @@ int maxIndexUnitInBox = 0;
 String numberCardConst = '';
 
 String dateOfRelease = '';
+String nameFuturePallet = 'Будущая паллета';
 
 String createDateNow() {
   DateTime now = DateTime.now();

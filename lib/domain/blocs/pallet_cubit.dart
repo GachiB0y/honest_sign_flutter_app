@@ -107,7 +107,7 @@ class PalletCubit extends Cubit<PalletCubitState> {
             countBox: 0,
             unit: [],
             pallets: ModelsPallet(
-                barcode: 'Будущая палета',
+                barcode: nameFuturePallet,
                 date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
                 boxes: [],
                 dateRelease: dateOfRelease,
@@ -280,7 +280,7 @@ class PalletCubit extends Cubit<PalletCubitState> {
 
   void clearPallet() {
     final ModelsPallet newPallets = state.pallets;
-    newPallets.barcode = 'Будущая палета';
+    newPallets.barcode = nameFuturePallet;
     newPallets.boxes = [];
     newPallets.date = '';
     newPallets.status = 'NotFull';

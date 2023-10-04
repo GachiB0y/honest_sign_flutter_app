@@ -24,7 +24,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
   }) : super(const PalletsState.loading()) {
     on<PalletsEvent>((event, emit) async {
       if (event is PalletsEventFetch) {
-        await onPalletsEventFetch(emit);
+        await onPalletsEventFetch(event, emit);
       } else if (event is PalletsEventCreateUnit) {
         onCreateUnit(event, emit);
       } else if (event is PalletsEventCreateBox) {
@@ -442,7 +442,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     newAllBarcodeHistory.add(event.barcode);
 
     final ModelsPallet pallet = ModelsPallet(
-        barcode: 'Будущая палета',
+        barcode: nameFuturePallet,
         date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
         boxes: [],
         dateRelease: dateOfRelease,
@@ -586,11 +586,12 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     emit(newState);
   }
 
-  Future<void> onPalletsEventFetch(Emitter<PalletsState> emit) async {
+  Future<void> onPalletsEventFetch(
+      PalletsEventFetch event, Emitter<PalletsState> emit) async {
     emit(const PalletsState.loading());
     try {
       final statePallet = await palletsRepository.loadState(
-        numberCard: numberCardConst,
+        numberCard: event.numberCard,
       );
       if (statePallet != null) {
         final newState = PalletsState.loaded(
@@ -600,12 +601,13 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
             countBox: statePallet.countBox,
             maxIndexUnitInBox: statePallet.maxIndexUnitInBox,
             units: statePallet.units,
-            currentBarcodeHistory: statePallet.currentBarcodeHistory);
+            currentBarcodeHistory: statePallet.currentBarcodeHistory,
+            isNewRelease: false);
 
         emit(newState);
       } else {
         final ModelsPallet pallet = ModelsPallet(
-            barcode: 'Будущая палета',
+            barcode: nameFuturePallet,
             date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
             boxes: [],
             dateRelease: dateOfRelease,
@@ -622,6 +624,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
           maxIndexUnitInBox: 0,
           units: [],
           currentBarcodeHistory: {},
+          isNewRelease: true,
         );
 
         emit(newState);

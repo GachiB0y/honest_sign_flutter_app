@@ -31,13 +31,13 @@ void main() {
       blocTest(
         'fetch pallets  when PalletsEventFetch is added',
         build: () => palletsBloc,
-        act: (bloc) => bloc.add(const PalletsEventFetch()),
+        act: (bloc) => bloc.add(const PalletsEventFetch(numberCard: '977065')),
         expect: () => <PalletsState>[
           const PalletsState.loading(),
           PalletsState.loaded(
               listPallets: ListPallets(listModelsPallet: [
                 ModelsPallet(
-                    barcode: 'Будущая палета',
+                    barcode: nameFuturePallet,
                     date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
                     dateRelease: '',
                     status: 'NotFull',
@@ -75,7 +75,7 @@ void main() {
         listUnits.add(item);
 
         pallet = ModelsPallet(
-            barcode: 'Будущая палета',
+            barcode: nameFuturePallet,
             date: date,
             boxes: [],
             dateRelease: '',
@@ -89,7 +89,7 @@ void main() {
         seed: () => PalletsState.loaded(
             listPallets: ListPallets(listModelsPallet: [
               ModelsPallet(
-                  barcode: 'Будущая палета',
+                  barcode: nameFuturePallet,
                   date: date,
                   dateRelease: '',
                   status: 'NotFull',
@@ -145,7 +145,7 @@ void main() {
         barcodes.add(barcodeBox);
 
         pallet = ModelsPallet(
-            barcode: 'Будущая палета',
+            barcode: nameFuturePallet,
             date: dateNow,
             boxes: [box],
             dateRelease: '',
@@ -159,7 +159,7 @@ void main() {
         seed: () => PalletsState.loaded(
           listPallets: ListPallets(listModelsPallet: [
             ModelsPallet(
-                barcode: 'Будущая палета',
+                barcode: nameFuturePallet,
                 date: dateNow,
                 dateRelease: '',
                 status: 'NotFull',
@@ -229,7 +229,7 @@ void main() {
         barcodesHistoryForDelete.add(barcodeTwo);
 
         pallet = ModelsPallet(
-            barcode: 'Будущая палета',
+            barcode: nameFuturePallet,
             date: dateNow,
             boxes: [box],
             dateRelease: '',
@@ -373,7 +373,7 @@ void main() {
             status: 'Full');
         allBarcodeHistoryDelete.add(barcodePalletTwo);
         final ModelsPallet newPallet = ModelsPallet(
-            barcode: 'Будущая палета',
+            barcode: nameFuturePallet,
             date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
             boxes: [],
             dateRelease: dateOfRelease,
@@ -390,7 +390,7 @@ void main() {
             listPallets: ListPallets(
               listModelsPallet: [
                 ModelsPallet(
-                  barcode: 'Будущая палета',
+                  barcode: nameFuturePallet,
                   date: dateNow,
                   dateRelease: dateOfRelease,
                   status: 'NotFull',

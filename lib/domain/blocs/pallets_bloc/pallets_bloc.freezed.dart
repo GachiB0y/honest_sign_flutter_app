@@ -18,7 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$PalletsEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -38,7 +38,7 @@ mixin _$PalletsEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -58,7 +58,7 @@ mixin _$PalletsEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -172,6 +172,8 @@ abstract class _$$PalletsEventFetchCopyWith<$Res> {
   factory _$$PalletsEventFetchCopyWith(
           _$PalletsEventFetch value, $Res Function(_$PalletsEventFetch) then) =
       __$$PalletsEventFetchCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String numberCard});
 }
 
 /// @nodoc
@@ -181,31 +183,56 @@ class __$$PalletsEventFetchCopyWithImpl<$Res>
   __$$PalletsEventFetchCopyWithImpl(
       _$PalletsEventFetch _value, $Res Function(_$PalletsEventFetch) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? numberCard = null,
+  }) {
+    return _then(_$PalletsEventFetch(
+      numberCard: null == numberCard
+          ? _value.numberCard
+          : numberCard // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$PalletsEventFetch implements PalletsEventFetch {
-  const _$PalletsEventFetch();
+  const _$PalletsEventFetch({required this.numberCard});
+
+  @override
+  final String numberCard;
 
   @override
   String toString() {
-    return 'PalletsEvent.fetch()';
+    return 'PalletsEvent.fetch(numberCard: $numberCard)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$PalletsEventFetch);
+        (other.runtimeType == runtimeType &&
+            other is _$PalletsEventFetch &&
+            (identical(other.numberCard, numberCard) ||
+                other.numberCard == numberCard));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, numberCard);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$PalletsEventFetchCopyWith<_$PalletsEventFetch> get copyWith =>
+      __$$PalletsEventFetchCopyWithImpl<_$PalletsEventFetch>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -222,13 +249,13 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
   }) {
-    return fetch();
+    return fetch(numberCard);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -245,13 +272,13 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
   }) {
-    return fetch?.call();
+    return fetch?.call(numberCard);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -270,7 +297,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     required TResult orElse(),
   }) {
     if (fetch != null) {
-      return fetch();
+      return fetch(numberCard);
     }
     return orElse();
   }
@@ -359,7 +386,13 @@ class _$PalletsEventFetch implements PalletsEventFetch {
 }
 
 abstract class PalletsEventFetch implements PalletsEvent {
-  const factory PalletsEventFetch() = _$PalletsEventFetch;
+  const factory PalletsEventFetch({required final String numberCard}) =
+      _$PalletsEventFetch;
+
+  String get numberCard;
+  @JsonKey(ignore: true)
+  _$$PalletsEventFetchCopyWith<_$PalletsEventFetch> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -401,7 +434,7 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -424,7 +457,7 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -447,7 +480,7 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -599,7 +632,7 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -622,7 +655,7 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -645,7 +678,7 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -797,7 +830,7 @@ class _$PalletsEventRemoveErrorText implements PalletsEventRemoveErrorText {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -820,7 +853,7 @@ class _$PalletsEventRemoveErrorText implements PalletsEventRemoveErrorText {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -843,7 +876,7 @@ class _$PalletsEventRemoveErrorText implements PalletsEventRemoveErrorText {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -1023,7 +1056,7 @@ class _$PalletsEventDeletePalletByIndex
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -1046,7 +1079,7 @@ class _$PalletsEventDeletePalletByIndex
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -1069,7 +1102,7 @@ class _$PalletsEventDeletePalletByIndex
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -1264,7 +1297,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -1287,7 +1320,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -1310,7 +1343,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -1519,7 +1552,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -1542,7 +1575,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -1565,7 +1598,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -1774,7 +1807,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -1797,7 +1830,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -1820,7 +1853,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -1983,7 +2016,7 @@ class _$PalletsEventClearAllCurrentUnits
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -2006,7 +2039,7 @@ class _$PalletsEventClearAllCurrentUnits
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -2029,7 +2062,7 @@ class _$PalletsEventClearAllCurrentUnits
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -2211,7 +2244,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -2234,7 +2267,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -2257,7 +2290,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -2417,7 +2450,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -2440,7 +2473,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -2463,7 +2496,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -2640,7 +2673,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -2663,7 +2696,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -2686,7 +2719,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -2868,7 +2901,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -2891,7 +2924,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -2914,7 +2947,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -3097,7 +3130,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function(String numberCard) fetch,
     required TResult Function() sendBarcodes,
     required TResult Function() completeBottling,
     required TResult Function() removeErrorText,
@@ -3120,7 +3153,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
+    TResult? Function(String numberCard)? fetch,
     TResult? Function()? sendBarcodes,
     TResult? Function()? completeBottling,
     TResult? Function()? removeErrorText,
@@ -3143,7 +3176,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function(String numberCard)? fetch,
     TResult Function()? sendBarcodes,
     TResult Function()? completeBottling,
     TResult Function()? removeErrorText,
@@ -3292,7 +3325,8 @@ mixin _$PalletsState {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)
+            String? errorText,
+            bool? isNewRelease)
         loaded,
     required TResult Function(String? errorText) error,
   }) =>
@@ -3310,7 +3344,8 @@ mixin _$PalletsState {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)?
+            String? errorText,
+            bool? isNewRelease)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) =>
@@ -3328,7 +3363,8 @@ mixin _$PalletsState {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)?
+            String? errorText,
+            bool? isNewRelease)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),
@@ -3437,7 +3473,8 @@ class _$PalletsStateLoading implements PalletsStateLoading {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)
+            String? errorText,
+            bool? isNewRelease)
         loaded,
     required TResult Function(String? errorText) error,
   }) {
@@ -3458,7 +3495,8 @@ class _$PalletsStateLoading implements PalletsStateLoading {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)?
+            String? errorText,
+            bool? isNewRelease)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) {
@@ -3479,7 +3517,8 @@ class _$PalletsStateLoading implements PalletsStateLoading {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)?
+            String? errorText,
+            bool? isNewRelease)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),
@@ -3599,7 +3638,8 @@ class _$PalletsStateCloseApp implements PalletsStateCloseApp {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)
+            String? errorText,
+            bool? isNewRelease)
         loaded,
     required TResult Function(String? errorText) error,
   }) {
@@ -3620,7 +3660,8 @@ class _$PalletsStateCloseApp implements PalletsStateCloseApp {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)?
+            String? errorText,
+            bool? isNewRelease)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) {
@@ -3641,7 +3682,8 @@ class _$PalletsStateCloseApp implements PalletsStateCloseApp {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)?
+            String? errorText,
+            bool? isNewRelease)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),
@@ -3719,7 +3761,8 @@ abstract class _$$PalletsStateLoadedCopyWith<$Res> {
       int maxIndexUnitInBox,
       int countBox,
       bool? isLoading,
-      String? errorText});
+      String? errorText,
+      bool? isNewRelease});
 
   $ListPalletsCopyWith<$Res> get listPallets;
 }
@@ -3744,6 +3787,7 @@ class __$$PalletsStateLoadedCopyWithImpl<$Res>
     Object? countBox = null,
     Object? isLoading = freezed,
     Object? errorText = freezed,
+    Object? isNewRelease = freezed,
   }) {
     return _then(_$PalletsStateLoaded(
       listPallets: null == listPallets
@@ -3782,6 +3826,10 @@ class __$$PalletsStateLoadedCopyWithImpl<$Res>
           ? _value.errorText
           : errorText // ignore: cast_nullable_to_non_nullable
               as String?,
+      isNewRelease: freezed == isNewRelease
+          ? _value.isNewRelease
+          : isNewRelease // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ));
   }
 
@@ -3807,6 +3855,7 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
       required this.countBox,
       this.isLoading,
       this.errorText,
+      this.isNewRelease,
       final String? $type})
       : _units = units,
         _allBarcodeHistory = allBarcodeHistory,
@@ -3854,13 +3903,15 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
   final bool? isLoading;
   @override
   final String? errorText;
+  @override
+  final bool? isNewRelease;
 
   @JsonKey(name: 'runtimeType')
   final String $type;
 
   @override
   String toString() {
-    return 'PalletsState.loaded(listPallets: $listPallets, units: $units, allBarcodeHistory: $allBarcodeHistory, currentBarcodeHistory: $currentBarcodeHistory, countBarcodes: $countBarcodes, maxIndexUnitInBox: $maxIndexUnitInBox, countBox: $countBox, isLoading: $isLoading, errorText: $errorText)';
+    return 'PalletsState.loaded(listPallets: $listPallets, units: $units, allBarcodeHistory: $allBarcodeHistory, currentBarcodeHistory: $currentBarcodeHistory, countBarcodes: $countBarcodes, maxIndexUnitInBox: $maxIndexUnitInBox, countBox: $countBox, isLoading: $isLoading, errorText: $errorText, isNewRelease: $isNewRelease)';
   }
 
   @override
@@ -3884,7 +3935,9 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
             (identical(other.errorText, errorText) ||
-                other.errorText == errorText));
+                other.errorText == errorText) &&
+            (identical(other.isNewRelease, isNewRelease) ||
+                other.isNewRelease == isNewRelease));
   }
 
   @JsonKey(ignore: true)
@@ -3899,7 +3952,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
       maxIndexUnitInBox,
       countBox,
       isLoading,
-      errorText);
+      errorText,
+      isNewRelease);
 
   @JsonKey(ignore: true)
   @override
@@ -3922,12 +3976,22 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)
+            String? errorText,
+            bool? isNewRelease)
         loaded,
     required TResult Function(String? errorText) error,
   }) {
-    return loaded(listPallets, units, allBarcodeHistory, currentBarcodeHistory,
-        countBarcodes, maxIndexUnitInBox, countBox, isLoading, errorText);
+    return loaded(
+        listPallets,
+        units,
+        allBarcodeHistory,
+        currentBarcodeHistory,
+        countBarcodes,
+        maxIndexUnitInBox,
+        countBox,
+        isLoading,
+        errorText,
+        isNewRelease);
   }
 
   @override
@@ -3944,7 +4008,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)?
+            String? errorText,
+            bool? isNewRelease)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) {
@@ -3957,7 +4022,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
         maxIndexUnitInBox,
         countBox,
         isLoading,
-        errorText);
+        errorText,
+        isNewRelease);
   }
 
   @override
@@ -3974,7 +4040,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)?
+            String? errorText,
+            bool? isNewRelease)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),
@@ -3989,7 +4056,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
           maxIndexUnitInBox,
           countBox,
           isLoading,
-          errorText);
+          errorText,
+          isNewRelease);
     }
     return orElse();
   }
@@ -4049,7 +4117,8 @@ abstract class PalletsStateLoaded implements PalletsState {
       required final int maxIndexUnitInBox,
       required final int countBox,
       final bool? isLoading,
-      final String? errorText}) = _$PalletsStateLoaded;
+      final String? errorText,
+      final bool? isNewRelease}) = _$PalletsStateLoaded;
 
   factory PalletsStateLoaded.fromJson(Map<String, dynamic> json) =
       _$PalletsStateLoaded.fromJson;
@@ -4063,6 +4132,7 @@ abstract class PalletsStateLoaded implements PalletsState {
   int get countBox;
   bool? get isLoading;
   String? get errorText;
+  bool? get isNewRelease;
   @JsonKey(ignore: true)
   _$$PalletsStateLoadedCopyWith<_$PalletsStateLoaded> get copyWith =>
       throw _privateConstructorUsedError;
@@ -4152,7 +4222,8 @@ class _$PalletsStateError implements PalletsStateError {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)
+            String? errorText,
+            bool? isNewRelease)
         loaded,
     required TResult Function(String? errorText) error,
   }) {
@@ -4173,7 +4244,8 @@ class _$PalletsStateError implements PalletsStateError {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)?
+            String? errorText,
+            bool? isNewRelease)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) {
@@ -4194,7 +4266,8 @@ class _$PalletsStateError implements PalletsStateError {
             int maxIndexUnitInBox,
             int countBox,
             bool? isLoading,
-            String? errorText)?
+            String? errorText,
+            bool? isNewRelease)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),
