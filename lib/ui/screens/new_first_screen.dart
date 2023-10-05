@@ -150,13 +150,16 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
                         keyboardType: TextInputType.number,
                         autofocus: true,
                         controller: textEditingController,
-                        onFieldSubmitted: (value) {
+                        onFieldSubmitted: (value) async {
                           if (value.isNotEmpty) {
                             setState(() {
                               numberCard = value;
                               numberCardConst = value;
                               // isShowDateInput = true;
                             });
+                            await barcodeService.getInfoForBarcodeRelease(
+                                numberCard:
+                                    numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
                             context.read<PalletsBloc>().add(PalletsEvent.fetch(
                                 numberCard:
                                     value)); // Достаем стейт или получаем новый
@@ -181,7 +184,8 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
       // await barcodeService.getBarcodesPallets();
       dateOfRelease = _controller.text;
       // context.read<PalletsBloc>().add(const PalletsEvent.fetch());
-      context.read<PalletsBloc>().add(const PalletsEventChangeDateRelease());
+      context.read<PalletsBloc>().add(
+          PalletsEventChangeDateRelease(newDateOfRelease: _controller.text));
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const MainScreenCopy()));
     } catch (e) {

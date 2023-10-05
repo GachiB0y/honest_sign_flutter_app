@@ -377,8 +377,9 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                           onPressed: () {
                             dateOfRelease =
                                 _controllerForAlertChangeDateRelease.text;
-                            blocPallet
-                                .add(const PalletsEventChangeDateRelease());
+                            blocPallet.add(PalletsEventChangeDateRelease(
+                                newDateOfRelease:
+                                    _controllerForAlertChangeDateRelease.text));
 
                             setState(() {
                               showTextField = false;
@@ -948,7 +949,7 @@ class _BoxWidgetState extends State<BoxWidget> {
   }
 }
 
-class ModelsPalletWidget extends StatelessWidget {
+class ModelsPalletWidget extends StatefulWidget {
   final InputWithKeyboardControlFocusNode myFocusNode;
   final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
 
@@ -959,13 +960,20 @@ class ModelsPalletWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<ModelsPalletWidget> createState() => _ModelsPalletWidgetState();
+}
+
+class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
+  final TextEditingController controller = TextEditingController();
+  final String formattedText = '';
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<PalletsBloc, PalletsState>(
       builder: (context, state) {
         if (state is PalletsStateLoaded) {
           int index = 1;
           final List<ExpansionTile> expansionTiles =
-              (state as PalletsStateLoaded).listPallets.listModelsPallet.map(
+              state.listPallets.listModelsPallet.map(
             (pallet) {
               final indexPallet = index++;
               final String partNamePallet =
@@ -979,53 +987,76 @@ class ModelsPalletWidget extends StatelessWidget {
               return ExpansionTile(
                 title: Text(namePalletInHistory),
                 children: [
-                  indexPallet == state.listPallets.listModelsPallet.length
-                      ? const SizedBox.shrink()
-                      : IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        'Вы точно хотите удалить \n Паллет №$indexPallet ',
-                                        style: const TextStyle(fontSize: 18),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      TextButton(
-                                          onPressed: () {
-                                            final indexInListPallets =
-                                                (indexPallet - 1);
-                                            context.read<PalletsBloc>().add(
-                                                PalletsEventDeletePalletByIndex(
-                                                    indexPallet:
-                                                        indexInListPallets));
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text(
-                                            'ДА',
-                                            style: TextStyle(fontSize: 18),
-                                          )),
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text(
-                                            'НЕТ',
-                                            style: TextStyle(fontSize: 18),
-                                          )),
-                                    ],
-                                  ),
-                                );
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      indexPallet == state.listPallets.listModelsPallet.length
+                          ? const SizedBox.shrink()
+                          : IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                showDeletePalletDialog(context, indexPallet);
                               },
-                            );
-                          },
-                        ),
+                            ),
+                      IconButton(
+                        icon: const Icon(Icons.date_range_rounded),
+                        onPressed: () {
+                          widget.myFocusNode.nextFocus();
+
+                          showDialog<void>(
+                            barrierDismissible:
+                                false, //РАСКОМЕНТИРОВАТЬ В  РЕЛИЗЕ
+
+                            context: context,
+                            builder: (BuildContext context) {
+                              final PalletsBloc blocPallet =
+                                  context.read<PalletsBloc>();
+                              return WillPopScope(
+                                onWillPop: () async {
+                                  // Возвращаем `false` для предотвращения закрытия диалогового окна
+                                  return false;
+                                },
+                                child: AlertDialog(
+                                    elevation: 3.0,
+                                    content: BaseDateTextFieldWidget(
+                                      callBack: null,
+                                      controller: controller,
+                                      formattedText: formattedText,
+                                    ),
+                                    actions: <Widget>[
+                                      Center(
+                                        child: TextButton(
+                                          child: const Text(
+                                            'Подтвердить',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                          onPressed: () {
+                                            final newDateOfRelease =
+                                                controller.text;
+                                            blocPallet.add(
+                                                PalletsEventChangeDateRelease(
+                                                    indexPallet:
+                                                        (indexPallet - 1),
+                                                    newDateOfRelease:
+                                                        newDateOfRelease));
+
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      )
+                                    ]),
+                              );
+                            },
+                          ).then((value) {
+                            setState(() {
+                              controller.clear();
+                              widget.myFocusNode.requestFocus();
+                            });
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                   ListTile(
                     title: const Text('Коробки:'),
                     subtitle: Column(
@@ -1035,10 +1066,10 @@ class ModelsPalletWidget extends StatelessWidget {
                           .map(
                             (box) => BoxWidget(
                               box: box.value,
-                              myFocusNode: myFocusNode,
+                              myFocusNode: widget.myFocusNode,
                               indexBox: box.key,
                               checkDublicateBarcodeInPallet:
-                                  checkDublicateBarcodeInPallet,
+                                  widget.checkDublicateBarcodeInPallet,
                             ),
                           )
                           .toList(),
@@ -1055,6 +1086,48 @@ class ModelsPalletWidget extends StatelessWidget {
         } else {
           return const SizedBox.shrink();
         }
+      },
+    );
+  }
+
+  Future<dynamic> showDeletePalletDialog(
+      BuildContext context, int indexPallet) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Вы точно хотите удалить \n Паллет №$indexPallet ',
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(width: 16),
+              TextButton(
+                  onPressed: () {
+                    final indexInListPallets = (indexPallet - 1);
+                    context.read<PalletsBloc>().add(
+                        PalletsEventDeletePalletByIndex(
+                            indexPallet: indexInListPallets));
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'ДА',
+                    style: TextStyle(fontSize: 18),
+                  )),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'НЕТ',
+                    style: TextStyle(fontSize: 18),
+                  )),
+            ],
+          ),
+        );
       },
     );
   }

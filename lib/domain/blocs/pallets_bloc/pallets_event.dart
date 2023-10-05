@@ -30,8 +30,9 @@ class PalletsEvent with _$PalletsEvent {
       PalletsEventClearAllCurrentUnits;
   const factory PalletsEvent.clearCurrentUnitsByBarcode(
       {required String barcode}) = PalletsEventClearCurrentUnitsByBarcode;
-  const factory PalletsEvent.changeDateRelease() =
-      PalletsEventChangeDateRelease;
+  const factory PalletsEvent.changeDateRelease(
+      {required String newDateOfRelease,
+      int? indexPallet}) = PalletsEventChangeDateRelease;
   const factory PalletsEvent.createUnit({
     required String barcode,
   }) = PalletsEventCreateUnit;

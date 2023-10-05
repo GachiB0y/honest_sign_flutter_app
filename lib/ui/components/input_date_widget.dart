@@ -4,13 +4,15 @@ import 'package:honest_sign_flutter_app/constants.dart';
 class BaseDateTextFieldWidget extends StatefulWidget {
   final TextEditingController controller;
   String formattedText;
+
   final Future<void> Function(BuildContext context)? callBack;
 
-  BaseDateTextFieldWidget(
-      {super.key,
-      required this.controller,
-      required this.formattedText,
-      required this.callBack});
+  BaseDateTextFieldWidget({
+    super.key,
+    required this.controller,
+    required this.formattedText,
+    required this.callBack,
+  });
   @override
   _BaseDateTextFieldWidgetState createState() =>
       _BaseDateTextFieldWidgetState();
@@ -20,6 +22,7 @@ class _BaseDateTextFieldWidgetState extends State<BaseDateTextFieldWidget> {
   TextEditingController get _controller => widget.controller;
   String formatted = '';
 
+  final FocusNode newFocusNode = FocusNode();
   @override
   void initState() {
     super.initState();
@@ -58,6 +61,7 @@ class _BaseDateTextFieldWidgetState extends State<BaseDateTextFieldWidget> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      focusNode: newFocusNode,
       autofocus: true,
       controller: _controller,
       keyboardType: TextInputType.number,

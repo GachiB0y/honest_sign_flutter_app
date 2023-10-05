@@ -32,7 +32,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
       } else if (event is PalletsEventCreatePallet) {
         onCreatePallet(event, emit);
       } else if (event is PalletsEventChangeDateRelease) {
-        onChangeDateRelease(emit);
+        onChangeDateRelease(event, emit);
       } else if (event is PalletsEventClearAllCurrentUnits) {
         onClearAllCurrentUnits(emit);
       } else if (event is PalletsEventClearCurrentUnitsByBarcode) {
@@ -389,18 +389,36 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
   }
 
 //ИЛИ СДЕЛАТЬ ОТПРАВКУ, А ПОТОМ СМЕНУ ДАТЫ РЕЛИЗА ПОДУМАТЬ!!!
-  void onChangeDateRelease(Emitter<PalletsState> emit) {
-    final ModelsPallet modelsPallet = (state as PalletsStateLoaded)
-        .listPallets
-        .listModelsPallet
-        .last
-        .copyWith(dateRelease: dateOfRelease);
+  void onChangeDateRelease(
+      PalletsEventChangeDateRelease event, Emitter<PalletsState> emit) {
+//Копируем список паллет
     final List<ModelsPallet> listModelPallets = [
       ...(state as PalletsStateLoaded).listPallets.listModelsPallet
     ];
-    listModelPallets.removeLast();
-    listModelPallets.add(modelsPallet);
+//Проверяем есть ли индекс паллеты или это изменения для следующей паллеты
+    if (event.indexPallet != null) {
+//Берем по Индексу модель паллеты, копируем ее с новой датой
+      final ModelsPallet modelsPallet = (state as PalletsStateLoaded)
+          .listPallets
+          .listModelsPallet[event.indexPallet!]
+          .copyWith(dateRelease: event.newDateOfRelease);
+//Удаляем по Индексу модель и вставляем новую по Индексу в списке паллет
+      listModelPallets.removeAt(event.indexPallet!);
+      listModelPallets.insert(event.indexPallet!, modelsPallet);
+    } else {
+//Берем последнюю модель паллеты, копируем ее с новой датой
+      final ModelsPallet modelsPallet = (state as PalletsStateLoaded)
+          .listPallets
+          .listModelsPallet
+          .last
+          .copyWith(dateRelease: event.newDateOfRelease);
 
+//Удаляем последнюю модель и вставляем новую в списке паллет
+      listModelPallets.removeLast();
+      listModelPallets.add(modelsPallet);
+    }
+
+//Копируем модель ListPallets с новым списком
     ListPallets listPallets = (state as PalletsStateLoaded)
         .listPallets
         .copyWith(listModelsPallet: listModelPallets);

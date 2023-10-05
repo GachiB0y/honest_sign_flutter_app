@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:honest_sign_flutter_app/bloc_observable.dart';
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.dart';
 import 'package:honest_sign_flutter_app/domain/data_provider/session_data_provider.dart';
@@ -8,6 +9,7 @@ import 'package:honest_sign_flutter_app/domain/repository/pallets_repository.dar
 import 'package:honest_sign_flutter_app/ui/screens/new_first_screen.dart';
 
 void main() {
+  Bloc.observer = const AppBlocObserver();
   runApp(const MyApp());
 }
 

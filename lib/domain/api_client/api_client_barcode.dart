@@ -33,20 +33,45 @@ class BarcodeServiceImpl extends BarcodeService {
   const BarcodeServiceImpl();
   @override
   Future<bool> getBarcodesBoxes() async {
-    var url = 'http://10.3.50.96:8000/get_boxes';
-    final response = await http.get(Uri.parse(url));
+    // var url = 'http://10.3.50.96:8000/get_boxes';
+    // final response = await http.get(Uri.parse(url));
+
+    // if (response.statusCode == 200) {
+    //   // List<String> myList = jsonDecode(response.body);
+    //   List<String> myList =
+    //       (jsonDecode(response.body) as List<dynamic>).cast<String>();
+
+    //   setBoxs = Set.from(myList);
+    //   setBoxs.add('228');
+
+    //   return true;
+    // } else {
+    //   throw Exception('Failed to load');
+    // }
+
+    var headers = {
+      'Content-Type': 'text/plain',
+      'Authorization': 'Basic R3Jhc3NFeGNoYW5nZTphbG9iQTY0'
+    };
+    var url = 'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cards';
+    var request = http.Request('GET', Uri.parse(url));
+    // request.body = '''{"CardId":$numberCard,"Action":"Create"}''';
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      // List<String> myList = jsonDecode(response.body);
-      List<String> myList =
-          (jsonDecode(response.body) as List<dynamic>).cast<String>();
+      final jsonResponse = await response.stream.bytesToString();
+      final jsonData = jsonDecode(jsonResponse);
 
-      setBoxs = Set.from(myList);
-      setBoxs.add('228');
+      List<String> listBoxes = jsonData['Message']['Box'];
+      List<String> listPallets = jsonData['Message']['Pallet'];
+      setBoxs = Set.from(listBoxes);
+      setPallets = Set.from(listPallets);
 
       return true;
     } else {
-      throw Exception('Failed to load');
+      throw Exception('Ошибка получения данных о разливе!');
     }
   }
 
@@ -232,9 +257,6 @@ class BarcodeServiceImpl extends BarcodeService {
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
-    // var url = 'http://10.3.50.96:8000/get_info/$numberCard';
-
-    // final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final jsonResponse = await response.stream.bytesToString();
