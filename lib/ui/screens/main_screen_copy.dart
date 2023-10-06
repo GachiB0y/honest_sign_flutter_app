@@ -749,7 +749,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                         }
                       },
                       icon: const Icon(Icons.call_made, color: Colors.green),
-                      label: const Text('Отправить палету')),
+                      label: const Text('Отправить паллет')),
                 ],
               ),
               ElevatedButton.icon(
@@ -803,12 +803,15 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                                       );
                                       blocPallet.add(const PalletsEvent
                                           .completeBottling()); // ЗАВЕРШЕНИЕ РОЗЛИВА
-                                      print('ПОСЛЕ ЗАКРЫТИЯ ШК ПАЛЛЕТЫ');
+
                                       Navigator.of(context).pop();
                                     }
                                   } else {
-                                    _showSendPalletDialog(context,
-                                        'Нужна хотябы одна коробка для отправки палеты!');
+                                    blocPallet.add(const PalletsEvent
+                                        .completeBottling()); // ЗАВЕРШЕНИЕ РОЗЛИВА
+                                    Navigator.of(context).pop();
+                                    // _showSendPalletDialog(context,
+                                    //     'Нужна хотябы одна коробка для отправки палеты!');
                                   }
                                 },
                                 child: const Text(
