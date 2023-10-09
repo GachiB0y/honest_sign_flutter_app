@@ -253,6 +253,9 @@ class BarcodeServiceImpl extends BarcodeService {
           countBoxesPerPallet +
           1; // РАССКОМЕНТИРОВАТЬ В РЕЛИЗЕ ВЕРСИИ
       return true;
+    } else if (response.statusCode == 404) {
+      throw Exception(
+          'Карточка отработала!\n Вы пыдаетесь запустить по ней розлив вне смены!');
     } else {
       throw Exception('Ошибка получения данных о разливе!');
     }

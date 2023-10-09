@@ -311,17 +311,6 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                         ),
                 ],
               ),
-              // actions: [
-              //   if (checkValid)
-              //     Center(
-              //       child: ElevatedButton(
-              //         onPressed: () {
-              //           Navigator.pop(context);
-              //         },
-              //         child: const Text('OK'),
-              //       ),
-              //     ),
-              // ],
             ),
           );
         });
@@ -361,8 +350,6 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
   }) async {
     bool showTextField = false;
 
-    final String formattedText = dateOfRelease;
-
     return showDialog<void>(
       barrierDismissible: false, //РАСКОМЕНТИРОВАТЬ В  РЕЛИЗЕ
 
@@ -379,11 +366,20 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
             child: AlertDialog(
               elevation: 3.0,
               content: showTextField
-                  ? BaseDateTextFieldWidget(
-                      callBack: null,
+                  ? TextField(
+                      autofocus: true,
+                      keyboardType: TextInputType.number,
                       controller: _controllerForAlertChangeDateRelease,
-                      formattedText: formattedText,
+                      decoration: const InputDecoration(
+                        hintText: 'Введите дату (дд.мм.гггг)',
+                      ),
+                      inputFormatters: [DateTextFormatter()],
                     )
+                  // DateInputTextField(
+                  //     callBack: null,
+                  //     controller: _controllerForAlertChangeDateRelease,
+                  //     formattedText: formattedText,
+                  //   )
                   : Text(
                       'Дата розлива следующей паллеты: $dateOfRelease. Вы уверены?',
                       textAlign: TextAlign.center,
@@ -523,7 +519,6 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
   }
 
   TypeOfBarcode isValidBarcode(String barcode) {
-    ///ЗАкомеенитированно пока идет проверка на длинну символов.
     bool isContains = setPallets.contains(barcode);
     if (isContains) {
       return TypeOfBarcode.pallet;
@@ -543,6 +538,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
       }
     }
   }
+  //ЗАГЛУШКА НА ПРОВЕРКУ АГРЕГАЦИОННОГО КОДА ЗАКОММЕНТИТЬ В РЕЛИЗЕ
 
   // TypeOfBarcode isValidBarcode(String barcode) {
   //   if (barcode.length == 18 && barcode.startsWith('1')) {
@@ -844,8 +840,6 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                                     blocPallet.add(const PalletsEvent
                                         .completeBottling()); // ЗАВЕРШЕНИЕ РОЗЛИВА
                                     Navigator.of(context).pop();
-                                    // _showSendPalletDialog(context,
-                                    //     'Нужна хотябы одна коробка для отправки палеты!');
                                   }
                                 },
                                 child: const Text(
@@ -1057,10 +1051,14 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
                                 },
                                 child: AlertDialog(
                                     elevation: 3.0,
-                                    content: BaseDateTextFieldWidget(
-                                      callBack: null,
+                                    content: TextField(
+                                      autofocus: true,
+                                      keyboardType: TextInputType.number,
                                       controller: controller,
-                                      formattedText: formattedText,
+                                      decoration: const InputDecoration(
+                                        hintText: 'Введите дату (дд.мм.гггг)',
+                                      ),
+                                      inputFormatters: [DateTextFormatter()],
                                     ),
                                     actions: <Widget>[
                                       Center(

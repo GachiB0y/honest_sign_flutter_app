@@ -24,10 +24,6 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
   bool isShowDateInput = false;
   String numberCard = numberCardConst;
 
-  final TextEditingController _controller = TextEditingController();
-
-  String _formattedText = '';
-
   @override
   void initState() {
     super.initState();
@@ -131,10 +127,16 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
                 child: isShowDateInput
                     ? Column(
                         children: [
-                          BaseDateTextFieldWidget(
-                            controller: _controller,
-                            formattedText: _formattedText,
-                            callBack: onSubmitedAnGetInfoForBarcodeRelease,
+                          TextField(
+                            autofocus: true,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              hintText: 'Введите дату (дд.мм.гггг)',
+                            ),
+                            inputFormatters: [DateTextFormatter()],
+                            onSubmitted: (String value) =>
+                                onSubmitedAnGetInfoForBarcodeRelease(
+                                    context, value),
                           ),
                           ElevatedButton.icon(
                               onPressed: () {
@@ -185,17 +187,13 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
   }
 
   Future<void> onSubmitedAnGetInfoForBarcodeRelease(
-      BuildContext context) async {
+      BuildContext context, String value) async {
     try {
-      // await barcodeService.getInfoForBarcodeRelease(
-      //     numberCard: numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
+      dateOfRelease = value;
 
-      // await barcodeService.getBarcodesBoxes();
-      // await barcodeService.getBarcodesPallets();
-      dateOfRelease = _controller.text;
-      // context.read<PalletsBloc>().add(const PalletsEvent.fetch());
-      context.read<PalletsBloc>().add(
-          PalletsEventChangeDateRelease(newDateOfRelease: _controller.text));
+      context
+          .read<PalletsBloc>()
+          .add(PalletsEventChangeDateRelease(newDateOfRelease: value));
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const MainScreenCopy()));
     } catch (e) {
