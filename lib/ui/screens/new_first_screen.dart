@@ -157,12 +157,22 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
                               numberCardConst = value;
                               // isShowDateInput = true;
                             });
-                            await barcodeService.getInfoForBarcodeRelease(
-                                numberCard:
-                                    numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
-                            context.read<PalletsBloc>().add(PalletsEvent.fetch(
-                                numberCard:
-                                    value)); // Достаем стейт или получаем новый
+                            try {
+                              await context
+                                  .read<PalletsBloc>()
+                                  .palletsRepository
+                                  .getFreeCodes(); //Получаем агрегационные коды
+                              await barcodeService.getInfoForBarcodeRelease(
+                                  numberCard:
+                                      numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
+                              context.read<PalletsBloc>().add(PalletsEvent.fetch(
+                                  numberCard:
+                                      value)); // Достаем стейт или получаем новый
+                            } catch (e) {
+                              final String message =
+                                  e.toString().replaceAll('Exception: ', '');
+                              _showSendPalletDialog(context, message);
+                            }
                           }
                         },
                       ),

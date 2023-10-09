@@ -13,7 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 abstract class BarcodeService {
   const BarcodeService();
-  Future<bool> getBarcodesBoxes();
+  Future<(List<String>, List<String>)> getFreeCodes();
   Future<bool> getBarcodesPallets();
   Future<bool> postBarcodes({required ModelsPallet pallets});
   Future<bool> sendBarcodes(
@@ -32,30 +32,13 @@ abstract class BarcodeService {
 class BarcodeServiceImpl extends BarcodeService {
   const BarcodeServiceImpl();
   @override
-  Future<bool> getBarcodesBoxes() async {
-    // var url = 'http://10.3.50.96:8000/get_boxes';
-    // final response = await http.get(Uri.parse(url));
+  Future<(List<String>, List<String>)> getFreeCodes() async {
+    var headers = {'Authorization': 'Basic R3Jhc3NFeGNoYW5nZTphbG9iQTY0'};
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/FreeCodes'));
 
-    // if (response.statusCode == 200) {
-    //   // List<String> myList = jsonDecode(response.body);
-    //   List<String> myList =
-    //       (jsonDecode(response.body) as List<dynamic>).cast<String>();
-
-    //   setBoxs = Set.from(myList);
-    //   setBoxs.add('228');
-
-    //   return true;
-    // } else {
-    //   throw Exception('Failed to load');
-    // }
-
-    var headers = {
-      'Content-Type': 'text/plain',
-      'Authorization': 'Basic R3Jhc3NFeGNoYW5nZTphbG9iQTY0'
-    };
-    var url = 'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cards';
-    var request = http.Request('GET', Uri.parse(url));
-    // request.body = '''{"CardId":$numberCard,"Action":"Create"}''';
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -64,12 +47,13 @@ class BarcodeServiceImpl extends BarcodeService {
       final jsonResponse = await response.stream.bytesToString();
       final jsonData = jsonDecode(jsonResponse);
 
-      List<String> listBoxes = jsonData['Message']['Box'];
-      List<String> listPallets = jsonData['Message']['Pallet'];
-      setBoxs = Set.from(listBoxes);
-      setPallets = Set.from(listPallets);
+      List<String> listBoxes =
+          (jsonData['Message']['Box'] as List<dynamic>).cast<String>();
+      List<String> listPallets =
+          (jsonData['Message']['Pallet'] as List<dynamic>).cast<String>();
 
-      return true;
+      (List<String>, List<String>) record = (listBoxes, listPallets);
+      return record;
     } else {
       throw Exception('Ошибка получения данных о разливе!');
     }

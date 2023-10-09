@@ -187,12 +187,35 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                       : Column(
                           children: [
                             if (isShowError)
-                              const Text(
-                                'Штрих код не найден. Отсканируйте штрихкод!',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.w600),
+                              Column(
+                                children: [
+                                  const Text(
+                                    'Штрих код не найден. Отсканируйте штрихкод!',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      await context
+                                          .read<PalletsBloc>()
+                                          .palletsRepository
+                                          .getFreeCodes(); //Получаем агрегационные коды
+                                      setState(() {
+                                        isShowError = false;
+                                      });
+                                    },
+                                    child: const Text(
+                                      'Проверить коды',
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          color: Colors.blue,
+                                          decoration: TextDecoration.underline,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                ],
                               ),
                             SizedBox(
                               height: 150,
@@ -499,34 +522,19 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
     }
   }
 
-  // TypeOfBarcode isValidBarcode(String barcode) { ///ЗАкомеенитированно пока идет проверка на длинну символов.
-  //   bool isContains = setPallets.contains(barcode);
-  //   if (isContains) {
-  //     return TypeOfBarcode.pallet;
-  //   } else {
-  //     isContains = setBoxs.contains(barcode);
-  //     if (isContains) {
-  //       return TypeOfBarcode.box;
-  //     } else {
-  //       // isContains = setUnit.contains(
-  //       //     barcode);
-  //       isContains = true; // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
-  //       if (isContains) {
-  //         return TypeOfBarcode.unit;
-  //       } else {
-  //         return TypeOfBarcode.undefined;
-  //       }
-  //     }
-  //   }
-  // }
-
   TypeOfBarcode isValidBarcode(String barcode) {
-    if (barcode.length == 18 && barcode.startsWith('1')) {
+    ///ЗАкомеенитированно пока идет проверка на длинну символов.
+    bool isContains = setPallets.contains(barcode);
+    if (isContains) {
       return TypeOfBarcode.pallet;
     } else {
-      if (barcode.length == 18 && barcode.startsWith('0')) {
+      isContains = setBoxs.contains(barcode);
+      if (isContains) {
         return TypeOfBarcode.box;
       } else {
+        // isContains = setUnit.contains(
+        //     barcode);
+        // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
         if (barcode.length >= 37) {
           return TypeOfBarcode.unit;
         } else {
@@ -535,6 +543,22 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
       }
     }
   }
+
+  // TypeOfBarcode isValidBarcode(String barcode) {
+  //   if (barcode.length == 18 && barcode.startsWith('1')) {
+  //     return TypeOfBarcode.pallet;
+  //   } else {
+  //     if (barcode.length == 18 && barcode.startsWith('0')) {
+  //       return TypeOfBarcode.box;
+  //     } else {
+  //       if (barcode.length >= 37) {
+  //         return TypeOfBarcode.unit;
+  //       } else {
+  //         return TypeOfBarcode.undefined;
+  //       }
+  //     }
+  //   }
+  // }
 
   bool checkDublicateBarcodeInPallet({required String barcode}) {
     final PalletsBloc blocPallet = context.read<PalletsBloc>();
@@ -577,6 +601,16 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
         }
       }
     }
+  }
+
+  int calculateTotalItemCount(ListPallets listPallets) {
+    int totalCount = 0;
+    for (var modelsPallet in listPallets.listModelsPallet) {
+      for (var box in modelsPallet.boxes) {
+        totalCount += box.items.length;
+      }
+    }
+    return totalCount;
   }
 
   @override
@@ -841,6 +875,8 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                   style: TextStyle(color: Colors.black),
                 ),
               ),
+              Text(
+                  'Всего едениц: ${calculateTotalItemCount((blocPallet.state as PalletsStateLoaded).listPallets).toString()}'),
               TwoTabWidget(
                 scrollController: _scrollController,
                 myFocusNode: myFocusNode,
