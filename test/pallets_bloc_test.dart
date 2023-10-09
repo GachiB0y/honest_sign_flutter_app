@@ -4,6 +4,7 @@ import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.d
 import 'package:honest_sign_flutter_app/domain/data_provider/session_data_provider.dart';
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 import 'package:honest_sign_flutter_app/domain/repository/pallets_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:test/test.dart';
 import 'package:bloc_test/bloc_test.dart';
@@ -28,10 +29,12 @@ void main() {
       expect(palletsBloc.state, const PalletsState.loading());
     });
     group('PalletsBloc fetching', () {
+      SharedPreferences.setMockInitialValues({}); // Мокаем SharedPreferences
+
       blocTest(
         'fetch pallets  when PalletsEventFetch is added',
         build: () => palletsBloc,
-        act: (bloc) => bloc.add(const PalletsEventFetch(numberCard: '977065')),
+        act: (bloc) => bloc.add(const PalletsEventFetch(numberCard: '999999')),
         expect: () => <PalletsState>[
           const PalletsState.loading(),
           PalletsState.loaded(
@@ -48,6 +51,7 @@ void main() {
               countBarcodes: 0,
               maxIndexUnitInBox: 0,
               countBox: 0,
+              isNewRelease: true,
               currentBarcodeHistory: {}),
         ],
       );
@@ -136,7 +140,8 @@ void main() {
       late final ModelsPallet pallet;
       final List<ModelsPallet> listModelPallet = [];
       late final ListPallets listPallets;
-
+      numberCardConst = '999999';
+      SharedPreferences.setMockInitialValues({});
       setUp(() {
         final iterable = barcodes.map((e) => Item(barcode: e, date: dateNow));
         listUnits.addAll(iterable);
@@ -153,6 +158,7 @@ void main() {
         listModelPallet.add(pallet);
         listPallets = ListPallets(listModelsPallet: listModelPallet);
       });
+
       blocTest(
         'add First Box  in pallet  when PalletsEventCreateBox is added',
         build: () => palletsBloc,

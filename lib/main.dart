@@ -28,9 +28,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          // PalletCubit(),
-          PalletsBloc(palletsRepository: palletsRepository),
+      create: (context) => PalletsBloc(palletsRepository: palletsRepository),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -47,15 +45,13 @@ class _MyAppState extends State<MyApp> {
         home: Scaffold(
           resizeToAvoidBottomInset: false,
           body: SafeArea(
-            child:
-                // InputWidget()
-                WillPopScope(
-                    onWillPop: () async {
-                      // Возвращаем `false` для предотвращения закрытия диалогового окна
-                      print('BACK');
-                      return false;
-                    },
-                    child: const FirstNewScreen()),
+            child: WillPopScope(
+                onWillPop: () async {
+                  // Возвращаем `false` для предотвращения закрытия диалогового окна
+
+                  return false;
+                },
+                child: const FirstNewScreen()),
           ),
         ),
       ),
