@@ -1076,72 +1076,7 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
                 onPressed: () {
                   widget.myFocusNode.nextFocus();
 
-                  showDialog<void>(
-                    barrierDismissible: false, //РАСКОМЕНТИРОВАТЬ В  РЕЛИЗЕ
-
-                    context: context,
-                    builder: (BuildContext context) {
-                      final PalletsBloc blocPallet =
-                          context.read<PalletsBloc>();
-                      final SearchBarcodeBloc blocSearchBarcode =
-                          context.watch<SearchBarcodeBloc>();
-                      return BlocBuilder<SearchBarcodeBloc, SearchBarcodeState>(
-                        builder:
-                            (BuildContext context, SearchBarcodeState state) {
-                          return WillPopScope(
-                            onWillPop: () async {
-                              // Возвращаем `false` для предотвращения закрытия диалогового окна
-                              return false;
-                            },
-                            child: AlertDialog(
-                                elevation: 3.0,
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (state is SearchBarcodeStateLoaded)
-                                      Text(
-                                        state.infoAboutBarcode ?? '',
-                                        style: const TextStyle(fontSize: 24),
-                                      ),
-                                    TextField(
-                                      autofocus: true,
-                                      controller: controller,
-                                      decoration: const InputDecoration(
-                                        hintText: 'Штрихкод еденицы',
-                                      ),
-                                      onSubmitted: (value) {
-                                        final barcode = controller.text;
-                                        blocSearchBarcode.add(
-                                            SerachBarcodeEventSerachBarcode(
-                                                listPallets: (blocPallet.state
-                                                        as PalletsStateLoaded)
-                                                    .listPallets,
-                                                barcode: barcode));
-                                        controller.clear();
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                actions: <Widget>[
-                                  Center(
-                                    child: TextButton(
-                                      child: const Text(
-                                        'Закрыть',
-                                        style: TextStyle(fontSize: 20),
-                                      ),
-                                      onPressed: () {
-                                        blocSearchBarcode.add(
-                                            const SerachBarcodeEventClearInfo());
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  )
-                                ]),
-                          );
-                        },
-                      );
-                    },
-                  ).then((value) {
+                  showDialogSerachBarcode(context).then((value) {
                     setState(() {
                       controller.clear();
                       widget.myFocusNode.requestFocus();
@@ -1162,6 +1097,72 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
         } else {
           return const SizedBox.shrink();
         }
+      },
+    );
+  }
+
+  Future<void> showDialogSerachBarcode(BuildContext context) {
+    return showDialog<void>(
+      barrierDismissible: false, //РАСКОМЕНТИРОВАТЬ В  РЕЛИЗЕ
+
+      context: context,
+      builder: (BuildContext context) {
+        final PalletsBloc blocPallet = context.read<PalletsBloc>();
+        final SearchBarcodeBloc blocSearchBarcode =
+            context.watch<SearchBarcodeBloc>();
+        return BlocBuilder<SearchBarcodeBloc, SearchBarcodeState>(
+          builder: (BuildContext context, SearchBarcodeState state) {
+            return WillPopScope(
+              onWillPop: () async {
+                // Возвращаем `false` для предотвращения закрытия диалогового окна
+                return false;
+              },
+              child: AlertDialog(
+                  elevation: 3.0,
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (state is SearchBarcodeStateLoaded)
+                        Text(
+                          state.infoAboutBarcode ?? '',
+                          style: const TextStyle(fontSize: 24),
+                        ),
+                      TextField(
+                        autofocus: true,
+                        controller: controller,
+                        decoration: const InputDecoration(
+                          hintText: 'Штрихкод еденицы',
+                        ),
+                        onSubmitted: (value) {
+                          final barcode = controller.text;
+                          blocSearchBarcode.add(SerachBarcodeEventSerachBarcode(
+                              listPallets:
+                                  (blocPallet.state as PalletsStateLoaded)
+                                      .listPallets,
+                              barcode: barcode));
+                          controller.clear();
+                        },
+                      ),
+                    ],
+                  ),
+                  actions: <Widget>[
+                    Center(
+                      child: TextButton(
+                        child: const Text(
+                          'Закрыть',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        onPressed: () {
+                          blocSearchBarcode
+                              .add(const SerachBarcodeEventClearInfo());
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    )
+                  ]),
+            );
+          },
+        );
       },
     );
   }
