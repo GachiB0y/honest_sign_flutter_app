@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
+import 'package:honest_sign_flutter_app/domain/api_client/api_service.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_date_widget.dart';
 
@@ -19,7 +20,7 @@ class FirstNewScreen extends StatefulWidget {
 class _FirstNewScreenState extends State<FirstNewScreen> {
   final TextEditingController textEditingController = TextEditingController();
 
-  final BarcodeService barcodeService = const BarcodeServiceImpl();
+  final BarcodeService barcodeService = BarcodeServiceImpl(HTTPServiceImpl());
 
   bool isShowDateInput = false;
   String numberCard = numberCardConst;

@@ -5,7 +5,7 @@ import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.d
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-abstract class SessionDataProvdier {
+abstract interface class SessionDataProvdier {
   Future<void> saveState(
       {required String numberCard, required PalletsStateLoaded palletState});
   Future<PalletsStateLoaded?> loadState({required String numberCard});

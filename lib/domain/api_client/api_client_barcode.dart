@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:honest_sign_flutter_app/constants.dart';
+import 'package:honest_sign_flutter_app/domain/api_client/api_service.dart';
 import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart'
     as newEntity;
@@ -14,8 +15,7 @@ import 'package:permission_handler/permission_handler.dart';
 abstract class BarcodeService {
   const BarcodeService();
   Future<(List<String>, List<String>)> getFreeCodes();
-  Future<bool> getBarcodesPallets();
-  Future<bool> postBarcodes({required ModelsPallet pallets});
+
   Future<bool> sendBarcodes(
       {required newEntity.ListPallets listPallets, required bool isDone});
 
@@ -30,118 +30,35 @@ abstract class BarcodeService {
 }
 
 class BarcodeServiceImpl extends BarcodeService {
-  const BarcodeServiceImpl();
+  IHTTPService _httpService;
+  BarcodeServiceImpl(this._httpService);
   @override
   Future<(List<String>, List<String>)> getFreeCodes() async {
-    var headers = {'Authorization': 'Basic R3Jhc3NFeGNoYW5nZTphbG9iQTY0'};
-    var request = http.Request(
-        'POST',
-        Uri.parse(
-            'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/FreeCodes'));
+    try {
+      final http.StreamedResponse response = await _httpService.post(
+          uri:
+              'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/FreeCodes',
+          body: null,
+          contentType: false);
 
-    request.headers.addAll(headers);
+      if (response.statusCode == 200) {
+        final jsonResponse = await response.stream.bytesToString();
+        final jsonData = jsonDecode(jsonResponse);
 
-    http.StreamedResponse response = await request.send();
+        List<String> listBoxes =
+            (jsonData['Message']['Box'] as List<dynamic>).cast<String>();
+        List<String> listPallets =
+            (jsonData['Message']['Pallet'] as List<dynamic>).cast<String>();
 
-    if (response.statusCode == 200) {
-      final jsonResponse = await response.stream.bytesToString();
-      final jsonData = jsonDecode(jsonResponse);
-
-      List<String> listBoxes =
-          (jsonData['Message']['Box'] as List<dynamic>).cast<String>();
-      List<String> listPallets =
-          (jsonData['Message']['Pallet'] as List<dynamic>).cast<String>();
-
-      (List<String>, List<String>) record = (listBoxes, listPallets);
-      return record;
-    } else {
+        (List<String>, List<String>) record = (listBoxes, listPallets);
+        return record;
+      } else {
+        throw Exception('Ошибка получения данных о разливе!');
+      }
+    } on TimeoutException {
+      throw Exception('Время отправки выше 8 секунд.\nОбратитесь к мастеру!');
+    } catch (e) {
       throw Exception('Ошибка получения данных о разливе!');
-    }
-  }
-
-  @override
-  Future<bool> getBarcodesPallets() async {
-    var url = 'http://10.3.50.96:8000/get_pallet';
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      // List<String> myList = jsonDecode(response.body);
-      List<String> myList =
-          (jsonDecode(response.body) as List<dynamic>).cast<String>();
-
-      setPallets = Set.from(myList);
-
-      return true;
-    } else {
-      throw Exception('Failed to load');
-    }
-  }
-
-  @override
-  Future<bool> postBarcodes({required ModelsPallet pallets}) async {
-    // http.Response response;
-    // var url = 'http://10.3.50.96:8000/';
-    var headers = {
-      'Content-Type': 'text/plain',
-      'Authorization': 'Basic R3Jhc3NFeGNoYW5nZTphbG9iQTY0'
-    };
-    var request = http.Request(
-        'POST',
-        Uri.parse(
-            'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cards'));
-
-    final copyPallets = pallets.copyWith();
-
-    bool isNewPallet = true;
-
-    if (pallets.status == 'NotFull') {
-      modelListPallets.listPallets.forEach((element) {
-        if (element.status == pallets.status) {
-          isNewPallet = false;
-        } else {
-          isNewPallet = true;
-        }
-      });
-      if (isNewPallet) {
-        modelListPallets.listPallets.add(pallets);
-      }
-    } else {
-      // modelListPallets.listPallets.removeLast();
-      final isConatins = modelListPallets.listPallets.contains(copyPallets);
-      if (!isConatins) {
-        modelListPallets.listPallets.add(copyPallets);
-      }
-    }
-
-    final bodyTwo = jsonEncode(modelListPallets.toJson());
-    await savePalletsInCash(
-        modelListPallets: modelListPallets, fileName: 'palletCash');
-
-    final isConnect = await checkInternetConnection();
-    if (isConnect) {
-      try {
-        request.body =
-            '''{"CardId":"$numberCardConst","Action":"Update","Pallets":$bodyTwo}''';
-        request.headers.addAll(headers);
-
-        http.StreamedResponse response =
-            await request.send().timeout(const Duration(seconds: 8));
-        // response = await http
-        //     .post(Uri.parse(url), body: bodyTwo)
-        //     .timeout(const Duration(seconds: 3));
-        if (response.statusCode == 200) {
-          return true;
-        } else {
-          // return false;
-          throw Exception('Ошибка отправки палеты!');
-        }
-      } on TimeoutException {
-        throw Exception('Время отправки выше 8 секунд.');
-      } catch (e) {
-        rethrow;
-      }
-    } else {
-      return false;
     }
   }
 
@@ -149,26 +66,18 @@ class BarcodeServiceImpl extends BarcodeService {
   Future<bool> sendBarcodes(
       {required newEntity.ListPallets listPallets,
       required bool isDone}) async {
-    var headers = {
-      'Content-Type': 'text/plain',
-      'Authorization': 'Basic R3Jhc3NFeGNoYW5nZTphbG9iQTY0'
-    };
-    var request = http.Request(
-        'POST',
-        Uri.parse(
-            'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cards'));
-
     final bodyTwo = jsonEncode(listPallets.toJson());
 
     final isConnect = await checkInternetConnection();
     if (isConnect) {
       try {
-        request.body =
-            '''{"CardId":"$numberCardConst","Action":"Update","IsDone":$isDone,"Pallets":$bodyTwo}''';
-        request.headers.addAll(headers);
-
-        http.StreamedResponse response =
-            await request.send().timeout(const Duration(seconds: 8));
+        final http.StreamedResponse response = await _httpService.post(
+            uri:
+                'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cards',
+            body:
+                '''{"CardId":"$numberCardConst","Action":"Update","IsDone":false,"Pallets":$bodyTwo}''',
+            // '''{"CardId":"$numberCardConst","Action":"Update","IsDone":$isDone,"Pallets":$bodyTwo}''',// РАССКОМЕНИТЬ В РЕЛИЗЕ
+            contentType: true);
 
         if (response.statusCode == 200) {
           return true;
@@ -231,32 +140,32 @@ class BarcodeServiceImpl extends BarcodeService {
 
   @override
   Future<bool> getInfoForBarcodeRelease({required String numberCard}) async {
-    var headers = {
-      'Content-Type': 'text/plain',
-      'Authorization': 'Basic R3Jhc3NFeGNoYW5nZTphbG9iQTY0'
-    };
-    var url = 'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cards';
-    var request = http.Request('POST', Uri.parse(url));
-    request.body = '''{"CardId":$numberCard,"Action":"Create"}''';
-    request.headers.addAll(headers);
+    final http.StreamedResponse response = await _httpService.post(
+        uri: 'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cards',
+        body: '''{"CardId":$numberCard,"Action":"Create"}''',
+        contentType: true);
 
-    http.StreamedResponse response = await request.send();
+    try {
+      if (response.statusCode == 200) {
+        final jsonResponse = await response.stream.bytesToString();
+        final jsonData = jsonDecode(jsonResponse);
 
-    if (response.statusCode == 200) {
-      final jsonResponse = await response.stream.bytesToString();
-      final jsonData = jsonDecode(jsonResponse);
-
-      final int allBarcodeUnitsPallet = jsonData['Message']['PalletItems'];
-      countBoxesPerPallet = jsonData['Message']['PalletBox'];
-      countUnitsPerBox = allBarcodeUnitsPallet ~/ countBoxesPerPallet;
-      countAllBarcodesPerPallet = allBarcodeUnitsPallet +
-          countBoxesPerPallet +
-          1; // РАССКОМЕНТИРОВАТЬ В РЕЛИЗЕ ВЕРСИИ
-      return true;
-    } else if (response.statusCode == 404) {
-      throw Exception(
-          'Карточка отработала!\n Вы пыдаетесь запустить по ней розлив вне смены!');
-    } else {
+        final int allBarcodeUnitsPallet = jsonData['Message']['PalletItems'];
+        countBoxesPerPallet = jsonData['Message']['PalletBox'];
+        countUnitsPerBox = allBarcodeUnitsPallet ~/ countBoxesPerPallet;
+        countAllBarcodesPerPallet = allBarcodeUnitsPallet +
+            countBoxesPerPallet +
+            1; // РАССКОМЕНТИРОВАТЬ В РЕЛИЗЕ ВЕРСИИ
+        return true;
+      } else if (response.statusCode == 404) {
+        throw Exception(
+            'Карточка отработала!\n Вы пыдаетесь запустить по ней розлив вне смены!');
+      } else {
+        throw Exception('Ошибка получения данных о разливе!');
+      }
+    } on TimeoutException {
+      throw Exception('Время отправки выше 8 секунд.\nОбратитесь к мастеру!');
+    } catch (e) {
       throw Exception('Ошибка получения данных о разливе!');
     }
   }
