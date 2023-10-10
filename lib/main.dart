@@ -4,6 +4,7 @@ import 'package:honest_sign_flutter_app/bloc_observable.dart';
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/domain/api_client/api_service.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.dart';
+import 'package:honest_sign_flutter_app/domain/blocs/search_barcode_bloc/search_barcode_bloc.dart';
 import 'package:honest_sign_flutter_app/domain/data_provider/session_data_provider.dart';
 import 'package:honest_sign_flutter_app/domain/repository/pallets_repository.dart';
 
@@ -28,8 +29,16 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PalletsBloc(palletsRepository: palletsRepository),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<PalletsBloc>(
+          create: (BuildContext context) =>
+              PalletsBloc(palletsRepository: palletsRepository),
+        ),
+        BlocProvider<SearchBarcodeBloc>(
+          create: (BuildContext context) => SearchBarcodeBloc(),
+        ),
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
