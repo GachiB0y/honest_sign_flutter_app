@@ -9,7 +9,7 @@ import 'package:honest_sign_flutter_app/domain/blocs/search_barcode_bloc/search_
 import 'package:honest_sign_flutter_app/domain/data_provider/session_data_provider.dart';
 import 'package:honest_sign_flutter_app/domain/repository/pallets_repository.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_date_picker/custom_date_pikcer_model.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:honest_sign_flutter_app/ui/screens/first_screen/new_first_screen.dart';
 
 void main() {
@@ -44,7 +44,14 @@ class _MyAppState extends State<MyApp> {
       child: ChangeNotifierProvaider<CustomDatePickerModel>(
         model: CustomDatePickerModel(),
         child: MaterialApp(
-          title: 'Flutter Demo',
+          title: ' Demo',
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('ru'), // Установите поддерживаемый язык
+          ],
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
             useMaterial3: true,

@@ -8,7 +8,7 @@ import 'package:honest_sign_flutter_app/domain/blocs/search_barcode_bloc/search_
 import 'package:honest_sign_flutter_app/ui/components/custom_date_picker/custom_date_picker.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_date_picker/custom_date_pikcer_model.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar_dublicate.dart';
-import 'package:honest_sign_flutter_app/ui/components/input_date_widget.dart';
+// import 'package:honest_sign_flutter_app/ui/components/input_date_widget.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
@@ -526,35 +526,18 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
     }
   }
 
-  // TypeOfBarcode isValidBarcode(String barcode) {
-  //   bool isContains = setPallets.contains(barcode);
-  //   if (isContains) {
-  //     return TypeOfBarcode.pallet;
-  //   } else {
-  //     isContains = setBoxs.contains(barcode);
-  //     if (isContains) {
-  //       return TypeOfBarcode.box;
-  //     } else {
-  //       // isContains = setUnit.contains(
-  //       //     barcode);
-  //       // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
-  //       if (barcode.length >= 37) {
-  //         return TypeOfBarcode.unit;
-  //       } else {
-  //         return TypeOfBarcode.undefined;
-  //       }
-  //     }
-  //   }
-  // }
-  // ЗАГЛУШКА НА ПРОВЕРКУ АГРЕГАЦИОННОГО КОДА ЗАКОММЕНТИТЬ В РЕЛИЗЕ
-
   TypeOfBarcode isValidBarcode(String barcode) {
-    if (barcode.length == 18 && barcode.startsWith('1')) {
+    bool isContains = setPallets.contains(barcode);
+    if (isContains) {
       return TypeOfBarcode.pallet;
     } else {
-      if (barcode.length == 18 && barcode.startsWith('0')) {
+      isContains = setBoxs.contains(barcode);
+      if (isContains) {
         return TypeOfBarcode.box;
       } else {
+        // isContains = setUnit.contains(
+        //     barcode);
+        // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
         if (barcode.length >= 37) {
           return TypeOfBarcode.unit;
         } else {
@@ -563,6 +546,23 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
       }
     }
   }
+  // ЗАГЛУШКА НА ПРОВЕРКУ АГРЕГАЦИОННОГО КОДА ЗАКОММЕНТИТЬ В РЕЛИЗЕ
+
+  // TypeOfBarcode isValidBarcode(String barcode) {
+  //   if (barcode.length == 18 && barcode.startsWith('1')) {
+  //     return TypeOfBarcode.pallet;
+  //   } else {
+  //     if (barcode.length == 18 && barcode.startsWith('0')) {
+  //       return TypeOfBarcode.box;
+  //     } else {
+  //       if (barcode.length >= 37) {
+  //         return TypeOfBarcode.unit;
+  //       } else {
+  //         return TypeOfBarcode.undefined;
+  //       }
+  //     }
+  //   }
+  // }
 
   bool checkDublicateBarcodeInPallet({required String barcode}) {
     final PalletsBloc blocPallet = context.read<PalletsBloc>();

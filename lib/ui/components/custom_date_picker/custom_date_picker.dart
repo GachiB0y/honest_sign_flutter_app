@@ -13,13 +13,12 @@ class CustomDatePicker extends StatefulWidget {
 }
 
 class _CustomDatePickerState extends State<CustomDatePicker> {
-  // DateTime selectedDate = DateTime.now();
-
   Future<void> _selectDate(BuildContext context) async {
     final dateModel = ChangeNotifierProvaider.watch<
         ChangeNotifierProvaider<CustomDatePickerModel>,
         CustomDatePickerModel>(context);
     final DateTime? picked = await showDatePicker(
+      locale: const Locale('ru'),
       context: context,
       initialDate: dateModel!.selectedDate,
       firstDate: DateTime(1900),
@@ -40,15 +39,6 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     );
 
     if (picked != null && picked != dateModel.selectedDate) {
-      // setState(() {
-      //   selectedDate = picked;
-      //   ChangeNotifierProvaider.read<
-      //           ChangeNotifierProvaider<FirstScreenWidgetModel>,
-      //           FirstScreenWidgetModel>(context)
-      //       ?.setDateOfRelease(
-      //     DateFormat('dd.MM.yyyy').format(selectedDate),
-      //   );
-      // });
       ChangeNotifierProvaider.read<
               ChangeNotifierProvaider<CustomDatePickerModel>,
               CustomDatePickerModel>(context)
