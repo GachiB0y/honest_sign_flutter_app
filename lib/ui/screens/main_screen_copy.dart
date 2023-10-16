@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:honest_sign_flutter_app/custom_provider.dart';
 
 import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.dart';
 import 'package:honest_sign_flutter_app/domain/blocs/search_barcode_bloc/search_barcode_bloc.dart';
+import 'package:honest_sign_flutter_app/ui/components/custom_date_picker/custom_date_picker.dart';
+import 'package:honest_sign_flutter_app/ui/components/custom_date_picker/custom_date_pikcer_model.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar_dublicate.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_date_widget.dart';
 import 'package:honest_sign_flutter_app/ui/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 import 'package:honest_sign_flutter_app/ui/screens/new_refactor_box_screen.dart';
+import 'package:intl/intl.dart';
 
 enum TypeOfBarcode { unit, box, pallet, undefined }
 
@@ -359,6 +363,9 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           final PalletsBloc blocPallet = context.read<PalletsBloc>();
+          final dateModel = ChangeNotifierProvaider.watch<
+              ChangeNotifierProvaider<CustomDatePickerModel>,
+              CustomDatePickerModel>(context);
           return WillPopScope(
             onWillPop: () async {
               // Возвращаем `false` для предотвращения закрытия диалогового окна
@@ -367,16 +374,17 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
             child: AlertDialog(
               elevation: 3.0,
               content: showTextField
-                  ? TextField(
-                      autofocus: true,
-                      keyboardType: TextInputType.number,
-                      controller: _controllerForAlertChangeDateRelease,
-                      decoration: const InputDecoration(
-                        hintText:
-                            'Введите дату (дд.мм.гггг) (которая указана на флаконе)',
-                      ),
-                      inputFormatters: [DateTextFormatter()],
-                    )
+                  // ? TextField(
+                  //     autofocus: true,
+                  //     keyboardType: TextInputType.number,
+                  //     controller: _controllerForAlertChangeDateRelease,
+                  //     decoration: const InputDecoration(
+                  //       hintText:
+                  //           'Введите дату (дд.мм.гггг) (которая указана на флаконе)',
+                  //     ),
+                  //     inputFormatters: [DateTextFormatter()],
+                  //   )
+                  ? const CustomDatePicker()
                   : Text(
                       'Дата розлива следующей паллеты (которая указана на флаконе): $dateOfRelease.\n Вы уверены?',
                       textAlign: TextAlign.center,
@@ -391,11 +399,14 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                             style: TextStyle(fontSize: 20),
                           ),
                           onPressed: () {
-                            dateOfRelease =
-                                _controllerForAlertChangeDateRelease.text;
+                            dateOfRelease = DateFormat('dd.MM.yyyy').format(
+                                dateModel?.selectedDate ??
+                                    DateTime
+                                        .now()); //_controllerForAlertChangeDateRelease.text;
                             blocPallet.add(PalletsEventChangeDateRelease(
-                                newDateOfRelease:
-                                    _controllerForAlertChangeDateRelease.text));
+                                newDateOfRelease: DateFormat('dd.MM.yyyy')
+                                    .format(dateModel?.selectedDate ??
+                                        DateTime.now())));
 
                             setState(() {
                               showTextField = false;
@@ -1172,6 +1183,9 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
 
       context: context,
       builder: (BuildContext context) {
+        final dateModel = ChangeNotifierProvaider.watch<
+            ChangeNotifierProvaider<CustomDatePickerModel>,
+            CustomDatePickerModel>(context);
         final PalletsBloc blocPallet = context.read<PalletsBloc>();
         return WillPopScope(
           onWillPop: () async {
@@ -1180,15 +1194,16 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
           },
           child: AlertDialog(
               elevation: 3.0,
-              content: TextField(
-                autofocus: true,
-                keyboardType: TextInputType.number,
-                controller: controller,
-                decoration: const InputDecoration(
-                  hintText: 'Введите дату (дд.мм.гггг)',
-                ),
-                inputFormatters: [DateTextFormatter()],
-              ),
+              content: const CustomDatePicker(),
+              // TextField(
+              //   autofocus: true,
+              //   keyboardType: TextInputType.number,
+              //   controller: controller,
+              //   decoration: const InputDecoration(
+              //     hintText: 'Введите дату (дд.мм.гггг)',
+              //   ),
+              //   inputFormatters: [DateTextFormatter()],
+              // ),
               actions: <Widget>[
                 Center(
                   child: TextButton(
@@ -1197,7 +1212,9 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
                       style: TextStyle(fontSize: 20),
                     ),
                     onPressed: () {
-                      final newDateOfRelease = controller.text;
+                      final newDateOfRelease = DateFormat('dd.MM.yyyy')
+                          .format(dateModel?.selectedDate ?? DateTime.now());
+                      //controller.text;
                       blocPallet.add(PalletsEventChangeDateRelease(
                           indexPallet: (indexPallet - 1),
                           newDateOfRelease: newDateOfRelease));

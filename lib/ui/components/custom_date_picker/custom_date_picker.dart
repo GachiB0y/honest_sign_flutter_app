@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:honest_sign_flutter_app/custom_provider.dart';
-import 'package:honest_sign_flutter_app/ui/screens/first_screen/custom_date_pikcer_model.dart';
+import 'package:honest_sign_flutter_app/ui/components/custom_date_picker/custom_date_pikcer_model.dart';
 import 'package:intl/intl.dart';
 
 class CustomDatePicker extends StatefulWidget {
