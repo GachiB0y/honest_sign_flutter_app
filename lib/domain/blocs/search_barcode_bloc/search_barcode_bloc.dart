@@ -36,7 +36,7 @@ class SearchBarcodeBloc extends Bloc<SerachBarcodeEvent, SearchBarcodeState> {
                 listPallets.listModelsPallet.indexOf(modelsPallet);
 
             infoByBarcode =
-                'Паллет №${modelsPalletNumber + 1}. Коробка ${boxNumber + 1} ';
+                'Паллет №${modelsPalletNumber + 1}.\n Коробка №$boxNumber: ${box.barcode} ';
             break;
           }
         }

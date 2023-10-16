@@ -372,17 +372,13 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                       keyboardType: TextInputType.number,
                       controller: _controllerForAlertChangeDateRelease,
                       decoration: const InputDecoration(
-                        hintText: 'Введите дату (дд.мм.гггг)',
+                        hintText:
+                            'Введите дату (дд.мм.гггг) (которая указана на флаконе)',
                       ),
                       inputFormatters: [DateTextFormatter()],
                     )
-                  // DateInputTextField(
-                  //     callBack: null,
-                  //     controller: _controllerForAlertChangeDateRelease,
-                  //     formattedText: formattedText,
-                  //   )
                   : Text(
-                      'Дата розлива следующей паллеты: $dateOfRelease. Вы уверены?',
+                      'Дата розлива следующей паллеты (которая указана на флаконе): $dateOfRelease.\n Вы уверены?',
                       textAlign: TextAlign.center,
                       style: const TextStyle(fontSize: 20),
                     ),
@@ -797,7 +793,9 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                 ),
               ),
               Text(
-                  'Всего едениц: ${calculateTotalItemCount((blocPallet.state as PalletsStateLoaded).listPallets).toString()}'),
+                'Паллет №${(blocPallet.state as PalletsStateLoaded).listPallets.listModelsPallet.length}: ${(blocPallet.state as PalletsStateLoaded).listPallets.listModelsPallet.last.boxes.length}/$countBoxesPerPallet \n Всего cдано: ${calculateTotalItemCount((blocPallet.state as PalletsStateLoaded).listPallets).toString()}',
+                style: const TextStyle(fontSize: 16),
+              ),
               TwoTabWidget(
                 scrollController: _scrollController,
                 myFocusNode: myFocusNode,
@@ -1277,7 +1275,7 @@ class TwoTabWidget extends StatelessWidget {
           children: [
             const TabBar(
               tabs: [
-                Tab(text: 'Текущие бутылки'),
+                Tab(text: 'Текущие флаконы'),
                 Tab(text: 'История'),
               ],
             ),
@@ -1329,8 +1327,8 @@ class CurrentHistoryWidget extends StatelessWidget {
             //     .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
             return ListTile(
                 title: Text(
-                  '${index + 1}. Бутылка ${index + 1}.',
-                  style: const TextStyle(fontSize: 18),
+                  '${index + 1}. Флакон ${index + 1}.',
+                  style: const TextStyle(fontSize: 14),
                 ),
                 trailing: index + 1 == statePalletsBloc.maxIndexUnitInBox
                     ? IconButton(

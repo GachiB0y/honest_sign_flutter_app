@@ -8,7 +8,7 @@ import 'package:honest_sign_flutter_app/domain/blocs/search_barcode_bloc/search_
 import 'package:honest_sign_flutter_app/domain/data_provider/session_data_provider.dart';
 import 'package:honest_sign_flutter_app/domain/repository/pallets_repository.dart';
 
-import 'package:honest_sign_flutter_app/ui/screens/new_first_screen.dart';
+import 'package:honest_sign_flutter_app/ui/screens/first_screen/new_first_screen.dart';
 
 void main() {
   Bloc.observer = const AppBlocObserver();

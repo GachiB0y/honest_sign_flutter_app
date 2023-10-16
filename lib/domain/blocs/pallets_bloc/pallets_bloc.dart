@@ -437,10 +437,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         .listModelsPallet
         .last
         .copyWith(
-            barcode: event.barcode,
-            date: formattedDateTime,
-            dateRelease: dateOfRelease,
-            status: 'Full');
+            barcode: event.barcode, date: formattedDateTime, status: 'Full');
 
 //Копирруем список паллет
     final List<ModelsPallet> listNewModelPallets = [
@@ -459,7 +456,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         barcode: nameFuturePallet,
         date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
         boxes: [],
-        dateRelease: dateOfRelease,
+        dateRelease: dateOfRelease.toString(),
         status: 'NotFull');
 
     listNewModelPallets.add(pallet);
@@ -666,7 +663,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
             barcode: nameFuturePallet,
             date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
             boxes: [],
-            dateRelease: dateOfRelease,
+            dateRelease: dateOfRelease.toString(),
             status: 'NotFull');
         final List<ModelsPallet> listModelsPallet = [pallet];
         final ListPallets listPallets =
