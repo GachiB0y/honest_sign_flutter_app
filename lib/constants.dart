@@ -9,6 +9,7 @@ Set<String> setPallets = {'2007', '2008'};
 Set<String> setUnit = {};
 int maxIndexUnitInBox = 0;
 String numberCardConst = '';
+String gtin = '';
 
 String dateOfRelease = '';
 String nameFuturePallet = 'Будущая паллета';

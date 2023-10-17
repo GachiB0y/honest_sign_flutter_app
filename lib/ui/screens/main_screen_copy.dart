@@ -526,35 +526,18 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
     }
   }
 
-  TypeOfBarcode isValidBarcode(String barcode) {
-    bool isContains = setPallets.contains(barcode);
-    if (isContains) {
-      return TypeOfBarcode.pallet;
-    } else {
-      isContains = setBoxs.contains(barcode);
-      if (isContains) {
-        return TypeOfBarcode.box;
-      } else {
-        // isContains = setUnit.contains(
-        //     barcode);
-        // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
-        if (barcode.length >= 37) {
-          return TypeOfBarcode.unit;
-        } else {
-          return TypeOfBarcode.undefined;
-        }
-      }
-    }
-  }
-  // ЗАГЛУШКА НА ПРОВЕРКУ АГРЕГАЦИОННОГО КОДА ЗАКОММЕНТИТЬ В РЕЛИЗЕ
-
   // TypeOfBarcode isValidBarcode(String barcode) {
-  //   if (barcode.length == 18 && barcode.startsWith('1')) {
+  //   bool isContains = setPallets.contains(barcode);
+  //   if (isContains) {
   //     return TypeOfBarcode.pallet;
   //   } else {
-  //     if (barcode.length == 18 && barcode.startsWith('0')) {
+  //     isContains = setBoxs.contains(barcode);
+  //     if (isContains) {
   //       return TypeOfBarcode.box;
   //     } else {
+  //       // isContains = setUnit.contains(
+  //       //     barcode);
+  //       // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
   //       if (barcode.length >= 37) {
   //         return TypeOfBarcode.unit;
   //       } else {
@@ -563,6 +546,23 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
   //     }
   //   }
   // }
+  // ЗАГЛУШКА НА ПРОВЕРКУ АГРЕГАЦИОННОГО КОДА ЗАКОММЕНТИТЬ В РЕЛИЗЕ
+
+  TypeOfBarcode isValidBarcode(String barcode) {
+    if (barcode.length == 18 && barcode.startsWith('1')) {
+      return TypeOfBarcode.pallet;
+    } else {
+      if (barcode.length == 18 && barcode.startsWith('0')) {
+        return TypeOfBarcode.box;
+      } else {
+        if (barcode.length >= 37) {
+          return TypeOfBarcode.unit;
+        } else {
+          return TypeOfBarcode.undefined;
+        }
+      }
+    }
+  }
 
   bool checkDublicateBarcodeInPallet({required String barcode}) {
     final PalletsBloc blocPallet = context.read<PalletsBloc>();
@@ -570,6 +570,11 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
         .allBarcodeHistory
         .contains(barcode);
     return isDuplicate;
+  }
+
+  bool checkOtherProduct({required String barcode}) {
+    final isContains = barcode.contains(gtin);
+    return isContains;
   }
 
   Future<TypeOfStateSend> onSubmittedTextField({
@@ -582,11 +587,20 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
     });
     final isDuplicate = checkDublicateBarcodeInPallet(barcode: value);
     if (isDuplicate) {
-      CustomSnackBarDudlicateBarcode.showSnackBarForDuplicateBarcode(context);
+      CustomSnackBarError.showSnackBarForDuplicateBarcodeOrOtherProduct(
+          context, false);
 
       return TypeOfStateSend.duplicate;
     } else {
       final TypeOfBarcode typeBarcode = isValidBarcode(value);
+      if (typeBarcode == TypeOfBarcode.unit) {
+        final isNotOtherProduct = checkOtherProduct(barcode: value);
+        if (!isNotOtherProduct) {
+          CustomSnackBarError.showSnackBarForDuplicateBarcodeOrOtherProduct(
+              context, true);
+          return TypeOfStateSend.notValid;
+        }
+      }
       if (typeBarcode == TypeOfBarcode.undefined) {
         return TypeOfStateSend.notValid;
       } else {
@@ -619,7 +633,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
 
   @override
   Widget build(BuildContext context) {
-    final PalletsBloc blocPallet = context.read<PalletsBloc>();
+    final PalletsBloc blocPallet = context.watch<PalletsBloc>();
 
     return BlocListener<PalletsBloc, PalletsState>(
       listener: (context, state) {
@@ -811,6 +825,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                 scrollController: _scrollController,
                 myFocusNode: myFocusNode,
                 checkDublicateBarcodeInPallet: checkDublicateBarcodeInPallet,
+                checkOtherPRodcut: checkOtherProduct,
               ),
             ],
           ),
@@ -919,6 +934,7 @@ class BoxWidget extends StatefulWidget {
 
   final InputWithKeyboardControlFocusNode myFocusNode;
   final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
+  final bool Function({required String barcode}) checkOtherPRodcut;
 
   const BoxWidget({
     super.key,
@@ -926,6 +942,7 @@ class BoxWidget extends StatefulWidget {
     required this.myFocusNode,
     required this.checkDublicateBarcodeInPallet,
     required this.indexBox,
+    required this.checkOtherPRodcut,
   });
 
   @override
@@ -955,6 +972,7 @@ class _BoxWidgetState extends State<BoxWidget> {
                       box: widget.box,
                       checkDublicateBarcodeInPallet:
                           widget.checkDublicateBarcodeInPallet,
+                      checkOtherPRodcut: widget.checkOtherPRodcut,
                     ),
                   ),
                 ).then((result) {
@@ -996,11 +1014,13 @@ class _BoxWidgetState extends State<BoxWidget> {
 class ModelsPalletWidget extends StatefulWidget {
   final InputWithKeyboardControlFocusNode myFocusNode;
   final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
+  final bool Function({required String barcode}) checkOtherPRodcut;
 
   const ModelsPalletWidget({
     Key? key,
     required this.myFocusNode,
     required this.checkDublicateBarcodeInPallet,
+    required this.checkOtherPRodcut,
   }) : super(key: key);
 
   @override
@@ -1069,6 +1089,7 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
                               indexBox: box.key,
                               checkDublicateBarcodeInPallet:
                                   widget.checkDublicateBarcodeInPallet,
+                              checkOtherPRodcut: widget.checkOtherPRodcut,
                             ),
                           )
                           .toList(),
@@ -1275,6 +1296,7 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
 class TwoTabWidget extends StatelessWidget {
   final InputWithKeyboardControlFocusNode myFocusNode;
   final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
+  final bool Function({required String barcode}) checkOtherPRodcut;
 
   final ScrollController scrollController;
 
@@ -1282,7 +1304,8 @@ class TwoTabWidget extends StatelessWidget {
       {super.key,
       required this.scrollController,
       required this.myFocusNode,
-      required this.checkDublicateBarcodeInPallet});
+      required this.checkDublicateBarcodeInPallet,
+      required this.checkOtherPRodcut});
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -1309,6 +1332,7 @@ class TwoTabWidget extends StatelessWidget {
                       myFocusNode: myFocusNode,
                       checkDublicateBarcodeInPallet:
                           checkDublicateBarcodeInPallet,
+                      checkOtherPRodcut: checkOtherPRodcut,
                     ),
                   ),
                 ],
@@ -1342,21 +1366,26 @@ class CurrentHistoryWidget extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             // scrollController.jumpTo(scrollController.position
             //     .maxScrollExtent); //  авто скролл  на последний элемент при добавлении его в список
-            return ListTile(
-                title: Text(
-                  '${index + 1}. Флакон ${index + 1}.',
-                  style: const TextStyle(fontSize: 14),
-                ),
-                trailing: index + 1 == statePalletsBloc.maxIndexUnitInBox
-                    ? IconButton(
-                        onPressed: () {
-                          blocPallet.add(PalletsEventClearCurrentUnitsByBarcode(
-                              barcode: statePalletsBloc.units[index].barcode));
-                        },
-                        icon: const Icon(Icons.close),
-                        color: Colors.red,
-                      )
-                    : null);
+            return SizedBox(
+              height: 40.0,
+              child: ListTile(
+                  title: Text(
+                    '${index + 1}. Флакон ${index + 1}.',
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                  trailing: index + 1 == statePalletsBloc.maxIndexUnitInBox
+                      ? IconButton(
+                          onPressed: () {
+                            blocPallet.add(
+                                PalletsEventClearCurrentUnitsByBarcode(
+                                    barcode:
+                                        statePalletsBloc.units[index].barcode));
+                          },
+                          icon: const Icon(Icons.close),
+                          color: Colors.red,
+                        )
+                      : null),
+            );
           },
         ),
       );

@@ -3415,7 +3415,8 @@ mixin _$PalletsState {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)
+            bool? isNewRelease,
+            String? gtin)
         loaded,
     required TResult Function(String? errorText) error,
   }) =>
@@ -3434,7 +3435,8 @@ mixin _$PalletsState {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)?
+            bool? isNewRelease,
+            String? gtin)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) =>
@@ -3453,7 +3455,8 @@ mixin _$PalletsState {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)?
+            bool? isNewRelease,
+            String? gtin)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),
@@ -3563,7 +3566,8 @@ class _$PalletsStateLoading implements PalletsStateLoading {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)
+            bool? isNewRelease,
+            String? gtin)
         loaded,
     required TResult Function(String? errorText) error,
   }) {
@@ -3585,7 +3589,8 @@ class _$PalletsStateLoading implements PalletsStateLoading {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)?
+            bool? isNewRelease,
+            String? gtin)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) {
@@ -3607,7 +3612,8 @@ class _$PalletsStateLoading implements PalletsStateLoading {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)?
+            bool? isNewRelease,
+            String? gtin)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),
@@ -3728,7 +3734,8 @@ class _$PalletsStateCloseApp implements PalletsStateCloseApp {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)
+            bool? isNewRelease,
+            String? gtin)
         loaded,
     required TResult Function(String? errorText) error,
   }) {
@@ -3750,7 +3757,8 @@ class _$PalletsStateCloseApp implements PalletsStateCloseApp {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)?
+            bool? isNewRelease,
+            String? gtin)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) {
@@ -3772,7 +3780,8 @@ class _$PalletsStateCloseApp implements PalletsStateCloseApp {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)?
+            bool? isNewRelease,
+            String? gtin)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),
@@ -3851,7 +3860,8 @@ abstract class _$$PalletsStateLoadedCopyWith<$Res> {
       int countBox,
       bool? isLoading,
       String? errorText,
-      bool? isNewRelease});
+      bool? isNewRelease,
+      String? gtin});
 
   $ListPalletsCopyWith<$Res> get listPallets;
 }
@@ -3877,6 +3887,7 @@ class __$$PalletsStateLoadedCopyWithImpl<$Res>
     Object? isLoading = freezed,
     Object? errorText = freezed,
     Object? isNewRelease = freezed,
+    Object? gtin = freezed,
   }) {
     return _then(_$PalletsStateLoaded(
       listPallets: null == listPallets
@@ -3919,6 +3930,10 @@ class __$$PalletsStateLoadedCopyWithImpl<$Res>
           ? _value.isNewRelease
           : isNewRelease // ignore: cast_nullable_to_non_nullable
               as bool?,
+      gtin: freezed == gtin
+          ? _value.gtin
+          : gtin // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 
@@ -3945,6 +3960,7 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
       this.isLoading,
       this.errorText,
       this.isNewRelease,
+      this.gtin,
       final String? $type})
       : _units = units,
         _allBarcodeHistory = allBarcodeHistory,
@@ -3994,13 +4010,15 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
   final String? errorText;
   @override
   final bool? isNewRelease;
+  @override
+  final String? gtin;
 
   @JsonKey(name: 'runtimeType')
   final String $type;
 
   @override
   String toString() {
-    return 'PalletsState.loaded(listPallets: $listPallets, units: $units, allBarcodeHistory: $allBarcodeHistory, currentBarcodeHistory: $currentBarcodeHistory, countBarcodes: $countBarcodes, maxIndexUnitInBox: $maxIndexUnitInBox, countBox: $countBox, isLoading: $isLoading, errorText: $errorText, isNewRelease: $isNewRelease)';
+    return 'PalletsState.loaded(listPallets: $listPallets, units: $units, allBarcodeHistory: $allBarcodeHistory, currentBarcodeHistory: $currentBarcodeHistory, countBarcodes: $countBarcodes, maxIndexUnitInBox: $maxIndexUnitInBox, countBox: $countBox, isLoading: $isLoading, errorText: $errorText, isNewRelease: $isNewRelease, gtin: $gtin)';
   }
 
   @override
@@ -4026,7 +4044,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
             (identical(other.errorText, errorText) ||
                 other.errorText == errorText) &&
             (identical(other.isNewRelease, isNewRelease) ||
-                other.isNewRelease == isNewRelease));
+                other.isNewRelease == isNewRelease) &&
+            (identical(other.gtin, gtin) || other.gtin == gtin));
   }
 
   @JsonKey(ignore: true)
@@ -4042,7 +4061,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
       countBox,
       isLoading,
       errorText,
-      isNewRelease);
+      isNewRelease,
+      gtin);
 
   @JsonKey(ignore: true)
   @override
@@ -4066,7 +4086,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)
+            bool? isNewRelease,
+            String? gtin)
         loaded,
     required TResult Function(String? errorText) error,
   }) {
@@ -4080,7 +4101,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
         countBox,
         isLoading,
         errorText,
-        isNewRelease);
+        isNewRelease,
+        gtin);
   }
 
   @override
@@ -4098,7 +4120,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)?
+            bool? isNewRelease,
+            String? gtin)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) {
@@ -4112,7 +4135,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
         countBox,
         isLoading,
         errorText,
-        isNewRelease);
+        isNewRelease,
+        gtin);
   }
 
   @override
@@ -4130,7 +4154,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)?
+            bool? isNewRelease,
+            String? gtin)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),
@@ -4146,7 +4171,8 @@ class _$PalletsStateLoaded implements PalletsStateLoaded {
           countBox,
           isLoading,
           errorText,
-          isNewRelease);
+          isNewRelease,
+          gtin);
     }
     return orElse();
   }
@@ -4207,7 +4233,8 @@ abstract class PalletsStateLoaded implements PalletsState {
       required final int countBox,
       final bool? isLoading,
       final String? errorText,
-      final bool? isNewRelease}) = _$PalletsStateLoaded;
+      final bool? isNewRelease,
+      final String? gtin}) = _$PalletsStateLoaded;
 
   factory PalletsStateLoaded.fromJson(Map<String, dynamic> json) =
       _$PalletsStateLoaded.fromJson;
@@ -4222,6 +4249,7 @@ abstract class PalletsStateLoaded implements PalletsState {
   bool? get isLoading;
   String? get errorText;
   bool? get isNewRelease;
+  String? get gtin;
   @JsonKey(ignore: true)
   _$$PalletsStateLoadedCopyWith<_$PalletsStateLoaded> get copyWith =>
       throw _privateConstructorUsedError;
@@ -4312,7 +4340,8 @@ class _$PalletsStateError implements PalletsStateError {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)
+            bool? isNewRelease,
+            String? gtin)
         loaded,
     required TResult Function(String? errorText) error,
   }) {
@@ -4334,7 +4363,8 @@ class _$PalletsStateError implements PalletsStateError {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)?
+            bool? isNewRelease,
+            String? gtin)?
         loaded,
     TResult? Function(String? errorText)? error,
   }) {
@@ -4356,7 +4386,8 @@ class _$PalletsStateError implements PalletsStateError {
             int countBox,
             bool? isLoading,
             String? errorText,
-            bool? isNewRelease)?
+            bool? isNewRelease,
+            String? gtin)?
         loaded,
     TResult Function(String? errorText)? error,
     required TResult orElse(),

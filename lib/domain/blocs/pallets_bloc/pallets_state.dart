@@ -15,6 +15,7 @@ class PalletsState with _$PalletsState {
     bool? isLoading,
     String? errorText,
     bool? isNewRelease,
+    String? gtin,
   }) = PalletsStateLoaded;
   const factory PalletsState.error({String? errorText}) = PalletsStateError;
 

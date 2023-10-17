@@ -49,6 +49,7 @@ _$PalletsStateLoaded _$$PalletsStateLoadedFromJson(Map<String, dynamic> json) =>
       isLoading: json['isLoading'] as bool?,
       errorText: json['errorText'] as String?,
       isNewRelease: json['isNewRelease'] as bool?,
+      gtin: json['gtin'] as String?,
       $type: json['runtimeType'] as String?,
     );
 
@@ -65,6 +66,7 @@ Map<String, dynamic> _$$PalletsStateLoadedToJson(
       'isLoading': instance.isLoading,
       'errorText': instance.errorText,
       'isNewRelease': instance.isNewRelease,
+      'gtin': instance.gtin,
       'runtimeType': instance.$type,
     };
 

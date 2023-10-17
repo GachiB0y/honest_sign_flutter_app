@@ -159,10 +159,10 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
                                 // isShowDateInput = true;
                               });
                               try {
-                                await context
-                                    .read<PalletsBloc>()
-                                    .palletsRepository
-                                    .getFreeCodes(); //Получаем агрегационные коды
+                                // await context
+                                //     .read<PalletsBloc>()
+                                //     .palletsRepository
+                                //     .getFreeCodes(); //Получаем агрегационные коды
                                 await barcodeService.getInfoForBarcodeRelease(
                                     numberCard:
                                         numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ

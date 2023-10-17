@@ -8,11 +8,13 @@ import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 class RefactorBoxScreen extends StatefulWidget {
   final Box box;
   final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
+  final bool Function({required String barcode}) checkOtherPRodcut;
 
   const RefactorBoxScreen(
       {super.key,
       required this.box,
-      required this.checkDublicateBarcodeInPallet});
+      required this.checkDublicateBarcodeInPallet,
+      required this.checkOtherPRodcut});
 
   @override
   State<RefactorBoxScreen> createState() => _RefactorBoxScreenState();
@@ -34,8 +36,6 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // final PalletCubit bloc = context.read<PalletCubit>();
-      // indexBox = bloc.state.pallets.boxes.indexOf(widget.box);
       final PalletsBloc blocPallet = context.read<PalletsBloc>();
       final stateBloc = blocPallet.state as PalletsStateLoaded;
       findBoxIndex(stateBloc.listPallets.listModelsPallet, widget.box);
@@ -147,26 +147,35 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                           final isDublicate = widget
                               .checkDublicateBarcodeInPallet(barcode: value);
                           if (isDublicate) {
-                            CustomSnackBarDudlicateBarcode
-                                .showSnackBarForDuplicateBarcode(context);
+                            CustomSnackBarError
+                                .showSnackBarForDuplicateBarcodeOrOtherProduct(
+                                    context, false);
                           } else {
-                            if (stateBlocPallet
-                                        .listPallets
-                                        .listModelsPallet[indexPallet]
-                                        .boxes[indexBox]
-                                        .items
-                                        .length +
-                                    1 ==
-                                countUnitsPerBox) {
-                              setState(() {
-                                isShowInput = false;
-                              });
-                            }
+                            final isNotOtherProduct =
+                                widget.checkOtherPRodcut(barcode: value);
+                            if (isNotOtherProduct) {
+                              if (stateBlocPallet
+                                          .listPallets
+                                          .listModelsPallet[indexPallet]
+                                          .boxes[indexBox]
+                                          .items
+                                          .length +
+                                      1 ==
+                                  countUnitsPerBox) {
+                                setState(() {
+                                  isShowInput = false;
+                                });
+                              }
 
-                            blocPallet.add(PalletsEvent.createUnitByIndex(
-                                indexBox: indexBox,
-                                indexPallet: indexPallet,
-                                barcode: value));
+                              blocPallet.add(PalletsEvent.createUnitByIndex(
+                                  indexBox: indexBox,
+                                  indexPallet: indexPallet,
+                                  barcode: value));
+                            } else {
+                              CustomSnackBarError
+                                  .showSnackBarForDuplicateBarcodeOrOtherProduct(
+                                      context, true);
+                            }
                           }
 
                           setState(() {

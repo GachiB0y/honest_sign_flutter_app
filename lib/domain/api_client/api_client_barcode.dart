@@ -75,8 +75,8 @@ class BarcodeServiceImpl extends BarcodeService {
             uri:
                 'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/cards',
             body:
-                // '''{"CardId":"$numberCardConst","Action":"Update","IsDone":false,"Pallets":$bodyTwo}''',
-                '''{"CardId":"$numberCardConst","Action":"Update","IsDone":$isDone,"Pallets":$bodyTwo}''', // РАССКОМЕНИТЬ В РЕЛИЗЕ
+                '''{"CardId":"$numberCardConst","Action":"Update","IsDone":false,"Pallets":$bodyTwo}''',
+            // '''{"CardId":"$numberCardConst","Action":"Update","IsDone":$isDone,"Pallets":$bodyTwo}''', // РАССКОМЕНИТЬ В РЕЛИЗЕ
             contentType: true);
 
         if (response.statusCode == 200) {
@@ -150,6 +150,7 @@ class BarcodeServiceImpl extends BarcodeService {
         final jsonResponse = await response.stream.bytesToString();
         final jsonData = jsonDecode(jsonResponse);
 
+        gtin = jsonData['Message']['GTIN'].toString();
         final int allBarcodeUnitsPallet = jsonData['Message']['PalletItems'];
         countBoxesPerPallet = jsonData['Message']['PalletBox'];
         countUnitsPerBox = allBarcodeUnitsPallet ~/ countBoxesPerPallet;
