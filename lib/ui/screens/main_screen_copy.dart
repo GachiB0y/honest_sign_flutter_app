@@ -696,138 +696,174 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
           }
         }
       },
-      child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (!isOpenAlertDialog)
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child:
+      child: WillPopScope(
+        onWillPop: () async {
+          return await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Выход'),
+                content: const Text(
+                  'Вы действительно хотите выйти из приложения?\n Данные могут быть утеряны!',
+                  style: TextStyle(fontSize: 18),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text(
+                      'Да',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                  TextButton(
+                    child: const Text(
+                      'Нет',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        child: Scaffold(
+          body: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (!isOpenAlertDialog)
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child:
 
-                        //  TextFormField(
-                        //   focusNode: myFocusNode,
-                        //   autofocus: true,
-                        //   controller: _textEditingController,
-                        //   onFieldSubmitted: (value) {
-                        //     _sendText(value);
-                        //   },
-                        // ) // Для веб браузера, тк неь клавиатуры
-                        InputWithKeyboardControl(
-                      focusNode: myFocusNode,
-                      onSubmitted: (String value) async {
-                        await onSubmittedTextField(
+                          //  TextFormField(
+                          //   focusNode: myFocusNode,
+                          //   autofocus: true,
+                          //   controller: _textEditingController,
+                          //   onFieldSubmitted: (value) {
+                          //     _sendText(value);
+                          //   },
+                          // ) // Для веб браузера, тк неь клавиатуры
+                          InputWithKeyboardControl(
+                        focusNode: myFocusNode,
+                        onSubmitted: (String value) async {
+                          await onSubmittedTextField(
+                            context: context,
+                            value: value,
+                          );
+                        },
+                        autofocus: true,
+                        controller: _textEditingController,
+                        width: 300,
+                        startShowKeyboard: false,
+                        buttonColorEnabled: Colors.blue,
+                        buttonColorDisabled: Colors.black,
+                      ),
+                    ),
+                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () async {
+                        _showDeleteDialog(
                           context: context,
-                          value: value,
                         );
                       },
-                      autofocus: true,
-                      controller: _textEditingController,
-                      width: 300,
-                      startShowKeyboard: false,
-                      buttonColorEnabled: Colors.blue,
-                      buttonColorDisabled: Colors.black,
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                        size: 30,
+                      ),
                     ),
-                  ),
-                ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () async {
-                      _showDeleteDialog(
-                        context: context,
-                      );
-                    },
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                      size: 30,
+                    const SizedBox(
+                      width: 15,
                     ),
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  ElevatedButton.icon(
-                      onPressed: () async {
-                        final stateBlocPallet =
-                            blocPallet.state as PalletsStateLoaded;
-                        try {
-                          // Проверка на отправку полной палеты
-                          if (stateBlocPallet.listPallets.listModelsPallet.last
-                                      .boxes.length ==
-                                  countBoxesPerPallet ||
-                              stateBlocPallet.listPallets.listModelsPallet.last
-                                      .barcode !=
-                                  nameFuturePallet) {
-                            blocPallet.add(const PalletsEventSendBarcodes());
-
-                            _showSendPalletDialog(context, null);
-                            if (!context.mounted) return;
-
-                            setState(() {
-                              isErrorSendPallet = false;
-                            });
-                          } else if (stateBlocPallet.listPallets
-                              .listModelsPallet.last.boxes.isNotEmpty) {
-                            setState(() {
-                              isSendNotColpetePallet = true;
-                              isErrorSendPallet = false;
-                            });
+                    ElevatedButton.icon(
+                        onPressed: () async {
+                          final stateBlocPallet =
+                              blocPallet.state as PalletsStateLoaded;
+                          try {
+                            // Проверка на отправку полной палеты
                             if (stateBlocPallet.listPallets.listModelsPallet
-                                    .last.barcode ==
-                                nameFuturePallet) {
-                              _showDialogChekBarcodeForPalletsOrBox(
-                                null,
-                                isCompeleteBottling: false,
-                                context: context,
-                                isBox: false,
-                              );
+                                        .last.boxes.length ==
+                                    countBoxesPerPallet ||
+                                stateBlocPallet.listPallets.listModelsPallet
+                                        .last.barcode !=
+                                    nameFuturePallet) {
+                              blocPallet.add(const PalletsEventSendBarcodes());
+
+                              _showSendPalletDialog(context, null);
+                              if (!context.mounted) return;
+
+                              setState(() {
+                                isErrorSendPallet = false;
+                              });
+                            } else if (stateBlocPallet.listPallets
+                                .listModelsPallet.last.boxes.isNotEmpty) {
+                              setState(() {
+                                isSendNotColpetePallet = true;
+                                isErrorSendPallet = false;
+                              });
+                              if (stateBlocPallet.listPallets.listModelsPallet
+                                      .last.barcode ==
+                                  nameFuturePallet) {
+                                _showDialogChekBarcodeForPalletsOrBox(
+                                  null,
+                                  isCompeleteBottling: false,
+                                  context: context,
+                                  isBox: false,
+                                );
+                              }
+                            } else {
+                              _showSendPalletDialog(context,
+                                  'Нужна хотябы одна коробка для отправки палеты!');
                             }
-                          } else {
-                            _showSendPalletDialog(context,
-                                'Нужна хотябы одна коробка для отправки палеты!');
+                          } catch (e) {
+                            setState(() {
+                              isErrorSendPallet = true;
+                            });
+                            final String message =
+                                e.toString().replaceAll('Exception: ', '');
+                            _showSendPalletDialog(context, message);
                           }
-                        } catch (e) {
-                          setState(() {
-                            isErrorSendPallet = true;
-                          });
-                          final String message =
-                              e.toString().replaceAll('Exception: ', '');
-                          _showSendPalletDialog(context, message);
-                        }
-                      },
-                      icon: const Icon(Icons.call_made, color: Colors.green),
-                      label: const Text('Отправить паллет')),
-                ],
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  showDialogCompleteBottling(context, blocPallet);
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red[200]),
+                        },
+                        icon: const Icon(Icons.call_made, color: Colors.green),
+                        label: const Text('Отправить паллет')),
+                  ],
                 ),
-                icon: const Icon(Icons.exit_to_app, color: Colors.red),
-                label: const Text(
-                  'ЗАВЕРШИТЬ РОЗЛИВ',
-                  style: TextStyle(color: Colors.black),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    showDialogCompleteBottling(context, blocPallet);
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red[200]),
+                  ),
+                  icon: const Icon(Icons.exit_to_app, color: Colors.red),
+                  label: const Text(
+                    'ЗАВЕРШИТЬ РОЗЛИВ',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
-              ),
-              Text(
-                'Паллет №${(blocPallet.state as PalletsStateLoaded).listPallets.listModelsPallet.length}: ${(blocPallet.state as PalletsStateLoaded).listPallets.listModelsPallet.last.boxes.length}/$countBoxesPerPallet \n Всего cдано: ${calculateTotalItemCount((blocPallet.state as PalletsStateLoaded).listPallets).toString()}',
-                style: const TextStyle(fontSize: 16),
-              ),
-              TwoTabWidget(
-                scrollController: _scrollController,
-                myFocusNode: myFocusNode,
-                checkDublicateBarcodeInPallet: checkDublicateBarcodeInPallet,
-                checkOtherPRodcut: checkOtherProduct,
-              ),
-            ],
+                Text(
+                  'Паллет №${(blocPallet.state as PalletsStateLoaded).listPallets.listModelsPallet.length}: ${(blocPallet.state as PalletsStateLoaded).listPallets.listModelsPallet.last.boxes.length}/$countBoxesPerPallet \n Всего cдано: ${calculateTotalItemCount((blocPallet.state as PalletsStateLoaded).listPallets).toString()}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+                TwoTabWidget(
+                  scrollController: _scrollController,
+                  myFocusNode: myFocusNode,
+                  checkDublicateBarcodeInPallet: checkDublicateBarcodeInPallet,
+                  checkOtherPRodcut: checkOtherProduct,
+                ),
+              ],
+            ),
           ),
         ),
       ),

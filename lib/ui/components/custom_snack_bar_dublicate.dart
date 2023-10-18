@@ -33,7 +33,7 @@ class CustomSnackBarError extends SnackBar {
       CustomSnackBarError(
         content: isGtin
             ? const Text(
-                'Возможно этот DataMatrix от другого продукта! Обратитес к мастеру!',
+                'DataMatrix от другого продукта! Обратитесь к мастеру!',
                 style: TextStyle(fontSize: 20, color: Colors.red),
               )
             : const Text(
@@ -41,7 +41,7 @@ class CustomSnackBarError extends SnackBar {
                 style: TextStyle(fontSize: 20, color: Colors.red),
               ),
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 3),
+        duration: Duration(seconds: isGtin ? 6 : 3),
       ),
     );
   }
