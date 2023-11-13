@@ -11,10 +11,22 @@ import 'package:honest_sign_flutter_app/domain/repository/pallets_repository.dar
 import 'package:honest_sign_flutter_app/ui/components/custom_date_picker/custom_date_pikcer_model.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:honest_sign_flutter_app/ui/screens/first_screen/new_first_screen.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = const AppBlocObserver();
-  runApp(const MyApp());
+
+  await SentryFlutter.init(
+    (options) {
+      options.dsn =
+          'https://c086467fa8f0070a0fb1493d77c88819@o4506217719791616.ingest.sentry.io/4506217721036800';
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 1.0;
+    },
+    appRunner: () => runApp(const MyApp()),
+  );
 }
 
 class MyApp extends StatefulWidget {
