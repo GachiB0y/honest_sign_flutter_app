@@ -539,7 +539,11 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
         //     barcode);
         // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
         if (barcode.length >= 37) {
-          return TypeOfBarcode.unit;
+          if (barcode.startsWith("01")) {
+            return TypeOfBarcode.unit;
+          } else {
+            return TypeOfBarcode.undefined;
+          }
         } else {
           return TypeOfBarcode.undefined;
         }
@@ -801,7 +805,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                               blocPallet.add(const PalletsEventSendBarcodes());
 
                               _showSendPalletDialog(context, null);
-                              if (!context.mounted) return;
+                              // if (!context.mounted) return;
 
                               setState(() {
                                 isErrorSendPallet = false;
