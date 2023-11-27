@@ -539,10 +539,12 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
         //     barcode);
         // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
         if (barcode.length >= 37) {
-          if (barcode.startsWith('01')) {
-            return TypeOfBarcode.box;
+          final bool isStartWith = barcode.startsWith('01');
+
+          if (isStartWith) {
+            return TypeOfBarcode.unit;
           }
-          return TypeOfBarcode.unit;
+          return TypeOfBarcode.undefined;
         } else {
           return TypeOfBarcode.undefined;
         }
