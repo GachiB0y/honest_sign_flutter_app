@@ -10,6 +10,7 @@ import 'package:honest_sign_flutter_app/domain/data_provider/session_data_provid
 import 'package:honest_sign_flutter_app/domain/repository/pallets_repository.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_date_picker/custom_date_pikcer_model.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:honest_sign_flutter_app/ui/components/view_model/text_field_check_valid_widget_model.dart';
 import 'package:honest_sign_flutter_app/ui/screens/first_screen/new_first_screen.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -55,36 +56,33 @@ class _MyAppState extends State<MyApp> {
       ],
       child: ChangeNotifierProvaider<CustomDatePickerModel>(
         model: CustomDatePickerModel(),
-        child: MaterialApp(
-          title: ' Demo',
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('ru'), // Установите поддерживаемый язык
-          ],
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-            useMaterial3: true,
-          ),
-          // initialRoute: '/',
-          // routes: {
-          //   '/': (context) => const Scaffold(
-          //     resizeToAvoidBottomInset: false,
-          //     body: SafeArea(child: InputWidget())),
-          //   '/refactor_box': (context) => RefactorBoxScreen(),
-          // },
-          home: Scaffold(
-            resizeToAvoidBottomInset: false,
-            body: SafeArea(
-              child: WillPopScope(
-                  onWillPop: () async {
-                    // Возвращаем `false` для предотвращения закрытия диалогового окна
-
-                    return false;
-                  },
-                  child: const FirstNewScreen()),
+        child: ChangeNotifierProvaider<TextFieldCheckBalidWidgetModel>(
+          model: TextFieldCheckBalidWidgetModel(),
+          child: MaterialApp(
+            title: ' Demo',
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('ru'), // Установите поддерживаемый язык
+            ],
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+              useMaterial3: true,
+            ),
+            // initialRoute: '/',
+            // routes: {
+            //   '/': (context) => const Scaffold(
+            //     resizeToAvoidBottomInset: false,
+            //     body: SafeArea(child: InputWidget())),
+            //   '/refactor_box': (context) => RefactorBoxScreen(),
+            // },
+            home: const Scaffold(
+              resizeToAvoidBottomInset: false,
+              body: SafeArea(
+                child: PopScope(canPop: false, child: FirstNewScreen()),
+              ),
             ),
           ),
         ),

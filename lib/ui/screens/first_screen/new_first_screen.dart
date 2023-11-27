@@ -7,7 +7,7 @@ import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.d
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_date_picker/custom_date_picker.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_date_picker/custom_date_pikcer_model.dart';
-import 'package:honest_sign_flutter_app/ui/screens/main_screen_copy.dart';
+import 'package:honest_sign_flutter_app/ui/screens/main_screen/main_screen_copy.dart';
 import 'package:intl/intl.dart';
 
 class FirstNewScreen extends StatefulWidget {

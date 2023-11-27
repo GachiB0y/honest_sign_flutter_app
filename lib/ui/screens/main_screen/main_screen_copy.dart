@@ -12,6 +12,7 @@ import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar_dublicate
 import 'package:honest_sign_flutter_app/ui/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
+import 'package:honest_sign_flutter_app/ui/components/view_model/text_field_check_valid_widget_model.dart';
 import 'package:honest_sign_flutter_app/ui/screens/new_refactor_box_screen.dart';
 import 'package:intl/intl.dart';
 
@@ -21,6 +22,12 @@ enum TypeOfStateSend { duplicate, send, notSend, valid, notValid, errorTimeout }
 
 class MainScreenCopy extends StatefulWidget {
   const MainScreenCopy({super.key});
+  static Widget create() {
+    return ChangeNotifierProvaider<TextFieldCheckBalidWidgetModel>(
+      model: TextFieldCheckBalidWidgetModel(),
+      child: const MainScreenCopy(),
+    );
+  }
 
   @override
   _MainScreenCopyState createState() => _MainScreenCopyState();
@@ -65,11 +72,8 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
       context: context,
       builder: (BuildContext dialogContext) {
         final PalletsBloc blocPallet = context.read<PalletsBloc>();
-        return WillPopScope(
-          onWillPop: () async {
-            // Возвращаем `false` для предотвращения закрытия диалогового окна
-            return false;
-          },
+        return PopScope(
+          canPop: false,
           child: AlertDialog(
             content: const Column(
               mainAxisSize: MainAxisSize.min,
@@ -111,11 +115,8 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
 
       context: context,
       builder: (BuildContext dialogContext) {
-        return WillPopScope(
-          onWillPop: () async {
-            // Возвращаем `false` для предотвращения закрытия диалогового окна
-            return false;
-          },
+        return PopScope(
+          canPop: false,
           child: AlertDialog(
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -167,11 +168,8 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           final PalletsBloc blocPallet = context.read<PalletsBloc>();
-          return WillPopScope(
-            onWillPop: () async {
-              // Возвращаем `false` для предотвращения закрытия диалогового окна
-              return false;
-            },
+          return PopScope(
+            canPop: false,
             child: AlertDialog(
               backgroundColor: Colors.grey[200],
               key: keyForAlertDialog ?? _alertDialogKey,
@@ -366,24 +364,11 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
           final dateModel = ChangeNotifierProvaider.watch<
               ChangeNotifierProvaider<CustomDatePickerModel>,
               CustomDatePickerModel>(context);
-          return WillPopScope(
-            onWillPop: () async {
-              // Возвращаем `false` для предотвращения закрытия диалогового окна
-              return false;
-            },
+          return PopScope(
+            canPop: false,
             child: AlertDialog(
               elevation: 3.0,
               content: showTextField
-                  // ? TextField(
-                  //     autofocus: true,
-                  //     keyboardType: TextInputType.number,
-                  //     controller: _controllerForAlertChangeDateRelease,
-                  //     decoration: const InputDecoration(
-                  //       hintText:
-                  //           'Введите дату (дд.мм.гггг) (которая указана на флаконе)',
-                  //     ),
-                  //     inputFormatters: [DateTextFormatter()],
-                  //   )
                   ? const CustomDatePicker()
                   : Text(
                       'Дата розлива следующей паллеты (которая указана на флаконе): $dateOfRelease.\n Вы уверены?',
@@ -400,9 +385,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                           ),
                           onPressed: () {
                             dateOfRelease = DateFormat('dd.MM.yyyy').format(
-                                dateModel?.selectedDate ??
-                                    DateTime
-                                        .now()); //_controllerForAlertChangeDateRelease.text;
+                                dateModel?.selectedDate ?? DateTime.now());
                             blocPallet.add(PalletsEventChangeDateRelease(
                                 newDateOfRelease: DateFormat('dd.MM.yyyy')
                                     .format(dateModel?.selectedDate ??
@@ -458,7 +441,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
 
   Future<bool> _sendText({
     required String barcode,
-    required TypeOfBarcode typeBarcode,
+    required TypeOfBarcode? typeBarcode,
   }) async {
     // setState(() {
     //   // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
@@ -526,81 +509,32 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
     }
   }
 
-  TypeOfBarcode isValidBarcode(String barcode) {
-    bool isContains = setPallets.contains(barcode);
-    if (isContains) {
-      return TypeOfBarcode.pallet;
-    } else {
-      isContains = setBoxs.contains(barcode);
-      if (isContains) {
-        return TypeOfBarcode.box;
-      } else {
-        // isContains = setUnit.contains(
-        //     barcode);
-        // ЗАГЛУШКА НА ВАЛИДАЦИЮ  ШТУЧКИ ПОКА НЕТ ИХ КОДОВ
-        if (barcode.length >= 37) {
-          final bool isStartWith = barcode.startsWith('01');
-
-          if (isStartWith) {
-            return TypeOfBarcode.unit;
-          }
-          return TypeOfBarcode.undefined;
-        } else {
-          return TypeOfBarcode.undefined;
-        }
-      }
-    }
-  }
-  // ЗАГЛУШКА НА ПРОВЕРКУ АГРЕГАЦИОННОГО КОДА ЗАКОММЕНТИТЬ В РЕЛИЗЕ
-
-  // TypeOfBarcode isValidBarcode(String barcode) {
-  //   if (barcode.length == 18 && barcode.startsWith('1')) {
-  //     return TypeOfBarcode.pallet;
-  //   } else {
-  //     if (barcode.length == 18 && barcode.startsWith('0')) {
-  //       return TypeOfBarcode.box;
-  //     } else {
-  //       if (barcode.length >= 37) {
-  //         return TypeOfBarcode.unit;
-  //       } else {
-  //         return TypeOfBarcode.undefined;
-  //       }
-  //     }
-  //   }
-  // }
-
-  bool checkDublicateBarcodeInPallet({required String barcode}) {
-    final PalletsBloc blocPallet = context.read<PalletsBloc>();
-    final bool isDuplicate = (blocPallet.state as PalletsStateLoaded)
-        .allBarcodeHistory
-        .contains(barcode);
-    return isDuplicate;
-  }
-
-  bool checkOtherProduct({required String barcode}) {
-    final isContains = barcode.contains(gtin);
-    return isContains;
-  }
-
   Future<TypeOfStateSend> onSubmittedTextField({
     required String value,
     required BuildContext context,
   }) async {
+    final modelTextFieldValid = ChangeNotifierProvaider.read<
+        ChangeNotifierProvaider<TextFieldCheckBalidWidgetModel>,
+        TextFieldCheckBalidWidgetModel>(context);
+    final blocPallets = context.read<PalletsBloc>();
     setState(() {
       // myFocusNode.requestFocus(); //расскоментировать для обычного TExtFormField
       _textEditingController.clear();
     });
-    final isDuplicate = checkDublicateBarcodeInPallet(barcode: value);
-    if (isDuplicate) {
+    final isDuplicate = modelTextFieldValid?.checkDublicateBarcodeInPallet(
+        barcode: value, blocPallet: blocPallets);
+    if (isDuplicate == null || isDuplicate) {
       CustomSnackBarError.showSnackBarForDuplicateBarcodeOrOtherProduct(
           context, false);
 
       return TypeOfStateSend.duplicate;
     } else {
-      final TypeOfBarcode typeBarcode = isValidBarcode(value);
+      final TypeOfBarcode? typeBarcode =
+          modelTextFieldValid?.isValidBarcode(value);
       if (typeBarcode == TypeOfBarcode.unit) {
-        final isNotOtherProduct = checkOtherProduct(barcode: value);
-        if (!isNotOtherProduct) {
+        final isNotOtherProduct =
+            modelTextFieldValid?.checkOtherProduct(barcode: value);
+        if (isNotOtherProduct == null || !isNotOtherProduct) {
           CustomSnackBarError.showSnackBarForDuplicateBarcodeOrOtherProduct(
               context, true);
           return TypeOfStateSend.notValid;
@@ -650,12 +584,9 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return WillPopScope(
-                  onWillPop: () async {
-                    // Возвращаем `false` для предотвращения закрытия диалогового окна
-                    return false;
-                  },
-                  child: const AlertDialog(
+                return const PopScope(
+                  canPop: false,
+                  child: AlertDialog(
                     content: Row(
                       children: [
                         CircularProgressIndicator(),
@@ -675,11 +606,8 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return WillPopScope(
-                  onWillPop: () async {
-                    // Возвращаем `false` для предотвращения закрытия диалогового окна
-                    return false;
-                  },
+                return PopScope(
+                  canPop: false,
                   child: AlertDialog(
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -864,8 +792,6 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                 TwoTabWidget(
                   scrollController: _scrollController,
                   myFocusNode: myFocusNode,
-                  checkDublicateBarcodeInPallet: checkDublicateBarcodeInPallet,
-                  checkOtherPRodcut: checkOtherProduct,
                 ),
               ],
             ),
@@ -974,16 +900,12 @@ class BoxWidget extends StatefulWidget {
   final int indexBox;
 
   final InputWithKeyboardControlFocusNode myFocusNode;
-  final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
-  final bool Function({required String barcode}) checkOtherPRodcut;
 
   const BoxWidget({
     super.key,
     required this.box,
     required this.myFocusNode,
-    required this.checkDublicateBarcodeInPallet,
     required this.indexBox,
-    required this.checkOtherPRodcut,
   });
 
   @override
@@ -1003,7 +925,6 @@ class _BoxWidgetState extends State<BoxWidget> {
             const Spacer(),
             IconButton(
               onPressed: () async {
-                // ЗАККОМЕНТИРОВАННО НА ВРЕМЯ  ЭКРАН РЕДАКТИРОВАНИЯ КОРОБКИ
                 widget.myFocusNode.nextFocus();
 
                 await Navigator.push(
@@ -1011,9 +932,6 @@ class _BoxWidgetState extends State<BoxWidget> {
                   MaterialPageRoute(
                     builder: (context) => RefactorBoxScreen(
                       box: widget.box,
-                      checkDublicateBarcodeInPallet:
-                          widget.checkDublicateBarcodeInPallet,
-                      checkOtherPRodcut: widget.checkOtherPRodcut,
                     ),
                   ),
                 ).then((result) {
@@ -1054,14 +972,10 @@ class _BoxWidgetState extends State<BoxWidget> {
 
 class ModelsPalletWidget extends StatefulWidget {
   final InputWithKeyboardControlFocusNode myFocusNode;
-  final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
-  final bool Function({required String barcode}) checkOtherPRodcut;
 
   const ModelsPalletWidget({
     Key? key,
     required this.myFocusNode,
-    required this.checkDublicateBarcodeInPallet,
-    required this.checkOtherPRodcut,
   }) : super(key: key);
 
   @override
@@ -1128,9 +1042,6 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
                               box: box.value,
                               myFocusNode: widget.myFocusNode,
                               indexBox: box.key,
-                              checkDublicateBarcodeInPallet:
-                                  widget.checkDublicateBarcodeInPallet,
-                              checkOtherPRodcut: widget.checkOtherPRodcut,
                             ),
                           )
                           .toList(),
@@ -1183,11 +1094,8 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
             context.watch<SearchBarcodeBloc>();
         return BlocBuilder<SearchBarcodeBloc, SearchBarcodeState>(
           builder: (BuildContext context, SearchBarcodeState state) {
-            return WillPopScope(
-              onWillPop: () async {
-                // Возвращаем `false` для предотвращения закрытия диалогового окна
-                return false;
-              },
+            return PopScope(
+              canPop: false,
               child: AlertDialog(
                   elevation: 3.0,
                   content: Column(
@@ -1249,11 +1157,8 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
             ChangeNotifierProvaider<CustomDatePickerModel>,
             CustomDatePickerModel>(context);
         final PalletsBloc blocPallet = context.read<PalletsBloc>();
-        return WillPopScope(
-          onWillPop: () async {
-            // Возвращаем `false` для предотвращения закрытия диалогового окна
-            return false;
-          },
+        return PopScope(
+          canPop: false,
           child: AlertDialog(
               elevation: 3.0,
               content: const CustomDatePicker(),
@@ -1276,7 +1181,7 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
                     onPressed: () {
                       final newDateOfRelease = DateFormat('dd.MM.yyyy')
                           .format(dateModel?.selectedDate ?? DateTime.now());
-                      //controller.text;
+
                       blocPallet.add(PalletsEventChangeDateRelease(
                           indexPallet: (indexPallet - 1),
                           newDateOfRelease: newDateOfRelease));
@@ -1336,17 +1241,14 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
 
 class TwoTabWidget extends StatelessWidget {
   final InputWithKeyboardControlFocusNode myFocusNode;
-  final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
-  final bool Function({required String barcode}) checkOtherPRodcut;
 
   final ScrollController scrollController;
 
-  const TwoTabWidget(
-      {super.key,
-      required this.scrollController,
-      required this.myFocusNode,
-      required this.checkDublicateBarcodeInPallet,
-      required this.checkOtherPRodcut});
+  const TwoTabWidget({
+    super.key,
+    required this.scrollController,
+    required this.myFocusNode,
+  });
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -1371,9 +1273,6 @@ class TwoTabWidget extends StatelessWidget {
                   SingleChildScrollView(
                     child: ModelsPalletWidget(
                       myFocusNode: myFocusNode,
-                      checkDublicateBarcodeInPallet:
-                          checkDublicateBarcodeInPallet,
-                      checkOtherPRodcut: checkOtherPRodcut,
                     ),
                   ),
                 ],

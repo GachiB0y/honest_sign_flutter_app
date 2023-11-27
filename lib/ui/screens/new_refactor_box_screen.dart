@@ -5,16 +5,17 @@ import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar_dublicate
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 
+import '../../custom_provider.dart';
+import '../components/view_model/text_field_check_valid_widget_model.dart';
+import 'main_screen/main_screen_copy.dart';
+
 class RefactorBoxScreen extends StatefulWidget {
   final Box box;
-  final bool Function({required String barcode}) checkDublicateBarcodeInPallet;
-  final bool Function({required String barcode}) checkOtherPRodcut;
 
-  const RefactorBoxScreen(
-      {super.key,
-      required this.box,
-      required this.checkDublicateBarcodeInPallet,
-      required this.checkOtherPRodcut});
+  const RefactorBoxScreen({
+    super.key,
+    required this.box,
+  });
 
   @override
   State<RefactorBoxScreen> createState() => _RefactorBoxScreenState();
@@ -132,6 +133,11 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                       autofocus: true,
                       controller: _textEditingController,
                       onSubmitted: (String value) async {
+                        final modelTextFieldValid =
+                            ChangeNotifierProvaider.read<
+                                ChangeNotifierProvaider<
+                                    TextFieldCheckBalidWidgetModel>,
+                                TextFieldCheckBalidWidgetModel>(context);
                         if (stateBlocPallet
                                 .listPallets
                                 .listModelsPallet[indexPallet]
@@ -144,16 +150,30 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                           });
                           return;
                         } else {
-                          final isDublicate = widget
-                              .checkDublicateBarcodeInPallet(barcode: value);
-                          if (isDublicate) {
+                          final TypeOfBarcode? typeBarcode =
+                              modelTextFieldValid?.isValidBarcode(value);
+
+                          if (typeBarcode != TypeOfBarcode.unit) {
+                            setState(() {
+                              _textEditingController.clear();
+                              myFocusNode.requestFocus();
+                            });
+                            return;
+                          }
+                          final bool? isDublicate = modelTextFieldValid
+                              ?.checkDublicateBarcodeInPallet(
+                                  barcode: value, blocPallet: blocPallet);
+
+                          if (isDublicate == null || isDublicate) {
                             CustomSnackBarError
                                 .showSnackBarForDuplicateBarcodeOrOtherProduct(
                                     context, false);
                           } else {
-                            final isNotOtherProduct =
-                                widget.checkOtherPRodcut(barcode: value);
-                            if (isNotOtherProduct) {
+                            final bool? isNotOtherProduct = modelTextFieldValid
+                                ?.checkOtherProduct(barcode: value);
+
+                            if (isNotOtherProduct != null &&
+                                isNotOtherProduct) {
                               if (stateBlocPallet
                                           .listPallets
                                           .listModelsPallet[indexPallet]
@@ -217,7 +237,7 @@ class _RefactorBoxScreenState extends State<RefactorBoxScreen> {
                   setState(() {
                     isExit = true;
                   });
-                  var res = null;
+                  (int, int)? res;
                   if (stateBlocPallet.listPallets.listModelsPallet[indexPallet]
                           .boxes[indexBox].items.isEmpty ||
                       stateBlocPallet.listPallets.listModelsPallet[indexPallet]
