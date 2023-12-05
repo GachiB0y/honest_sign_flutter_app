@@ -183,7 +183,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text('Идеет отправка, пожалуйста подождите!'),
+                            Text('Идет отправка, пожалуйста подождите!'),
                             CircularProgressIndicator(),
                           ],
                         )

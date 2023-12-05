@@ -21,6 +21,8 @@ class PalletsEvent with _$PalletsEvent {
     required int indexPallet,
     required String barcodeBox,
   }) = PalletsEventDeleteBoxByIndex;
+
+  /// Создание штучки в конкретной коробке (Используется только при редактировании коробки)
   const factory PalletsEvent.createUnitByIndex({
     required int indexBox,
     required int indexPallet,

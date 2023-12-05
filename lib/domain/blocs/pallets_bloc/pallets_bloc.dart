@@ -67,22 +67,24 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     final Set<String> newAllBarcodeHistory = {
       ...(state as PalletsStateLoaded).allBarcodeHistory
     };
-
-    final Set<String> newCurrentBarcodeHistory = {
-      ...(state as PalletsStateLoaded).currentBarcodeHistory
-    };
+// Закоментировано на проверку вроде безполезная вещь
+    // final Set<String> newCurrentBarcodeHistory = {
+    //   ...(state as PalletsStateLoaded).currentBarcodeHistory
+    // };
 
     for (var box in modelsPallet.boxes) {
       newAllBarcodeHistory.remove(box.barcode);
-      newCurrentBarcodeHistory.remove(box.barcode);
+      // Закоментировано на проверку вроде безполезная вещь
+      // newCurrentBarcodeHistory.remove(box.barcode);
 
       for (var item in box.items) {
-        newCurrentBarcodeHistory.remove(item.barcode);
+        // Закоментировано на проверку вроде безполезная вещь
+        // newCurrentBarcodeHistory.remove(item.barcode);
         newAllBarcodeHistory.remove(item.barcode);
       }
     }
-
-    newCurrentBarcodeHistory.remove(modelsPallet.barcode);
+// Закоментировано на проверку вроде безполезная вещь
+    // newCurrentBarcodeHistory.remove(modelsPallet.barcode);
     newAllBarcodeHistory.remove(modelsPallet.barcode);
 
     final List<ModelsPallet> newListModelsPallet = [
@@ -95,10 +97,10 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         .copyWith(listModelsPallet: newListModelsPallet);
 
     final newState = (state as PalletsStateLoaded).copyWith(
-        listPallets: newListPallets,
-        currentBarcodeHistory: newCurrentBarcodeHistory,
-        allBarcodeHistory: newAllBarcodeHistory,
-        countBarcodes: newCurrentBarcodeHistory.length);
+      listPallets: newListPallets,
+      // currentBarcodeHistory: newCurrentBarcodeHistory, // Закоментировано на проверку вроде безполезная вещь
+      allBarcodeHistory: newAllBarcodeHistory,
+    );
     emit(newState);
   }
 
@@ -166,9 +168,9 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
     final Set<String> newAllBarcodeHistory =
         Set<String>.from((state as PalletsStateLoaded).allBarcodeHistory);
     newAllBarcodeHistory.add(event.barcode);
-    final Set<String> newCurrentBarcodeHistory =
-        Set<String>.from((state as PalletsStateLoaded).currentBarcodeHistory);
-    newCurrentBarcodeHistory.add(event.barcode);
+    // final Set<String> newCurrentBarcodeHistory =
+    //     Set<String>.from((state as PalletsStateLoaded).currentBarcodeHistory);
+    // newCurrentBarcodeHistory.add(event.barcode);
 
     final copyList = [
       ...(state as PalletsStateLoaded).listPallets.listModelsPallet
@@ -185,10 +187,11 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         .copyWith(listModelsPallet: listModelPallets);
 
     final newState = (state as PalletsStateLoaded).copyWith(
-        listPallets: listPallets,
-        allBarcodeHistory: newAllBarcodeHistory,
-        countBarcodes: newCountBarcodes,
-        currentBarcodeHistory: newCurrentBarcodeHistory);
+      listPallets: listPallets,
+      allBarcodeHistory: newAllBarcodeHistory,
+      countBarcodes: newCountBarcodes,
+      // currentBarcodeHistory: newCurrentBarcodeHistory
+    );
     emit(newState);
   }
 
@@ -544,7 +547,9 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
 
 //Увеличиваем кол -во коробок на 1
     final int newCountBox = (state as PalletsStateLoaded).countBox + 1;
-
+// //Увеличиваем кол-во на 1
+//     final int newCountBarcodes =
+//         (state as PalletsStateLoaded).countBarcodes + 1;
 // Копируем модель паллеты с новыми значениями списка коробок
     final ModelsPallet modelsPallet = (state as PalletsStateLoaded)
         .listPallets
