@@ -30,7 +30,7 @@ abstract class BarcodeService {
 }
 
 class BarcodeServiceImpl extends BarcodeService {
-  IHTTPService _httpService;
+  final IHTTPService _httpService;
   BarcodeServiceImpl(this._httpService);
   @override
   Future<(List<String>, List<String>)> getFreeCodes() async {

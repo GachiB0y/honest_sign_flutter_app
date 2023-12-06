@@ -548,8 +548,8 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
 //Увеличиваем кол -во коробок на 1
     final int newCountBox = (state as PalletsStateLoaded).countBox + 1;
 // //Увеличиваем кол-во на 1
-//     final int newCountBarcodes =
-//         (state as PalletsStateLoaded).countBarcodes + 1;
+    final int newCountBarcodes =
+        (state as PalletsStateLoaded).countBarcodes + 1;
 // Копируем модель паллеты с новыми значениями списка коробок
     final ModelsPallet modelsPallet = (state as PalletsStateLoaded)
         .listPallets
@@ -574,7 +574,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         listPallets: listPallets,
         units: [],
         allBarcodeHistory: newAllBarcodeHistory,
-        countBarcodes: newCurrentBarcodeHistory.length,
+        countBarcodes: newCountBarcodes,
         maxIndexUnitInBox: (state as PalletsStateLoaded).maxIndexUnitInBox,
         countBox: newCountBox,
         currentBarcodeHistory: newCurrentBarcodeHistory);
