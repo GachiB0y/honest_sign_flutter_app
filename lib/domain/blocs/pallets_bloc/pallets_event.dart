@@ -45,3 +45,28 @@ class PalletsEvent with _$PalletsEvent {
     required String barcode,
   }) = PalletsEventCreatePallet;
 }
+
+// /// Business Logic Component Pallets Events
+// @freezed
+// class PalletsEvent with _$PalletsEvent {
+//   const PalletsEvent._();
+
+//   /// Create
+//   const factory PalletsEvent.create({required ItemData itemData}) =
+//       CreatePalletsEvent;
+
+//   /// Send Barcodes
+//   const factory PalletsEvent.sendBarcodes() = SendBarcodesPalletsEvent;
+//   const factory PalletsEvent.sendBarcodes() = SendBarcodesPalletsEvent;
+//   const factory PalletsEvent.sendBarcodes() = SendBarcodesPalletsEvent;
+
+//   /// Fetch info about barcodes pallet and boxes
+//   const factory PalletsEvent.fetch({required String numberCard}) =
+//       FetchPalletsEvent;
+
+//   /// Update
+//   const factory PalletsEvent.update({required Item item}) = UpdatePalletsEvent;
+
+//   /// Delete
+//   const factory PalletsEvent.delete({required Item item}) = DeletePalletsEvent;
+// }

@@ -44,6 +44,7 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
   bool isOpenAlertDialog = false;
   bool isShowError = false;
   bool _isLoading = false;
+  bool isFirstBarcodePallet = true;
 
   final GlobalKey _alertDialogKey = GlobalKey();
   final GlobalKey _alertDialogKeyTwo = GlobalKey();
@@ -225,13 +226,34 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                               child: Text(
                                 isBox
                                     ? 'Отсканируйте\n КОРОБКУ!'
-                                    : 'Отсканируйте\n ПАЛЛЕТ!',
+                                    : isFirstBarcodePallet
+                                        ? 'Отсканируйте\nпартионный штрихкод РАЗЛИТОГО паллета\n(ШК начинается с 99...).'
+                                        : 'Отсканируйте\n агрегационный штрихкод паллета\n(ШК начинается с 14...)',
                                 style: const TextStyle(fontSize: 24),
                               ),
                             ),
                             InputWithKeyboardControl(
                               focusNode: myFocusNodeCheckBarcode,
                               onSubmitted: (value) async {
+                                // Проверка если это паллет и это первый ШК, то
+                                // проверяем на страрт ШК с 99
+                                if (isBox == false && isFirstBarcodePallet) {
+                                  if (value.contains('99')) {
+                                    futureBarcodeParty = value;
+                                    setState(() {
+                                      isShowError = false;
+                                      isFirstBarcodePallet = false;
+                                      _textEditingController.clear();
+                                    });
+                                    return;
+                                  } else {
+                                    setState(() {
+                                      isShowError = true;
+                                      _textEditingController.clear();
+                                    });
+                                    return;
+                                  }
+                                }
                                 try {
                                   final TypeOfStateSend isSend =
                                       await onSubmittedTextField(
@@ -272,12 +294,14 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                                           _textEditingController.clear();
                                           isErrorSendPallet = false;
                                           isShowError = false;
+                                          isFirstBarcodePallet = true;
                                         });
                                       } catch (e) {
                                         setState(() {
                                           isErrorSendPallet = true;
                                           _isLoading = false;
                                           isOpenAlertDialog = false;
+                                          isFirstBarcodePallet = true;
                                         });
 
                                         final String message = e
@@ -468,8 +492,8 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
 
     // Проверка на палету
     if (typeBarcode == TypeOfBarcode.pallet) {
-      if ((statePalletsBloc.countBarcodes % (countAllBarcodesPerPallet - 1) ==
-          0)) {
+      if (statePalletsBloc.countBarcodes % (countAllBarcodesPerPallet - 1) ==
+          0) {
         blocPallet.add(PalletsEvent.createPallet(barcode: barcode));
 
         return true;

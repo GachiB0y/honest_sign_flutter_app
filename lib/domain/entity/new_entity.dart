@@ -17,6 +17,7 @@ class ListPallets with _$ListPallets {
 class ModelsPallet with _$ModelsPallet {
   const factory ModelsPallet({
     required String barcode,
+    required String? barcodeParty,
     required String date,
     required String dateRelease,
     required String status,

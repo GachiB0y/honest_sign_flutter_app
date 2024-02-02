@@ -21,6 +21,7 @@ Map<String, dynamic> _$$_ListPalletsToJson(_$_ListPallets instance) =>
 _$_ModelsPallet _$$_ModelsPalletFromJson(Map<String, dynamic> json) =>
     _$_ModelsPallet(
       barcode: json['barcode'] as String,
+      barcodeParty: json['barcodeParty'] as String?,
       date: json['date'] as String,
       dateRelease: json['dateRelease'] as String,
       status: json['status'] as String,
@@ -32,6 +33,7 @@ _$_ModelsPallet _$$_ModelsPalletFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$_ModelsPalletToJson(_$_ModelsPallet instance) =>
     <String, dynamic>{
       'barcode': instance.barcode,
+      'barcodeParty': instance.barcodeParty,
       'date': instance.date,
       'dateRelease': instance.dateRelease,
       'status': instance.status,

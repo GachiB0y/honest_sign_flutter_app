@@ -178,6 +178,7 @@ ModelsPallet _$ModelsPalletFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ModelsPallet {
   String get barcode => throw _privateConstructorUsedError;
+  String? get barcodeParty => throw _privateConstructorUsedError;
   String get date => throw _privateConstructorUsedError;
   String get dateRelease => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
@@ -197,6 +198,7 @@ abstract class $ModelsPalletCopyWith<$Res> {
   @useResult
   $Res call(
       {String barcode,
+      String? barcodeParty,
       String date,
       String dateRelease,
       String status,
@@ -217,6 +219,7 @@ class _$ModelsPalletCopyWithImpl<$Res, $Val extends ModelsPallet>
   @override
   $Res call({
     Object? barcode = null,
+    Object? barcodeParty = freezed,
     Object? date = null,
     Object? dateRelease = null,
     Object? status = null,
@@ -227,6 +230,10 @@ class _$ModelsPalletCopyWithImpl<$Res, $Val extends ModelsPallet>
           ? _value.barcode
           : barcode // ignore: cast_nullable_to_non_nullable
               as String,
+      barcodeParty: freezed == barcodeParty
+          ? _value.barcodeParty
+          : barcodeParty // ignore: cast_nullable_to_non_nullable
+              as String?,
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
@@ -257,6 +264,7 @@ abstract class _$$_ModelsPalletCopyWith<$Res>
   @useResult
   $Res call(
       {String barcode,
+      String? barcodeParty,
       String date,
       String dateRelease,
       String status,
@@ -275,6 +283,7 @@ class __$$_ModelsPalletCopyWithImpl<$Res>
   @override
   $Res call({
     Object? barcode = null,
+    Object? barcodeParty = freezed,
     Object? date = null,
     Object? dateRelease = null,
     Object? status = null,
@@ -285,6 +294,10 @@ class __$$_ModelsPalletCopyWithImpl<$Res>
           ? _value.barcode
           : barcode // ignore: cast_nullable_to_non_nullable
               as String,
+      barcodeParty: freezed == barcodeParty
+          ? _value.barcodeParty
+          : barcodeParty // ignore: cast_nullable_to_non_nullable
+              as String?,
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
@@ -310,6 +323,7 @@ class __$$_ModelsPalletCopyWithImpl<$Res>
 class _$_ModelsPallet implements _ModelsPallet {
   const _$_ModelsPallet(
       {required this.barcode,
+      required this.barcodeParty,
       required this.date,
       required this.dateRelease,
       required this.status,
@@ -321,6 +335,8 @@ class _$_ModelsPallet implements _ModelsPallet {
 
   @override
   final String barcode;
+  @override
+  final String? barcodeParty;
   @override
   final String date;
   @override
@@ -337,7 +353,7 @@ class _$_ModelsPallet implements _ModelsPallet {
 
   @override
   String toString() {
-    return 'ModelsPallet(barcode: $barcode, date: $date, dateRelease: $dateRelease, status: $status, boxes: $boxes)';
+    return 'ModelsPallet(barcode: $barcode, barcodeParty: $barcodeParty, date: $date, dateRelease: $dateRelease, status: $status, boxes: $boxes)';
   }
 
   @override
@@ -346,6 +362,8 @@ class _$_ModelsPallet implements _ModelsPallet {
         (other.runtimeType == runtimeType &&
             other is _$_ModelsPallet &&
             (identical(other.barcode, barcode) || other.barcode == barcode) &&
+            (identical(other.barcodeParty, barcodeParty) ||
+                other.barcodeParty == barcodeParty) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.dateRelease, dateRelease) ||
                 other.dateRelease == dateRelease) &&
@@ -355,8 +373,8 @@ class _$_ModelsPallet implements _ModelsPallet {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, barcode, date, dateRelease,
-      status, const DeepCollectionEquality().hash(_boxes));
+  int get hashCode => Object.hash(runtimeType, barcode, barcodeParty, date,
+      dateRelease, status, const DeepCollectionEquality().hash(_boxes));
 
   @JsonKey(ignore: true)
   @override
@@ -375,6 +393,7 @@ class _$_ModelsPallet implements _ModelsPallet {
 abstract class _ModelsPallet implements ModelsPallet {
   const factory _ModelsPallet(
       {required final String barcode,
+      required final String? barcodeParty,
       required final String date,
       required final String dateRelease,
       required final String status,
@@ -385,6 +404,8 @@ abstract class _ModelsPallet implements ModelsPallet {
 
   @override
   String get barcode;
+  @override
+  String? get barcodeParty;
   @override
   String get date;
   @override

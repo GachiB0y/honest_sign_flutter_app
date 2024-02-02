@@ -1,8 +1,9 @@
-import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
+// import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
+import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 import 'package:intl/intl.dart';
 
-int countUnitsPerBox = 4; // Заглушка на 11 всего кодов и две коробки
-int countAllBarcodesPerPallet = 11;
+int countUnitsPerBox = 2; // Заглушка на 7 всего кодов и две коробки
+int countAllBarcodesPerPallet = 7;
 int countBoxesPerPallet = 2;
 Set<String> setBoxs = {'228', '227', '226', '225'};
 Set<String> setPallets = {'2007', '2008'};
@@ -13,6 +14,7 @@ String gtin = '';
 
 String dateOfRelease = '';
 String nameFuturePallet = 'Будущая паллета';
+String futureBarcodeParty = '';
 
 String createDateNow() {
   DateTime now = DateTime.now();
@@ -22,4 +24,4 @@ String createDateNow() {
 
 List<ModelsPallet> listPallets = [];
 
-ListPallets modelListPallets = ListPallets(listPallets: []);
+ListPallets modelListPallets = const ListPallets(listModelsPallet: []);

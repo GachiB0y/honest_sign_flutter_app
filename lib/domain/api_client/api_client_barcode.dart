@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/api_client/api_service.dart';
-import 'package:honest_sign_flutter_app/domain/entity/enity.dart';
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart'
     as newEntity;
 import 'package:http/http.dart' as http;
@@ -21,7 +20,8 @@ abstract class BarcodeService {
 
   Future<bool> checkInternetConnection();
   Future<void> savePalletsInCash(
-      {required ListPallets modelListPallets, required String fileName});
+      {required newEntity.ListPallets modelListPallets,
+      required String fileName});
   Future<void> savePalletsInCashNew(
       {required newEntity.ListPallets modelListPallets,
       required String fileName});
@@ -96,7 +96,8 @@ class BarcodeServiceImpl extends BarcodeService {
 
   @override
   Future<void> savePalletsInCash(
-      {required ListPallets modelListPallets, required String fileName}) async {
+      {required newEntity.ListPallets modelListPallets,
+      required String fileName}) async {
     if (await Permission.storage.request().isGranted) {
       final file = await createFile('$fileName.json');
       final jsonStr = json.encode(modelListPallets.toJson());

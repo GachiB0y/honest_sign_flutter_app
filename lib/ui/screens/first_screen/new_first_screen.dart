@@ -30,6 +30,7 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
   @override
   void initState() {
     super.initState();
+    // textEditingController.text = "989704"; // ЗАКОММЕНТИРОВАТЬ В РЕЛИЗЕ
   }
 
   Future<void> _showSendPalletDialog(
@@ -150,6 +151,7 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
                       : TextFormField(
                           keyboardType: TextInputType.number,
                           autofocus: true,
+                          // initialValue: textEditingController.text,
                           controller: textEditingController,
                           onFieldSubmitted: (value) async {
                             if (value.isNotEmpty) {
@@ -164,8 +166,8 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
                                     .palletsRepository
                                     .getFreeCodes(); //Получаем агрегационные коды
                                 await barcodeService.getInfoForBarcodeRelease(
-                                    numberCard:
-                                        numberCard); // РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
+                                    numberCard: numberCard);
+                                //// РАССКОМЕНТИРОВАТЬ В РЕЛИЗ ВЕРСИИ
                                 context.read<PalletsBloc>().add(PalletsEvent.fetch(
                                     numberCard:
                                         value)); // Достаем стейт или получаем новый

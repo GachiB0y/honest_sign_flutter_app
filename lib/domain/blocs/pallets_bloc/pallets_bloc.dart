@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
+import 'package:honest_sign_flutter_app/domain/entity/model_state_pallets_bloc/model_state_pallets_bloc.dart';
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 import 'package:honest_sign_flutter_app/domain/repository/pallets_repository.dart';
 import 'package:intl/intl.dart';
@@ -440,7 +441,10 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         .listModelsPallet
         .last
         .copyWith(
-            barcode: event.barcode, date: formattedDateTime, status: 'Full');
+            barcode: event.barcode, // ШК честный знак
+            barcodeParty: futureBarcodeParty.toString(), // ШК партионный
+            date: formattedDateTime,
+            status: 'Full');
 
 //Копирруем список паллет
     final List<ModelsPallet> listNewModelPallets = [
@@ -457,6 +461,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
 
     final ModelsPallet pallet = ModelsPallet(
         barcode: nameFuturePallet,
+        barcodeParty: null,
         date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
         boxes: [],
         dateRelease: dateOfRelease.toString(),
@@ -513,6 +518,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
 
       final ModelsPallet pallet = ModelsPallet(
           barcode: nameFuturePallet,
+          barcodeParty: nameFuturePallet,
           date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
           boxes: [],
           dateRelease: dateOfRelease,
@@ -666,6 +672,7 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
       } else {
         final ModelsPallet pallet = ModelsPallet(
             barcode: nameFuturePallet,
+            barcodeParty: nameFuturePallet,
             date: DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
             boxes: [],
             dateRelease: dateOfRelease.toString(),
