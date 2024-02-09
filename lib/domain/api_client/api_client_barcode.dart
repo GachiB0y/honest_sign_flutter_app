@@ -85,7 +85,8 @@ class BarcodeServiceImpl extends BarcodeService {
           throw Exception('Ошибка отправки палеты!\nОбратитесь к мастеру!');
         }
       } on TimeoutException {
-        throw Exception('Время отправки выше 8 секунд.\nОбратитесь к мастеру!');
+        throw Exception(
+            'Время отправки выше 25 секунд.\nОбратитесь к мастеру!');
       } catch (e) {
         rethrow;
       }

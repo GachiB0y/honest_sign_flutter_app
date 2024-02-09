@@ -228,8 +228,8 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                                     ? 'Отсканируйте\n КОРОБКУ!'
                                     : isFirstBarcodePallet
                                         ? 'Отсканируйте\nпартионный штрихкод РАЗЛИТОГО паллета\n(ШК начинается с 99...).'
-                                        : 'Отсканируйте\n агрегационный штрихкод паллета\n(ШК начинается с 14...)',
-                                style: const TextStyle(fontSize: 24),
+                                        : 'Отсканируйте\nагрегационный штрихкод паллета\n(ШК начинается с 14...)',
+                                style: const TextStyle(fontSize: 18),
                               ),
                             ),
                             InputWithKeyboardControl(

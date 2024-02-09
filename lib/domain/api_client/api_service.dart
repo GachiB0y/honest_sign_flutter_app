@@ -27,7 +27,7 @@ class HTTPServiceImpl implements IHTTPService {
     request.headers.addAll(headers);
 
     StreamedResponse response =
-        await request.send().timeout(const Duration(seconds: 8));
+        await request.send().timeout(const Duration(seconds: 25));
     return response;
   }
 }
