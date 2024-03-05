@@ -34,6 +34,8 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         onCreatePallet(event, emit);
       } else if (event is PalletsEventChangeDateRelease) {
         onChangeDateRelease(event, emit);
+      } else if (event is PalletsEventChangeBarcodeParty) {
+        onChangeBarcodeParty(event, emit);
       } else if (event is PalletsEventClearAllCurrentUnits) {
         onClearAllCurrentUnits(emit);
       } else if (event is PalletsEventClearCurrentUnitsByBarcode) {
@@ -416,6 +418,45 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
           .listModelsPallet
           .last
           .copyWith(dateRelease: event.newDateOfRelease);
+
+//Удаляем последнюю модель и вставляем новую в списке паллет
+      listModelPallets.removeLast();
+      listModelPallets.add(modelsPallet);
+    }
+
+//Копируем модель ListPallets с новым списком
+    ListPallets listPallets = (state as PalletsStateLoaded)
+        .listPallets
+        .copyWith(listModelsPallet: listModelPallets);
+    final newState =
+        (state as PalletsStateLoaded).copyWith(listPallets: listPallets);
+    emit(newState);
+  }
+
+  /// Изменение Партионного ШК
+  void onChangeBarcodeParty(
+      PalletsEventChangeBarcodeParty event, Emitter<PalletsState> emit) {
+    //Копируем список паллет
+    final List<ModelsPallet> listModelPallets = [
+      ...(state as PalletsStateLoaded).listPallets.listModelsPallet
+    ];
+//Проверяем есть ли индекс паллеты или это изменения для следующей паллеты
+    if (event.indexPallet != null) {
+//Берем по Индексу модель паллеты, копируем ее с новым Партионным ШК
+      final ModelsPallet modelsPallet = (state as PalletsStateLoaded)
+          .listPallets
+          .listModelsPallet[event.indexPallet!]
+          .copyWith(barcodeParty: event.newBarcodeOfParty);
+//Удаляем по Индексу модель и вставляем новую по Индексу в списке паллет
+      listModelPallets.removeAt(event.indexPallet!);
+      listModelPallets.insert(event.indexPallet!, modelsPallet);
+    } else {
+//Берем последнюю модель паллеты, копируем ее с новым Партионным ШК
+      final ModelsPallet modelsPallet = (state as PalletsStateLoaded)
+          .listPallets
+          .listModelsPallet
+          .last
+          .copyWith(barcodeParty: event.newBarcodeOfParty);
 
 //Удаляем последнюю модель и вставляем новую в списке паллет
       listModelPallets.removeLast();

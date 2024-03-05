@@ -40,6 +40,8 @@ class SessionDataProvdierDefault implements SessionDataProvdier {
     await prefs.setInt('countBox_$numberCard', palletState.countBox);
     await prefs.setInt('maxIndex_$numberCard', palletState.maxIndexUnitInBox);
     await prefs.setString('dateofRelease_$numberCard', dateOfRelease);
+    await prefs.setString(
+        'futureBarcodePdarty_$numberCard', futureBarcodeParty);
   }
 
   @override
@@ -80,7 +82,9 @@ class SessionDataProvdierDefault implements SessionDataProvdier {
         countBox: countBox,
       );
       dateOfRelease = prefs.getString('dateofRelease_$numberCard') ??
-          ''; // Получаем дату и записываем ее в глобальную переменную. Дальше нужно убрать ее из глобальных.
+          ''; // Получаем дату и записываем ее в глобальную переменную. Дальше нужно убрать ее из глобальных.\
+      futureBarcodeParty =
+          prefs.getString('futureBarcodePdarty_$numberCard') ?? '';
       return state;
     } else {
       return null;
@@ -99,6 +103,7 @@ class SessionDataProvdierDefault implements SessionDataProvdier {
       await prefs.remove('countBarcode_$numberCard');
       await prefs.remove('maxIndex_$numberCard');
       await prefs.remove('dateofRelease_$numberCard');
+      await prefs.remove('futureBarcodePdarty_$numberCard');
     } catch (e) {
       rethrow;
     }

@@ -27,6 +27,13 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
   bool isShowDateInput = false;
   String numberCard = numberCardConst;
 
+  /// Используячется для ввода Партионного ШК после ввода даты.
+  bool isPartyBarcodePallet = false;
+  final _textControllerChangeBarcodeParty = TextEditingController();
+  final _focusNodeChangeBarcodeParty = FocusNode();
+
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -123,7 +130,9 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     isShowDateInput
-                        ? 'Введите дату производства первой паллеты (которая указана на флаконе)'
+                        ? isPartyBarcodePallet
+                            ? 'Введите с белой этикетки партионный шк паллета, который БУДЕТЕ разливать.'
+                            : 'Введите дату производства первой паллеты (которая указана на флаконе)'
                         : 'Введите номер карты Розлива, для получения данных!',
                     style: const TextStyle(fontSize: 20),
                   ),
@@ -131,23 +140,65 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: isShowDateInput
-                      ? Column(
-                          children: [
-                            const CustomDatePicker(),
-                            ApproveButtonWidget(
-                              onSubmitedAnGetInfoForBarcodeRelease:
-                                  onSubmitedAnGetInfoForBarcodeRelease,
-                            ),
-                            ElevatedButton.icon(
-                                onPressed: () {
-                                  setState(() {
-                                    isShowDateInput = false;
-                                  });
+                      ? isPartyBarcodePallet
+                          ? Form(
+                              key: _formKey,
+                              child: TextFormField(
+                                controller: _textControllerChangeBarcodeParty,
+                                focusNode: _focusNodeChangeBarcodeParty,
+                                keyboardType: TextInputType.number,
+                                autofocus: true,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    FocusScope.of(context).requestFocus(
+                                        _focusNodeChangeBarcodeParty); // Установить фокус на TextFormField
+                                    return 'Значение обязательно';
+                                  }
+                                  if (!value.startsWith('99')) {
+                                    FocusScope.of(context).requestFocus(
+                                        _focusNodeChangeBarcodeParty); // Установить фокус на TextFormField
+                                    return 'ШК должен начинаться с 99';
+                                  }
+                                  return null;
                                 },
-                                icon: const Icon(Icons.arrow_back),
-                                label: const Text('Назад')),
-                          ],
-                        )
+                                onFieldSubmitted: (value) {
+                                  if (_formKey.currentState!.validate()) {
+                                    /// записываем значение Партионного ШК
+                                    futureBarcodeParty = value;
+
+                                    /// Меняем Партионный ШКу последнего паллета
+                                    context.read<PalletsBloc>().add(
+                                        PalletsEventChangeBarcodeParty(
+                                            newBarcodeOfParty: value));
+
+                                    /// Если с валидацией все ок, переходим на главный экран
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const MainScreenCopy()));
+                                  }
+                                  _textControllerChangeBarcodeParty.clear();
+                                },
+                              ),
+                            )
+                          : Column(
+                              children: [
+                                const CustomDatePicker(),
+                                ApproveButtonWidget(
+                                  onSubmitedAnGetInfoForBarcodeRelease:
+                                      onSubmitedAnGetInfoForBarcodeRelease,
+                                ),
+                                ElevatedButton.icon(
+                                    onPressed: () {
+                                      setState(() {
+                                        isShowDateInput = false;
+                                      });
+                                    },
+                                    icon: const Icon(Icons.arrow_back),
+                                    label: const Text('Назад')),
+                              ],
+                            )
                       : TextFormField(
                           keyboardType: TextInputType.number,
                           autofocus: true,
@@ -191,13 +242,18 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
   Future<void> onSubmitedAnGetInfoForBarcodeRelease(
       {required BuildContext context, required String value}) async {
     try {
+      /// Записываем новую дату в переменную
       dateOfRelease = value;
 
+      /// Меняем дату и создаем список паллет
       context
           .read<PalletsBloc>()
           .add(PalletsEventChangeDateRelease(newDateOfRelease: value));
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const MainScreenCopy()));
+
+      /// Ставит в true для отображения TextField для ввода партионного ШК
+      setState(() {
+        isPartyBarcodePallet = true;
+      });
     } catch (e) {
       final String message = e.toString().replaceAll('Exception: ', '');
       _showSendPalletDialog(context, message);

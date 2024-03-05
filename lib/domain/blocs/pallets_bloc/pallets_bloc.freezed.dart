@@ -32,6 +32,8 @@ mixin _$PalletsEvent {
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -53,6 +55,8 @@ mixin _$PalletsEvent {
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -74,6 +78,8 @@ mixin _$PalletsEvent {
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -102,6 +108,8 @@ mixin _$PalletsEvent {
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -123,6 +131,7 @@ mixin _$PalletsEvent {
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -144,6 +153,7 @@ mixin _$PalletsEvent {
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -249,6 +259,8 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -273,6 +285,8 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -297,6 +311,8 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -331,6 +347,8 @@ class _$PalletsEventFetch implements PalletsEventFetch {
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -355,6 +373,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -379,6 +398,7 @@ class _$PalletsEventFetch implements PalletsEventFetch {
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -454,6 +474,8 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -478,6 +500,8 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -502,6 +526,8 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -536,6 +562,8 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -560,6 +588,7 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -584,6 +613,7 @@ class _$PalletsEventSendBarcodes implements PalletsEventSendBarcodes {
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -655,6 +685,8 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -679,6 +711,8 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -703,6 +737,8 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -737,6 +773,8 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -761,6 +799,7 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -785,6 +824,7 @@ class _$PalletsEventCompleteBottling implements PalletsEventCompleteBottling {
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -856,6 +896,8 @@ class _$PalletsEventRemoveErrorText implements PalletsEventRemoveErrorText {
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -880,6 +922,8 @@ class _$PalletsEventRemoveErrorText implements PalletsEventRemoveErrorText {
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -904,6 +948,8 @@ class _$PalletsEventRemoveErrorText implements PalletsEventRemoveErrorText {
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -938,6 +984,8 @@ class _$PalletsEventRemoveErrorText implements PalletsEventRemoveErrorText {
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -962,6 +1010,7 @@ class _$PalletsEventRemoveErrorText implements PalletsEventRemoveErrorText {
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -986,6 +1035,7 @@ class _$PalletsEventRemoveErrorText implements PalletsEventRemoveErrorText {
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -1085,6 +1135,8 @@ class _$PalletsEventDeletePalletByIndex
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -1109,6 +1161,8 @@ class _$PalletsEventDeletePalletByIndex
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -1133,6 +1187,8 @@ class _$PalletsEventDeletePalletByIndex
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -1167,6 +1223,8 @@ class _$PalletsEventDeletePalletByIndex
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -1191,6 +1249,7 @@ class _$PalletsEventDeletePalletByIndex
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -1215,6 +1274,7 @@ class _$PalletsEventDeletePalletByIndex
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -1329,6 +1389,8 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -1353,6 +1415,8 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -1377,6 +1441,8 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -1411,6 +1477,8 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -1435,6 +1503,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -1459,6 +1528,7 @@ class _$PalletsEventClearBoxByIndex implements PalletsEventClearBoxByIndex {
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -1587,6 +1657,8 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -1611,6 +1683,8 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -1635,6 +1709,8 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -1669,6 +1745,8 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -1693,6 +1771,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -1717,6 +1796,7 @@ class _$PalletsEventDeleteBoxByIndex implements PalletsEventDeleteBoxByIndex {
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -1845,6 +1925,8 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -1869,6 +1951,8 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -1893,6 +1977,8 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -1927,6 +2013,8 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -1951,6 +2039,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -1975,6 +2064,7 @@ class _$PalletsEventCreateUnitByIndex implements PalletsEventCreateUnitByIndex {
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -2057,6 +2147,8 @@ class _$PalletsEventClearAllCurrentUnits
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -2081,6 +2173,8 @@ class _$PalletsEventClearAllCurrentUnits
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -2105,6 +2199,8 @@ class _$PalletsEventClearAllCurrentUnits
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -2139,6 +2235,8 @@ class _$PalletsEventClearAllCurrentUnits
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -2163,6 +2261,7 @@ class _$PalletsEventClearAllCurrentUnits
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -2187,6 +2286,7 @@ class _$PalletsEventClearAllCurrentUnits
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -2288,6 +2388,8 @@ class _$PalletsEventClearCurrentUnitsByBarcode
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -2312,6 +2414,8 @@ class _$PalletsEventClearCurrentUnitsByBarcode
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -2336,6 +2440,8 @@ class _$PalletsEventClearCurrentUnitsByBarcode
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -2370,6 +2476,8 @@ class _$PalletsEventClearCurrentUnitsByBarcode
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -2394,6 +2502,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -2418,6 +2527,7 @@ class _$PalletsEventClearCurrentUnitsByBarcode
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -2534,6 +2644,8 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -2558,6 +2670,8 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -2582,6 +2696,8 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -2616,6 +2732,8 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -2640,6 +2758,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -2664,6 +2783,7 @@ class _$PalletsEventChangeDateRelease implements PalletsEventChangeDateRelease {
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -2685,6 +2805,263 @@ abstract class PalletsEventChangeDateRelease implements PalletsEvent {
   int? get indexPallet;
   @JsonKey(ignore: true)
   _$$PalletsEventChangeDateReleaseCopyWith<_$PalletsEventChangeDateRelease>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$PalletsEventChangeBarcodePartyCopyWith<$Res> {
+  factory _$$PalletsEventChangeBarcodePartyCopyWith(
+          _$PalletsEventChangeBarcodeParty value,
+          $Res Function(_$PalletsEventChangeBarcodeParty) then) =
+      __$$PalletsEventChangeBarcodePartyCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String newBarcodeOfParty, int? indexPallet});
+}
+
+/// @nodoc
+class __$$PalletsEventChangeBarcodePartyCopyWithImpl<$Res>
+    extends _$PalletsEventCopyWithImpl<$Res, _$PalletsEventChangeBarcodeParty>
+    implements _$$PalletsEventChangeBarcodePartyCopyWith<$Res> {
+  __$$PalletsEventChangeBarcodePartyCopyWithImpl(
+      _$PalletsEventChangeBarcodeParty _value,
+      $Res Function(_$PalletsEventChangeBarcodeParty) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? newBarcodeOfParty = null,
+    Object? indexPallet = freezed,
+  }) {
+    return _then(_$PalletsEventChangeBarcodeParty(
+      newBarcodeOfParty: null == newBarcodeOfParty
+          ? _value.newBarcodeOfParty
+          : newBarcodeOfParty // ignore: cast_nullable_to_non_nullable
+              as String,
+      indexPallet: freezed == indexPallet
+          ? _value.indexPallet
+          : indexPallet // ignore: cast_nullable_to_non_nullable
+              as int?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$PalletsEventChangeBarcodeParty
+    implements PalletsEventChangeBarcodeParty {
+  const _$PalletsEventChangeBarcodeParty(
+      {required this.newBarcodeOfParty, this.indexPallet});
+
+  @override
+  final String newBarcodeOfParty;
+  @override
+  final int? indexPallet;
+
+  @override
+  String toString() {
+    return 'PalletsEvent.changeBarcodeParty(newBarcodeOfParty: $newBarcodeOfParty, indexPallet: $indexPallet)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PalletsEventChangeBarcodeParty &&
+            (identical(other.newBarcodeOfParty, newBarcodeOfParty) ||
+                other.newBarcodeOfParty == newBarcodeOfParty) &&
+            (identical(other.indexPallet, indexPallet) ||
+                other.indexPallet == indexPallet));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, newBarcodeOfParty, indexPallet);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$PalletsEventChangeBarcodePartyCopyWith<_$PalletsEventChangeBarcodeParty>
+      get copyWith => __$$PalletsEventChangeBarcodePartyCopyWithImpl<
+          _$PalletsEventChangeBarcodeParty>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String numberCard) fetch,
+    required TResult Function() sendBarcodes,
+    required TResult Function() completeBottling,
+    required TResult Function() removeErrorText,
+    required TResult Function(int indexPallet) deletePalletByIndex,
+    required TResult Function(int indexBox, int indexPallet) clearBoxByIndex,
+    required TResult Function(int indexBox, int indexPallet, String barcodeBox)
+        deleteBoxByIndex,
+    required TResult Function(int indexBox, int indexPallet, String barcode)
+        createUnitByIndex,
+    required TResult Function() clearAllCurrentUnits,
+    required TResult Function(String barcode) clearCurrentUnitsByBarcode,
+    required TResult Function(String newDateOfRelease, int? indexPallet)
+        changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
+    required TResult Function(String barcode) createUnit,
+    required TResult Function(String barcode) createBox,
+    required TResult Function(String barcode) createPallet,
+  }) {
+    return changeBarcodeParty(newBarcodeOfParty, indexPallet);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String numberCard)? fetch,
+    TResult? Function()? sendBarcodes,
+    TResult? Function()? completeBottling,
+    TResult? Function()? removeErrorText,
+    TResult? Function(int indexPallet)? deletePalletByIndex,
+    TResult? Function(int indexBox, int indexPallet)? clearBoxByIndex,
+    TResult? Function(int indexBox, int indexPallet, String barcodeBox)?
+        deleteBoxByIndex,
+    TResult? Function(int indexBox, int indexPallet, String barcode)?
+        createUnitByIndex,
+    TResult? Function()? clearAllCurrentUnits,
+    TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
+    TResult? Function(String newDateOfRelease, int? indexPallet)?
+        changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
+    TResult? Function(String barcode)? createUnit,
+    TResult? Function(String barcode)? createBox,
+    TResult? Function(String barcode)? createPallet,
+  }) {
+    return changeBarcodeParty?.call(newBarcodeOfParty, indexPallet);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String numberCard)? fetch,
+    TResult Function()? sendBarcodes,
+    TResult Function()? completeBottling,
+    TResult Function()? removeErrorText,
+    TResult Function(int indexPallet)? deletePalletByIndex,
+    TResult Function(int indexBox, int indexPallet)? clearBoxByIndex,
+    TResult Function(int indexBox, int indexPallet, String barcodeBox)?
+        deleteBoxByIndex,
+    TResult Function(int indexBox, int indexPallet, String barcode)?
+        createUnitByIndex,
+    TResult Function()? clearAllCurrentUnits,
+    TResult Function(String barcode)? clearCurrentUnitsByBarcode,
+    TResult Function(String newDateOfRelease, int? indexPallet)?
+        changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
+    TResult Function(String barcode)? createUnit,
+    TResult Function(String barcode)? createBox,
+    TResult Function(String barcode)? createPallet,
+    required TResult orElse(),
+  }) {
+    if (changeBarcodeParty != null) {
+      return changeBarcodeParty(newBarcodeOfParty, indexPallet);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(PalletsEventFetch value) fetch,
+    required TResult Function(PalletsEventSendBarcodes value) sendBarcodes,
+    required TResult Function(PalletsEventCompleteBottling value)
+        completeBottling,
+    required TResult Function(PalletsEventRemoveErrorText value)
+        removeErrorText,
+    required TResult Function(PalletsEventDeletePalletByIndex value)
+        deletePalletByIndex,
+    required TResult Function(PalletsEventClearBoxByIndex value)
+        clearBoxByIndex,
+    required TResult Function(PalletsEventDeleteBoxByIndex value)
+        deleteBoxByIndex,
+    required TResult Function(PalletsEventCreateUnitByIndex value)
+        createUnitByIndex,
+    required TResult Function(PalletsEventClearAllCurrentUnits value)
+        clearAllCurrentUnits,
+    required TResult Function(PalletsEventClearCurrentUnitsByBarcode value)
+        clearCurrentUnitsByBarcode,
+    required TResult Function(PalletsEventChangeDateRelease value)
+        changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
+    required TResult Function(PalletsEventCreateUnit value) createUnit,
+    required TResult Function(PalletsEventCreateBox value) createBox,
+    required TResult Function(PalletsEventCreatePallet value) createPallet,
+  }) {
+    return changeBarcodeParty(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(PalletsEventFetch value)? fetch,
+    TResult? Function(PalletsEventSendBarcodes value)? sendBarcodes,
+    TResult? Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult? Function(PalletsEventRemoveErrorText value)? removeErrorText,
+    TResult? Function(PalletsEventDeletePalletByIndex value)?
+        deletePalletByIndex,
+    TResult? Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
+    TResult? Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
+    TResult? Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
+    TResult? Function(PalletsEventClearAllCurrentUnits value)?
+        clearAllCurrentUnits,
+    TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
+        clearCurrentUnitsByBarcode,
+    TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
+    TResult? Function(PalletsEventCreateUnit value)? createUnit,
+    TResult? Function(PalletsEventCreateBox value)? createBox,
+    TResult? Function(PalletsEventCreatePallet value)? createPallet,
+  }) {
+    return changeBarcodeParty?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(PalletsEventFetch value)? fetch,
+    TResult Function(PalletsEventSendBarcodes value)? sendBarcodes,
+    TResult Function(PalletsEventCompleteBottling value)? completeBottling,
+    TResult Function(PalletsEventRemoveErrorText value)? removeErrorText,
+    TResult Function(PalletsEventDeletePalletByIndex value)?
+        deletePalletByIndex,
+    TResult Function(PalletsEventClearBoxByIndex value)? clearBoxByIndex,
+    TResult Function(PalletsEventDeleteBoxByIndex value)? deleteBoxByIndex,
+    TResult Function(PalletsEventCreateUnitByIndex value)? createUnitByIndex,
+    TResult Function(PalletsEventClearAllCurrentUnits value)?
+        clearAllCurrentUnits,
+    TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
+        clearCurrentUnitsByBarcode,
+    TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
+    TResult Function(PalletsEventCreateUnit value)? createUnit,
+    TResult Function(PalletsEventCreateBox value)? createBox,
+    TResult Function(PalletsEventCreatePallet value)? createPallet,
+    required TResult orElse(),
+  }) {
+    if (changeBarcodeParty != null) {
+      return changeBarcodeParty(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class PalletsEventChangeBarcodeParty implements PalletsEvent {
+  const factory PalletsEventChangeBarcodeParty(
+      {required final String newBarcodeOfParty,
+      final int? indexPallet}) = _$PalletsEventChangeBarcodeParty;
+
+  String get newBarcodeOfParty;
+  int? get indexPallet;
+  @JsonKey(ignore: true)
+  _$$PalletsEventChangeBarcodePartyCopyWith<_$PalletsEventChangeBarcodeParty>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -2767,6 +3144,8 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -2791,6 +3170,8 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -2815,6 +3196,8 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -2849,6 +3232,8 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -2873,6 +3258,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -2897,6 +3283,7 @@ class _$PalletsEventCreateUnit implements PalletsEventCreateUnit {
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -2998,6 +3385,8 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -3022,6 +3411,8 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -3046,6 +3437,8 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -3080,6 +3473,8 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -3104,6 +3499,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -3128,6 +3524,7 @@ class _$PalletsEventCreateBox implements PalletsEventCreateBox {
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,
@@ -3230,6 +3627,8 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
     required TResult Function(String barcode) clearCurrentUnitsByBarcode,
     required TResult Function(String newDateOfRelease, int? indexPallet)
         changeDateRelease,
+    required TResult Function(String newBarcodeOfParty, int? indexPallet)
+        changeBarcodeParty,
     required TResult Function(String barcode) createUnit,
     required TResult Function(String barcode) createBox,
     required TResult Function(String barcode) createPallet,
@@ -3254,6 +3653,8 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
     TResult? Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult? Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult? Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult? Function(String barcode)? createUnit,
     TResult? Function(String barcode)? createBox,
     TResult? Function(String barcode)? createPallet,
@@ -3278,6 +3679,8 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
     TResult Function(String barcode)? clearCurrentUnitsByBarcode,
     TResult Function(String newDateOfRelease, int? indexPallet)?
         changeDateRelease,
+    TResult Function(String newBarcodeOfParty, int? indexPallet)?
+        changeBarcodeParty,
     TResult Function(String barcode)? createUnit,
     TResult Function(String barcode)? createBox,
     TResult Function(String barcode)? createPallet,
@@ -3312,6 +3715,8 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
         clearCurrentUnitsByBarcode,
     required TResult Function(PalletsEventChangeDateRelease value)
         changeDateRelease,
+    required TResult Function(PalletsEventChangeBarcodeParty value)
+        changeBarcodeParty,
     required TResult Function(PalletsEventCreateUnit value) createUnit,
     required TResult Function(PalletsEventCreateBox value) createBox,
     required TResult Function(PalletsEventCreatePallet value) createPallet,
@@ -3336,6 +3741,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
     TResult? Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult? Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult? Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult? Function(PalletsEventCreateUnit value)? createUnit,
     TResult? Function(PalletsEventCreateBox value)? createBox,
     TResult? Function(PalletsEventCreatePallet value)? createPallet,
@@ -3360,6 +3766,7 @@ class _$PalletsEventCreatePallet implements PalletsEventCreatePallet {
     TResult Function(PalletsEventClearCurrentUnitsByBarcode value)?
         clearCurrentUnitsByBarcode,
     TResult Function(PalletsEventChangeDateRelease value)? changeDateRelease,
+    TResult Function(PalletsEventChangeBarcodeParty value)? changeBarcodeParty,
     TResult Function(PalletsEventCreateUnit value)? createUnit,
     TResult Function(PalletsEventCreateBox value)? createBox,
     TResult Function(PalletsEventCreatePallet value)? createPallet,

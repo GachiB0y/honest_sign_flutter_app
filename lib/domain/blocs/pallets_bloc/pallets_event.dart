@@ -35,6 +35,10 @@ class PalletsEvent with _$PalletsEvent {
   const factory PalletsEvent.changeDateRelease(
       {required String newDateOfRelease,
       int? indexPallet}) = PalletsEventChangeDateRelease;
+
+  const factory PalletsEvent.changeBarcodeParty(
+      {required String newBarcodeOfParty,
+      int? indexPallet}) = PalletsEventChangeBarcodeParty;
   const factory PalletsEvent.createUnit({
     required String barcode,
   }) = PalletsEventCreateUnit;

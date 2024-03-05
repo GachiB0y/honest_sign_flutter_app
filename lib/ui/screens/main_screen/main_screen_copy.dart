@@ -36,6 +36,9 @@ class MainScreenCopy extends StatefulWidget {
 class _MainScreenCopyState extends State<MainScreenCopy> {
   late TextEditingController _textEditingController;
   late TextEditingController _controllerForAlertChangeDateRelease;
+  final _focusNodeChangeBarcodeParty = FocusNode();
+
+  final _textControllerChangeBarcodeParty = TextEditingController();
 
   final ScrollController _scrollController = ScrollController();
 
@@ -44,10 +47,11 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
   bool isOpenAlertDialog = false;
   bool isShowError = false;
   bool _isLoading = false;
-  bool isFirstBarcodePallet = true;
+  bool isChangeBarcodeParty = false;
 
   final GlobalKey _alertDialogKey = GlobalKey();
   final GlobalKey _alertDialogKeyTwo = GlobalKey();
+  final _formKeySendBarcodeParty = GlobalKey<FormState>();
 
   late InputWithKeyboardControlFocusNode myFocusNode;
   late InputWithKeyboardControlFocusNode myFocusNodeCheckBarcode =
@@ -226,34 +230,32 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                               child: Text(
                                 isBox
                                     ? 'Отсканируйте\n КОРОБКУ!'
-                                    : isFirstBarcodePallet
-                                        ? 'Отсканируйте\nпартионный штрихкод РАЗЛИТОГО паллета\n(ШК начинается с 99...).'
-                                        : 'Отсканируйте\nагрегационный штрихкод паллета\n(ШК начинается с 14...)',
+                                    : 'Отсканируйте\nагрегационный штрихкод паллета\n(ШК начинается с 14...)',
                                 style: const TextStyle(fontSize: 18),
                               ),
                             ),
                             InputWithKeyboardControl(
                               focusNode: myFocusNodeCheckBarcode,
                               onSubmitted: (value) async {
-                                // Проверка если это паллет и это первый ШК, то
-                                // проверяем на страрт ШК с 99
-                                if (isBox == false && isFirstBarcodePallet) {
-                                  if (value.contains('99')) {
-                                    futureBarcodeParty = value;
-                                    setState(() {
-                                      isShowError = false;
-                                      isFirstBarcodePallet = false;
-                                      _textEditingController.clear();
-                                    });
-                                    return;
-                                  } else {
-                                    setState(() {
-                                      isShowError = true;
-                                      _textEditingController.clear();
-                                    });
-                                    return;
-                                  }
-                                }
+                                // // Проверка если это паллет и это первый ШК, то
+                                // // проверяем на страрт ШК с 99
+                                // if (isBox == false && isFirstBarcodePallet) {
+                                //   if (value.contains('99')) {
+                                //     futureBarcodeParty = value;
+                                //     setState(() {
+                                //       isShowError = false;
+                                //       isFirstBarcodePallet = false;
+                                //       _textEditingController.clear();
+                                //     });
+                                //     return;
+                                //   } else {
+                                //     setState(() {
+                                //       isShowError = true;
+                                //       _textEditingController.clear();
+                                //     });
+                                //     return;
+                                //   }
+                                // }
                                 try {
                                   final TypeOfStateSend isSend =
                                       await onSubmittedTextField(
@@ -294,14 +296,12 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                                           _textEditingController.clear();
                                           isErrorSendPallet = false;
                                           isShowError = false;
-                                          isFirstBarcodePallet = true;
                                         });
                                       } catch (e) {
                                         setState(() {
                                           isErrorSendPallet = true;
                                           _isLoading = false;
                                           isOpenAlertDialog = false;
-                                          isFirstBarcodePallet = true;
                                         });
 
                                         final String message = e
@@ -392,68 +392,123 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
             canPop: false,
             child: AlertDialog(
               elevation: 3.0,
-              content: showTextField
-                  ? const CustomDatePicker()
-                  : Text(
-                      'Дата розлива следующей паллеты (которая указана на флаконе): $dateOfRelease.\n Вы уверены?',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 20),
-                    ),
-              actions: showTextField
-                  ? <Widget>[
-                      Center(
-                        child: TextButton(
-                          child: const Text(
-                            'Подтвердить',
+              content: isChangeBarcodeParty
+                  ? Form(
+                      key: _formKeySendBarcodeParty,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'Введите с белой этикетки партионный шк паллета, который БУДЕТЕ разливать',
+                            textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 20),
                           ),
-                          onPressed: () {
-                            dateOfRelease = DateFormat('dd.MM.yyyy').format(
-                                dateModel?.selectedDate ?? DateTime.now());
-                            blocPallet.add(PalletsEventChangeDateRelease(
-                                newDateOfRelease: DateFormat('dd.MM.yyyy')
-                                    .format(dateModel?.selectedDate ??
-                                        DateTime.now())));
+                          TextFormField(
+                            focusNode: _focusNodeChangeBarcodeParty,
+                            keyboardType: TextInputType.number,
+                            controller: _textControllerChangeBarcodeParty,
+                            autofocus: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                FocusScope.of(context).requestFocus(
+                                    _focusNodeChangeBarcodeParty); // Установить фокус на TextFormField
+                                return 'Значение обязательно';
+                              }
+                              if (!value.startsWith('99')) {
+                                FocusScope.of(context).requestFocus(
+                                    _focusNodeChangeBarcodeParty); // Установить фокус на TextFormField
+                                return 'ШК должен начинаться с 99';
+                              }
+                              return null;
+                            },
+                            onFieldSubmitted: (value) {
+                              if (_formKeySendBarcodeParty.currentState!
+                                  .validate()) {
+                                /// записываем значение Партионного ШК
+                                futureBarcodeParty = value;
 
-                            setState(() {
-                              showTextField = false;
-                            });
-                          },
-                        ),
-                      )
-                    ]
-                  : <Widget>[
-                      Center(
-                        child: TextButton(
-                          child: const Text(
-                            'Нет',
-                            style: TextStyle(fontSize: 20),
+                                /// Меняем Партионный ШКу последнего паллета
+                                context.read<PalletsBloc>().add(
+                                    PalletsEventChangeBarcodeParty(
+                                        newBarcodeOfParty: value));
+                                setState(() {
+                                  isOpenAlertDialog = false;
+                                  isChangeBarcodeParty = false;
+                                });
+                                Navigator.of(context).pop();
+                              }
+                              _textControllerChangeBarcodeParty.clear();
+                            },
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _controllerForAlertChangeDateRelease =
-                                  TextEditingController();
-                              showTextField = true;
-                              isOpenAlertDialog = true;
-                            });
-                          },
-                        ),
+                        ],
                       ),
-                      Center(
-                        child: TextButton(
-                          child: const Text(
-                            'Да',
-                            style: TextStyle(fontSize: 20),
+                    )
+                  : showTextField
+                      ? const CustomDatePicker()
+                      : Text(
+                          'Дата розлива следующей паллеты (которая указана на флаконе): $dateOfRelease.\n Вы уверены?',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 20),
+                        ),
+              actions: isChangeBarcodeParty
+                  ? null
+                  : showTextField
+                      ? <Widget>[
+                          Center(
+                            child: TextButton(
+                              child: const Text(
+                                'Подтвердить',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              onPressed: () {
+                                dateOfRelease = DateFormat('dd.MM.yyyy').format(
+                                    dateModel?.selectedDate ?? DateTime.now());
+                                blocPallet.add(PalletsEventChangeDateRelease(
+                                    newDateOfRelease: DateFormat('dd.MM.yyyy')
+                                        .format(dateModel?.selectedDate ??
+                                            DateTime.now())));
+
+                                setState(() {
+                                  showTextField = false;
+                                });
+                              },
+                            ),
+                          )
+                        ]
+                      : <Widget>[
+                          Center(
+                            child: TextButton(
+                              child: const Text(
+                                'Нет',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _controllerForAlertChangeDateRelease =
+                                      TextEditingController();
+                                  showTextField = true;
+                                  isOpenAlertDialog = true;
+                                });
+                              },
+                            ),
                           ),
-                          onPressed: () {
-                            setState(() {
-                              isOpenAlertDialog = false;
-                              Navigator.of(context).pop();
-                            });
-                          },
-                        ),
-                      ),
-                    ],
+                          Center(
+                            child: TextButton(
+                              child: const Text(
+                                'Да',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  isChangeBarcodeParty = true;
+
+                                  // isOpenAlertDialog = false;
+                                  // Navigator.of(context).pop();
+                                });
+                              },
+                            ),
+                          ),
+                        ],
             ),
           );
         });
@@ -1023,7 +1078,7 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
                   ? pallet.barcode
                   : '(неполная палета)';
               final String namePalletInHistory =
-                  '$indexPallet. Палета $partNamePallet ${pallet.boxes.length}/$countBoxesPerPallet \n ${pallet.dateRelease}';
+                  '$indexPallet. Палета $partNamePallet ${pallet.boxes.length}/$countBoxesPerPallet \n ${pallet.dateRelease}\n Партионный:${pallet.barcodeParty}';
 
               return ExpansionTile(
                 title: Text(namePalletInHistory),
