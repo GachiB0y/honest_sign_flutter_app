@@ -547,6 +547,9 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
 
     // Проверка на палету
     if (typeBarcode == TypeOfBarcode.pallet) {
+      if (statePalletsBloc.countBarcodes == 0) {
+        return false;
+      }
       if (statePalletsBloc.countBarcodes % (countAllBarcodesPerPallet - 1) ==
           0) {
         blocPallet.add(PalletsEvent.createPallet(barcode: barcode));
@@ -1108,6 +1111,19 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
                           });
                         },
                       ),
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          widget.myFocusNode.nextFocus();
+                          showDaologChangeBarcodeParty(context, indexPallet)
+                              .then((value) {
+                            setState(() {
+                              controller.clear();
+                              widget.myFocusNode.requestFocus();
+                            });
+                          });
+                        },
+                      ),
                     ],
                   ),
                   ListTile(
@@ -1239,37 +1255,107 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
         return PopScope(
           canPop: false,
           child: AlertDialog(
-              elevation: 3.0,
-              content: const CustomDatePicker(),
-              // TextField(
-              //   autofocus: true,
-              //   keyboardType: TextInputType.number,
-              //   controller: controller,
-              //   decoration: const InputDecoration(
-              //     hintText: 'Введите дату (дд.мм.гггг)',
-              //   ),
-              //   inputFormatters: [DateTextFormatter()],
-              // ),
-              actions: <Widget>[
-                Center(
-                  child: TextButton(
-                    child: const Text(
-                      'Подтвердить',
-                      style: TextStyle(fontSize: 20),
+            elevation: 3.0,
+            content: const CustomDatePicker(),
+            actions: <Widget>[
+              Center(
+                child: TextButton(
+                  child: const Text(
+                    'Подтвердить',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onPressed: () {
+                    final newDateOfRelease = DateFormat('dd.MM.yyyy')
+                        .format(dateModel?.selectedDate ?? DateTime.now());
+
+                    blocPallet.add(PalletsEventChangeDateRelease(
+                        indexPallet: (indexPallet - 1),
+                        newDateOfRelease: newDateOfRelease));
+
+                    Navigator.of(context).pop();
+                  },
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> showDaologChangeBarcodeParty(
+      BuildContext context, int indexPallet) {
+    final textController = TextEditingController();
+    final focusNodeChangeBarcodeParty = FocusNode();
+    final formKey = GlobalKey<FormState>();
+
+    return showDialog<void>(
+      barrierDismissible: false, //РАСКОМЕНТИРОВАТЬ В  РЕЛИЗЕ
+
+      context: context,
+      builder: (BuildContext context) {
+        final PalletsBloc blocPallet = context.read<PalletsBloc>();
+        return PopScope(
+          canPop: false,
+          child: AlertDialog(
+            elevation: 3.0,
+            content: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Замена ПАРТИОННОГО ШК',
+                    style: TextStyle(fontSize: 19),
+                  ),
+                  TextFormField(
+                    autofocus: true,
+                    keyboardType: TextInputType.number,
+                    controller: textController,
+                    decoration: const InputDecoration(
+                      hintText: 'Отсканируйте штрихкод',
                     ),
-                    onPressed: () {
-                      final newDateOfRelease = DateFormat('dd.MM.yyyy')
-                          .format(dateModel?.selectedDate ?? DateTime.now());
-
-                      blocPallet.add(PalletsEventChangeDateRelease(
-                          indexPallet: (indexPallet - 1),
-                          newDateOfRelease: newDateOfRelease));
-
-                      Navigator.of(context).pop();
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        textController.clear();
+                        FocusScope.of(context).requestFocus(
+                            focusNodeChangeBarcodeParty); // Установить фокус на TextFormField
+                        return 'Значение обязательно';
+                      }
+                      if (!value.startsWith('99')) {
+                        textController.clear();
+                        FocusScope.of(context).requestFocus(
+                            focusNodeChangeBarcodeParty); // Установить фокус на TextFormField
+                        return 'ШК должен начинаться с 99';
+                      }
+                      return null;
                     },
                   ),
-                )
-              ]),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              Center(
+                child: TextButton(
+                  child: const Text(
+                    'Подтвердить',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      if (textController.text.isNotEmpty) {
+                        blocPallet.add(PalletsEvent.changeBarcodeParty(
+                            indexPallet: (indexPallet - 1),
+                            newBarcodeOfParty: textController.text));
+                      }
+
+                      Navigator.of(context).pop();
+                    }
+                  },
+                ),
+              )
+            ],
+          ),
         );
       },
     );

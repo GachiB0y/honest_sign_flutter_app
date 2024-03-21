@@ -483,7 +483,8 @@ class PalletsBloc extends Bloc<PalletsEvent, PalletsState> {
         .last
         .copyWith(
             barcode: event.barcode, // ШК честный знак
-            barcodeParty: futureBarcodeParty.toString(), // ШК партионный
+            // TODO: barcodeParty: event.barcodeParty,
+            // barcodeParty: futureBarcodeParty.toString(), // ШК партионный
             date: formattedDateTime,
             status: 'Full');
 
