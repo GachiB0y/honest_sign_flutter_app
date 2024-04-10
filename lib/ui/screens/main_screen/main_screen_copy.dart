@@ -279,12 +279,11 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                                         });
 // Если это завершение розлива, то не надо отправлять паллеты.
                                         if (!isCompeleteBottling) {
-                                          await _showAlertDialogChangeDateRelease(
-                                              context: context);
-
                                           blocPallet.add(
                                               const PalletsEventSendBarcodes());
                                           //  ОТПРАВКA ПАЛЛЕТ.
+                                          await _showAlertDialogChangeDateRelease(
+                                              context: context);
                                         }
 
                                         Navigator.of(context).pop();
