@@ -7,6 +7,7 @@ int countAllBarcodesPerPallet = 7;
 int countBoxesPerPallet = 2;
 Set<String> setBoxs = {'228', '227', '226', '225'};
 Set<String> setPallets = {'2007', '2008'};
+Set<String> setUsedBarcodesParty = {};
 Set<String> setUnit = {};
 int maxIndexUnitInBox = 0;
 String numberCardConst = '';
