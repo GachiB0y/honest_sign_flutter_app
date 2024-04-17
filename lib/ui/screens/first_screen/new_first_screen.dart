@@ -7,6 +7,7 @@ import 'package:honest_sign_flutter_app/domain/blocs/pallets_bloc/pallets_bloc.d
 import 'package:honest_sign_flutter_app/domain/api_client/api_client_barcode.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_date_picker/custom_date_picker.dart';
 import 'package:honest_sign_flutter_app/ui/components/custom_date_picker/custom_date_pikcer_model.dart';
+import 'package:honest_sign_flutter_app/ui/components/valid_barcode_party.dart';
 import 'package:honest_sign_flutter_app/ui/screens/main_screen/main_screen_copy.dart';
 import 'package:intl/intl.dart';
 
@@ -143,24 +144,9 @@ class _FirstNewScreenState extends State<FirstNewScreen> {
                       ? isPartyBarcodePallet
                           ? Form(
                               key: _formKey,
-                              child: TextFormField(
+                              child: TextFormFieldBarcodeParty(
                                 controller: _textControllerChangeBarcodeParty,
                                 focusNode: _focusNodeChangeBarcodeParty,
-                                keyboardType: TextInputType.number,
-                                autofocus: true,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    FocusScope.of(context).requestFocus(
-                                        _focusNodeChangeBarcodeParty); // Установить фокус на TextFormField
-                                    return 'Значение обязательно';
-                                  }
-                                  if (!value.startsWith('99')) {
-                                    FocusScope.of(context).requestFocus(
-                                        _focusNodeChangeBarcodeParty); // Установить фокус на TextFormField
-                                    return 'ШК должен начинаться с 99';
-                                  }
-                                  return null;
-                                },
                                 onFieldSubmitted: (value) {
                                   if (_formKey.currentState!.validate()) {
                                     /// записываем значение Партионного ШК

@@ -14,6 +14,7 @@ import 'package:permission_handler/permission_handler.dart';
 abstract class BarcodeService {
   const BarcodeService();
   Future<(List<String>, List<String>)> getFreeCodes();
+  Future<Iterable<String>> getUsedBarcodeParty();
 
   Future<bool> sendBarcodes(
       {required newEntity.ListPallets listPallets, required bool isDone});
@@ -170,6 +171,33 @@ class BarcodeServiceImpl extends BarcodeService {
       throw Exception('Время отправки выше 8 секунд.\nОбратитесь к мастеру!');
     } catch (e) {
       throw Exception('Ошибка получения данных о разливе!');
+    }
+  }
+
+  @override
+  Future<Iterable<String>> getUsedBarcodeParty() async {
+    try {
+      final http.StreamedResponse response = await _httpService.post(
+          uri:
+              'http://srv1c2.grass.local/GrassChZn/hs/GrassChZnAPI//V1/UsedBarcodesParty',
+          body: null,
+          contentType: false);
+
+      if (response.statusCode == 200) {
+        final jsonResponse = await response.stream.bytesToString();
+        final jsonData = jsonDecode(jsonResponse);
+
+        Iterable<String> usedBarcodes =
+            (jsonData['Message'] as List<dynamic>).cast<String>();
+
+        return usedBarcodes;
+      } else {
+        throw Exception('Ошибка получения занятых партионных ШК!');
+      }
+    } on TimeoutException {
+      throw Exception('Время отправки выше 8 секунд.\nОбратитесь к мастеру!');
+    } catch (e) {
+      throw Exception('Ошибка получения занятых партионных ШК!');
     }
   }
 }

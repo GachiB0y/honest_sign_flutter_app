@@ -6,6 +6,7 @@ import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
 
 abstract class PalletsRepository {
   Future<bool> getFreeCodes();
+  Future<bool> getUsedBarcodesParty();
 
   Future<bool> sendBarcodes(
       {required ListPallets listPallets, required bool isDone});
@@ -74,6 +75,26 @@ class PalletsRepositoryImpl implements PalletsRepository {
       setPallets = {};
       setBoxs = Set.from(records.$1);
       setPallets = Set.from(records.$2);
+      Iterable<String> usedBarcodesParty =
+          await _palletsProvider.getUsedBarcodeParty();
+      setUsedBarcodesParty = {};
+
+      setUsedBarcodesParty = Set.from(usedBarcodesParty);
+
+      return true;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> getUsedBarcodesParty() async {
+    try {
+      Iterable<String> records = await _palletsProvider.getUsedBarcodeParty();
+      setUsedBarcodesParty = {};
+
+      setUsedBarcodesParty = Set.from(records);
+
       return true;
     } catch (e) {
       rethrow;

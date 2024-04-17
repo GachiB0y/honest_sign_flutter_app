@@ -12,6 +12,7 @@ import 'package:honest_sign_flutter_app/ui/components/custom_snack_bar_dublicate
 import 'package:honest_sign_flutter_app/ui/components/input_with_keyboard_control.dart';
 import 'package:honest_sign_flutter_app/constants.dart';
 import 'package:honest_sign_flutter_app/domain/entity/new_entity.dart';
+import 'package:honest_sign_flutter_app/ui/components/valid_barcode_party.dart';
 import 'package:honest_sign_flutter_app/ui/components/view_model/text_field_check_valid_widget_model.dart';
 import 'package:honest_sign_flutter_app/ui/screens/new_refactor_box_screen.dart';
 import 'package:intl/intl.dart';
@@ -237,25 +238,6 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                             InputWithKeyboardControl(
                               focusNode: myFocusNodeCheckBarcode,
                               onSubmitted: (value) async {
-                                // // Проверка если это паллет и это первый ШК, то
-                                // // проверяем на страрт ШК с 99
-                                // if (isBox == false && isFirstBarcodePallet) {
-                                //   if (value.contains('99')) {
-                                //     futureBarcodeParty = value;
-                                //     setState(() {
-                                //       isShowError = false;
-                                //       isFirstBarcodePallet = false;
-                                //       _textEditingController.clear();
-                                //     });
-                                //     return;
-                                //   } else {
-                                //     setState(() {
-                                //       isShowError = true;
-                                //       _textEditingController.clear();
-                                //     });
-                                //     return;
-                                //   }
-                                // }
                                 try {
                                   final TypeOfStateSend isSend =
                                       await onSubmittedTextField(
@@ -402,24 +384,9 @@ class _MainScreenCopyState extends State<MainScreenCopy> {
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 20),
                           ),
-                          TextFormField(
-                            focusNode: _focusNodeChangeBarcodeParty,
-                            keyboardType: TextInputType.number,
+                          TextFormFieldBarcodeParty(
                             controller: _textControllerChangeBarcodeParty,
-                            autofocus: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                FocusScope.of(context).requestFocus(
-                                    _focusNodeChangeBarcodeParty); // Установить фокус на TextFormField
-                                return 'Значение обязательно';
-                              }
-                              if (!value.startsWith('99')) {
-                                FocusScope.of(context).requestFocus(
-                                    _focusNodeChangeBarcodeParty); // Установить фокус на TextFormField
-                                return 'ШК должен начинаться с 99';
-                              }
-                              return null;
-                            },
+                            focusNode: _focusNodeChangeBarcodeParty,
                             onFieldSubmitted: (value) {
                               if (_formKeySendBarcodeParty.currentState!
                                   .validate()) {
@@ -1307,28 +1274,10 @@ class _ModelsPalletWidgetState extends State<ModelsPalletWidget> {
                     'Замена ПАРТИОННОГО ШК',
                     style: TextStyle(fontSize: 19),
                   ),
-                  TextFormField(
-                    autofocus: true,
-                    keyboardType: TextInputType.number,
+                  TextFormFieldBarcodeParty(
                     controller: textController,
-                    decoration: const InputDecoration(
-                      hintText: 'Отсканируйте штрихкод',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        textController.clear();
-                        FocusScope.of(context).requestFocus(
-                            focusNodeChangeBarcodeParty); // Установить фокус на TextFormField
-                        return 'Значение обязательно';
-                      }
-                      if (!value.startsWith('99')) {
-                        textController.clear();
-                        FocusScope.of(context).requestFocus(
-                            focusNodeChangeBarcodeParty); // Установить фокус на TextFormField
-                        return 'ШК должен начинаться с 99';
-                      }
-                      return null;
-                    },
+                    focusNode: focusNodeChangeBarcodeParty,
+                    onFieldSubmitted: (value) {},
                   ),
                 ],
               ),
